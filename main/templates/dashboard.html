@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - ShipAI{% endblock %}
+
+{% block content %}
+<div class="mt-5 mb-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-4">Welcome, {{ user.username }}!</h1>
+            <p class="lead text-muted">Here's your personal dashboard</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{{ url_for('edit_profile') }}" class="btn btn-primary btn-lg">Edit Profile</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Profile Information</h5>
+                    <hr>
+                    {% if user.first_name or user.last_name %}
+                        <p><strong>Name:</strong> {{ user.first_name or '' }} {{ user.last_name or '' }}</p>
+                    {% endif %}
+                    {% if user.country %}
+                        <p><strong>Country:</strong> {{ user.country }}</p>
+                    {% endif %}
+                    {% if user.bio %}
+                        <p><strong>Bio:</strong> {{ user.bio }}</p>
+                    {% endif %}
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <span class="badge {% if user.email_verified %}bg-success{% else %}bg-warning{% endif %}">
+                        {% if user.email_verified %}Email Verified{% else %}Email Unverified{% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Account Status</h5>
+                    <hr>
+                    <p><strong>Member Since:</strong> {{ user.created_at.strftime('%B %d, %Y') }}</p>
+                    <p><strong>Last Updated:</strong> {{ user.updated_at.strftime('%B %d, %Y') }}</p>
+                    <p>
+                        <span class="badge bg-success">Active</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Quick Actions</h5>
+                    <hr>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('edit_profile') }}" class="btn btn-outline-primary btn-sm">Edit Profile</a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm">View Connections</a>
+                        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm">Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">About ShipAI</h5>
+                    <p class="card-text">
+                        Welcome to the ShipAI community! This is your hub for connecting with like-minded professionals
+                        who work remotely from around the world. Share your experiences, find collaborators, and explore new opportunities.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

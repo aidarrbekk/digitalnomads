@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - ShipAI{% endblock %}
+
+{% block content %}
+<div class="mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="display-5">{{ user.username }}'s Profile</h1>
+            <p class="text-muted">Member since {{ user.created_at.strftime('%B %d, %Y') }}</p>
+            <hr>
+            <p><strong>Name:</strong> {{ user.first_name or '' }} {{ user.last_name or '' }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Country:</strong> {{ user.country or '—' }}</p>
+            <p><strong>Bio:</strong> {{ user.bio or 'No bio yet.' }}</p>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="avatar" class="img-fluid mb-3" style="max-width: 120px;">
+                    <p class="mb-2"><a href="{{ url_for('edit_profile') }}" class="btn btn-outline-primary btn-sm">Edit Profile</a></p>
+                    <p class="mb-0"><a href="{{ url_for('settings') }}" class="btn btn-outline-secondary btn-sm">Settings</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
