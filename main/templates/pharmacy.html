@@ -1,0 +1,556 @@
+{% extends "base.html" %}
+{% block title %}<span data-translate="pharmacy">Pharmacy</span> - ShipAI{% endblock %}
+{% block content %}
+<div class="container container-normal">
+    <div class="page-header">
+        <h1 data-translate="find_meds">Find Medications</h1>
+        <p class="text-muted">
+            <span data-translate="total_medications_label">Total:</span>
+            <strong>{{ total_medications }}</strong>
+            <span data-translate="total_medications">medications in database</span>
+        </p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm no-animate">
+                <div class="card-body">
+                    <div class="input-group input-group-lg">
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="searchInput"
+                            data-translate-placeholder="search_drugs"
+                            placeholder="Search medications by name (min. 2 characters)..."
+                        >
+                        <button class="btn btn-primary" id="searchBtn" data-translate="search_btn">Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Navigation -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm no-animate">
+                <div class="card-body">
+                    <h6 class="text-muted mb-3" data-translate="browse_categories">Browse by Category:</h6>
+                    <div class="d-flex flex-wrap gap-2" id="categoryNav">
+                        <button class="btn btn-sm btn-primary category-btn active" data-category="all" data-translate="all_medications">All</button>
+                        {% for cat in categories %}
+                        <button class="btn btn-sm btn-outline-primary category-btn" data-category="{{ cat.id }}">
+                            {{ cat.icon }} {{ cat.name }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alphabet Navigation -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm no-animate">
+                <div class="card-body">
+                    <h6 class="text-muted mb-3">Browse by First Letter:</h6>
+                    <div class="alphabet-nav" id="alphabetNav">
+                        {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+                            {% if letter in available_letters %}
+                                <button class="btn btn-sm btn-outline-primary alphabet-btn" data-letter="{{ letter }}">
+                                    {{ letter }} <span class="badge bg-primary ms-1">{{ available_letters[letter] }}</span>
+                                </button>
+                            {% else %}
+                                <button class="btn btn-sm btn-outline-secondary alphabet-btn" disabled>
+                                    {{ letter }}
+                                </button>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="row" id="resultsSection" style="display:none;">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 id="resultsTitle"></h5>
+                <small id="resultCount" class="text-muted"></small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medications Container -->
+    <div class="row" id="medicationsContainer">
+        <div class="col-md-12 text-center py-5">
+            <div class="loading-spinner">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" id="pagination" style="display:none;">
+        <ul class="pagination justify-content-center"></ul>
+    </nav>
+
+    <!-- Medication Detail Modal -->
+    <div class="modal fade" id="medicationModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.alphabet-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.alphabet-btn {
+    min-width: 45px;
+    padding: 6px 10px !important;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.alphabet-btn:hover:not(:disabled) {
+    background-color: #0d6efd !important;
+    color: white !important;
+}
+
+.alphabet-btn.active-letter {
+    background-color: #0d6efd !important;
+    color: white !important;
+}
+
+.med-card {
+    cursor: pointer;
+    transition: all 0.3s;
+    border-left: 4px solid transparent;
+}
+
+.med-card:hover {
+    border-left-color: #0d6efd;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2) !important;
+}
+
+.med-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-right: 6px;
+    margin-bottom: 6px;
+}
+
+.otc-badge {
+    background-color: #28a745;
+    color: white;
+}
+
+.rx-badge {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.pagination {
+    margin: 30px 0;
+}
+
+.pharmacy-row:nth-child(even) {
+    background-color: #f8f9fa;
+}
+</style>
+
+<script>
+let medicationModal;
+let currentPage = 1;
+let currentSearchType = 'all';
+let currentSearchQuery = '';
+
+// XSS protection
+function esc(str) {
+    if (!str) return '';
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+}
+
+function performSearch() {
+    const query = document.getElementById('searchInput').value.trim();
+    if (query.length < 2) {
+        alert('Please enter at least 2 characters');
+        return;
+    }
+    currentPage = 1;
+    currentSearchType = 'search';
+    currentSearchQuery = query;
+    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.alphabet-btn').forEach(b => b.classList.remove('active-letter'));
+    loadMedications();
+}
+
+function browseLetter(letter) {
+    currentPage = 1;
+    currentSearchType = 'letter';
+    currentSearchQuery = letter;
+    document.querySelectorAll('.alphabet-btn').forEach(b => b.classList.remove('active-letter'));
+    const activeBtn = document.querySelector(`.alphabet-btn[data-letter="${letter}"]`);
+    if (activeBtn) activeBtn.classList.add('active-letter');
+    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+    loadMedications();
+}
+
+async function loadMedications() {
+    const container = document.getElementById('medicationsContainer');
+    container.innerHTML = '<div class="col-md-12"><div class="loading-spinner"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div></div>';
+
+    try {
+        let url;
+        if (currentSearchType === 'search') {
+            url = `/api/medications/search?q=${encodeURIComponent(currentSearchQuery)}&page=${currentPage}`;
+        } else if (currentSearchType === 'letter') {
+            url = `/api/medications/alphabet?letter=${currentSearchQuery}&page=${currentPage}`;
+        } else if (currentSearchType === 'category') {
+            url = `/api/medications/category/${currentSearchQuery}?page=${currentPage}`;
+        } else {
+            url = `/api/medications?page=${currentPage}`;
+        }
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!response.ok) {
+            container.innerHTML = '<div class="col-md-12"><div class="alert alert-warning">No medications found</div></div>';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('pagination').style.display = 'none';
+            return;
+        }
+
+        const medications = data.medications || [];
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsTitle = document.getElementById('resultsTitle');
+        const resultCount = document.getElementById('resultCount');
+
+        if (medications.length === 0) {
+            container.innerHTML = '<div class="col-md-12 text-center py-5"><div class="alert alert-info">No medications found</div></div>';
+            resultsSection.style.display = 'none';
+            document.getElementById('pagination').style.display = 'none';
+            return;
+        }
+
+        // Update results info
+        const total = data.total || data.count || medications.length;
+        if (currentSearchType === 'search') {
+            resultsTitle.textContent = '';
+            resultsTitle.innerHTML = `Search Results for "<strong>${esc(currentSearchQuery)}</strong>"`;
+            resultCount.textContent = `Found ${total} medications`;
+        } else if (currentSearchType === 'letter') {
+            resultsTitle.textContent = '';
+            resultsTitle.innerHTML = `Medications starting with <strong>${esc(currentSearchQuery)}</strong>`;
+            resultCount.textContent = `${total} medications`;
+        } else if (currentSearchType === 'category') {
+            resultsTitle.textContent = 'Category Results';
+            resultCount.textContent = `${total} medications`;
+        } else {
+            resultsTitle.textContent = 'All Medications';
+            resultCount.textContent = `${total} medications`;
+        }
+        resultsSection.style.display = 'block';
+
+        // Render medications
+        container.innerHTML = medications.map(med => `
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card med-card shadow-sm h-100" data-med-id="${med.id}">
+                    <div class="card-body">
+                        <h5 class="card-title">${esc(med.name)}</h5>
+                        ${med.generic_name ? `<p class="text-muted small mb-1"><em>${esc(med.generic_name)}</em></p>` : ''}
+
+                        <div class="mb-2">
+                            ${med.is_otc ? '<span class="med-badge otc-badge">OTC</span>' : ''}
+                            ${med.requires_prescription ? '<span class="med-badge rx-badge">Rx</span>' : ''}
+                            ${med.category ? `<span class="med-badge" style="background:#e9ecef;color:#333;">${esc(med.category)}</span>` : ''}
+                        </div>
+
+                        <p class="text-muted small mb-2">${med.description ? esc(med.description).substring(0, 100) + '...' : 'No description'}</p>
+
+                        ${med.dosage_forms ? `<p class="small mb-1"><strong>Forms:</strong> ${esc(med.dosage_forms)}</p>` : ''}
+
+                        <p class="small text-primary mb-2">
+                            Available in ${med.pharmacy_count || 0} ${(med.pharmacy_count || 0) === 1 ? 'pharmacy' : 'pharmacies'}
+                        </p>
+
+                        <button class="btn btn-primary btn-sm w-100">View Details</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        updatePagination(data);
+
+    } catch (error) {
+        console.error('Error:', error);
+        container.innerHTML = '<div class="col-md-12"><div class="alert alert-danger">Error loading medications</div></div>';
+    }
+}
+
+async function showMedicationDetail(medId) {
+    try {
+        const response = await fetch(`/api/medications/${medId}`);
+        const med = await response.json();
+
+        document.getElementById('modalTitle').textContent = med.name;
+
+        let detailHTML = `
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <h6>Generic Name</h6>
+                    <p>${esc(med.generic_name) || 'N/A'}</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <h6>Category</h6>
+                    <p>${esc(med.category) || 'N/A'}</p>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <h6>Description</h6>
+                <p>${esc(med.description) || 'No description'}</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <h6>Active Ingredient</h6>
+                    <p>${esc(med.active_ingredient) || 'N/A'}</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <h6>Manufacturer</h6>
+                    <p>${esc(med.manufacturer) || 'N/A'}</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <h6>Dosage Forms</h6>
+                    <p>${esc(med.dosage_forms) || 'N/A'}</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <h6>Available Strengths</h6>
+                    <p>${esc(med.available_strengths) || 'N/A'}</p>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <h6>Type</h6>
+                <p>
+                    ${med.is_otc ? '<span class="med-badge otc-badge">Over-the-Counter (OTC)</span>' : ''}
+                    ${med.requires_prescription ? '<span class="med-badge rx-badge">Requires Prescription</span>' : ''}
+                </p>
+            </div>
+
+            <div class="mb-3">
+                <h6>Side Effects</h6>
+                <p>${esc(med.side_effects) || 'No common side effects listed'}</p>
+            </div>
+
+            <div class="mb-3">
+                <h6>Contraindications</h6>
+                <p>${esc(med.contraindications) || 'N/A'}</p>
+            </div>
+
+            <div class="mb-3">
+                <h6>Storage Instructions</h6>
+                <p>${esc(med.storage_instructions) || 'N/A'}</p>
+            </div>
+        `;
+
+        if (med.pharmacies && med.pharmacies.length > 0) {
+            detailHTML += `
+                <div class="mb-3">
+                    <h6>Available at ${med.pharmacies.length} Pharmacies</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Pharmacy</th>
+                                    <th>City</th>
+                                    <th>Location</th>
+                                    <th>Qty</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${med.pharmacies.map(p => `
+                                    <tr class="pharmacy-row">
+                                        <td><strong>${esc(p.pharmacy_name)}</strong></td>
+                                        <td>${esc(p.city)}</td>
+                                        <td>${esc(p.location)}</td>
+                                        <td>${p.quantity}</td>
+                                        <td>${p.price ? esc(p.currency) + ' ' + p.price.toLocaleString() : 'N/A'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        } else {
+            detailHTML += '<div class="alert alert-info">No pharmacy availability data</div>';
+        }
+
+        document.getElementById('modalBody').innerHTML = detailHTML;
+        medicationModal.show();
+
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error loading medication details');
+    }
+}
+
+function updatePagination(data) {
+    const pagination = document.getElementById('pagination');
+    const ul = pagination.querySelector('ul');
+
+    if (!data.pages || data.pages <= 1) {
+        pagination.style.display = 'none';
+        return;
+    }
+
+    pagination.style.display = 'block';
+    ul.innerHTML = '';
+
+    const page = data.page;
+    const totalPages = data.pages;
+
+    // Previous
+    ul.appendChild(createPageItem('&laquo;', page > 1, page - 1));
+
+    // Page numbers
+    const pageNumbers = getPageNumbers(page, totalPages);
+    pageNumbers.forEach(p => {
+        if (p === '...') {
+            const li = document.createElement('li');
+            li.className = 'page-item disabled';
+            li.innerHTML = '<span class="page-link">...</span>';
+            ul.appendChild(li);
+        } else {
+            ul.appendChild(createPageItem(p, true, p, p === page));
+        }
+    });
+
+    // Next
+    ul.appendChild(createPageItem('&raquo;', page < totalPages, page + 1));
+}
+
+function createPageItem(label, enabled, targetPage, isActive) {
+    const li = document.createElement('li');
+    li.className = 'page-item' + (!enabled ? ' disabled' : '') + (isActive ? ' active' : '');
+    const a = document.createElement('a');
+    a.className = 'page-link';
+    a.href = '#';
+    a.innerHTML = label;
+    if (enabled && !isActive) {
+        a.addEventListener('click', (e) => {
+            e.preventDefault();
+            currentPage = targetPage;
+            loadMedications();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+    } else {
+        a.addEventListener('click', (e) => e.preventDefault());
+    }
+    li.appendChild(a);
+    return li;
+}
+
+function getPageNumbers(current, total) {
+    if (total <= 7) return Array.from({length: total}, (_, i) => i + 1);
+
+    const pages = [];
+    pages.push(1);
+
+    if (current > 3) pages.push('...');
+
+    const start = Math.max(2, current - 1);
+    const end = Math.min(total - 1, current + 1);
+    for (let i = start; i <= end; i++) pages.push(i);
+
+    if (current < total - 2) pages.push('...');
+
+    pages.push(total);
+    return pages;
+}
+
+// Auto-load all medications on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Init modal (bootstrap is now loaded)
+    medicationModal = new bootstrap.Modal(document.getElementById('medicationModal'), {});
+
+    // Search
+    document.getElementById('searchBtn').addEventListener('click', performSearch);
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') performSearch();
+    });
+
+    // Alphabet buttons
+    document.querySelectorAll('.alphabet-btn:not(:disabled)').forEach(btn => {
+        btn.addEventListener('click', () => browseLetter(btn.dataset.letter));
+    });
+
+    // Category buttons
+    document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.alphabet-btn').forEach(b => b.classList.remove('active-letter'));
+            const catId = btn.dataset.category;
+            if (catId === 'all') {
+                currentSearchType = 'all';
+                currentSearchQuery = '';
+            } else {
+                currentSearchType = 'category';
+                currentSearchQuery = catId;
+            }
+            currentPage = 1;
+            loadMedications();
+        });
+    });
+
+    // Event delegation for medication cards
+    document.getElementById('medicationsContainer').addEventListener('click', function(e) {
+        const card = e.target.closest('.med-card');
+        if (card) showMedicationDetail(card.dataset.medId);
+    });
+
+    // Load first page
+    currentSearchType = 'all';
+    currentPage = 1;
+    loadMedications();
+});
+</script>
+{% endblock %}

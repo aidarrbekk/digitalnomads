@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Home - ShipAI Community{% endblock %}
+
+{% block content %}
+<!-- Hero Section with gradient and pattern -->
+<div class="hero-section py-5 mt-5 mb-5">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h1 class="display-3 fw-bold mb-4" data-translate="home_hero_title">Work From Anywhere</h1>
+            <p class="lead text-muted mb-4" data-translate="home_hero_description">
+                Join a thriving community of digital nomads working remotely from around the world.
+                Share experiences, find collaborators, and build meaningful connections with like-minded professionals.
+            </p>
+            <div class="d-flex gap-3">
+                {% if not current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.signup') }}" class="btn btn-primary btn-lg" data-translate="get_started_btn">Get Started</a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg" data-translate="sign_in_btn">Sign In</a>
+                {% else %}
+                    <a href="{{ url_for('user.dashboard') }}" class="btn btn-primary btn-lg" data-translate="go_dashboard_btn">Go to Dashboard</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="hero-image p-5">
+                <svg viewBox="0 0 400 400" class="w-100" style="max-width: 400px;">
+                    <rect width="400" height="400" rx="20"/>
+                    <circle class="accent-1" cx="200" cy="150" r="80" />
+                    <circle class="accent-2" cx="150" cy="250" r="60" />
+                    <circle class="accent-3" cx="280" cy="280" r="70" />
+                    <text x="200" y="210" text-anchor="middle" font-size="28" fill="#1F3A4D" font-weight="700">
+                        ShipAI
+                    </text>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="features-section py-5 mb-5">
+    <h2 class="display-5 text-center fw-bold mb-5" data-translate="why_join_title">Why Join Our Community?</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="feature-icon mb-3">
+                        <div class="icon-circle">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="text-primary">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h5 class="card-title fw-bold" data-translate="feature_network_title">Connect & Network</h5>
+                    <p class="card-text text-muted" data-translate="feature_network_desc">
+                        Meet professionals from all over the world. Build relationships and expand your network.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="feature-icon mb-3">
+                        <div class="icon-circle">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="text-success">
+                                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                                <polyline points="13 2 13 9 20 9"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h5 class="card-title fw-bold" data-translate="feature_resources_title">Share Resources</h5>
+                    <p class="card-text text-muted" data-translate="feature_resources_desc">
+                        Exchange tips, tools, and best practices for remote work and living abroad.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="feature-icon mb-3">
+                        <div class="icon-circle">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="text-info">
+                                <circle cx="12" cy="12" r="1"/>
+                                <circle cx="19" cy="12" r="1"/>
+                                <circle cx="5" cy="12" r="1"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h5 class="card-title fw-bold" data-translate="feature_opportunities_title">Find Opportunities</h5>
+                    <p class="card-text text-muted" data-translate="feature_opportunities_desc">
+                        Discover projects, collaborations, and career opportunities within our community.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="stats-section py-5 mb-5 rounded" style="background: linear-gradient(135deg, rgba(135, 206, 162, 0.1) 0%, rgba(31, 58, 77, 0.05) 100%); border: 1px solid rgba(135, 206, 162, 0.15);">
+    <div class="row text-center">
+        <div class="col-md-3 col-sm-6 mb-4">
+            <h3 class="display-5 fw-bold" style="color: var(--primary-green);">500+</h3>
+            <p class="text-muted">Active Members</p>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-4">
+            <h3 class="display-5 fw-bold" style="color: var(--accent-blue);">50</h3>
+            <p class="text-muted">Countries Represented</p>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-4">
+            <h3 class="display-5 fw-bold" style="color: var(--primary-green);">1000+</h3>
+            <p class="text-muted">Connections Made</p>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-4">
+            <h3 class="display-5 fw-bold" style="color: var(--accent-blue);">100+</h3>
+            <p class="text-muted">Success Stories</p>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="cta-section py-5 mb-5">
+    <div class="card text-white border-0" style="background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-navy) 100%);">
+        <div class="card-body text-center py-5">
+            <h2 class="card-title fw-bold mb-3">Ready to Join the Community?</h2>
+            <p class="lead mb-4">
+                Start your journey as a digital nomad. Connect, learn, and grow with thousands of remote professionals.
+            </p>
+            {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('auth.signup') }}" class="btn" style="background-color: #ffffff; color: var(--secondary-navy); font-weight: 600;">Create Your Account Today</a>
+            {% else %}
+                <p class="mb-0">Welcome back! Explore your dashboard to connect with other nomads.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

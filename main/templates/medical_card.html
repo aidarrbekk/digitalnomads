@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block title %}<span data-translate="medical_card">Medical Card</span> - ShipAI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="text-primary fw-bold mb-2" data-translate="medical_card">My Medical Card</h1>
+            <p class="text-muted" data-translate="medical_info">Manage and store your personal health information securely</p>
+        </div>
+    </div>
+    <!-- Error Messages -->
+    {% if form.errors %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <h5 class="alert-heading">Please correct the following errors:</h5>
+        {% for field, errors in form.errors.items() %}
+            {% for error in errors %}
+                <p class="mb-1"><strong>{{ field }}:</strong> {{ error }}</p>
+            {% endfor %}
+        {% endfor %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+
+        <!-- Personal Information Section -->
+        <div class="card border-success mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-person-circle"></i> <span data-translate="personal_info">Personal Health Information</span></h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col">
+                                <label for="height_cm" class="form-label" data-translate="height_cm">Height (cm)</label>
+                                {{ form.height_cm(class="form-control", placeholder="e.g., 180") }}
+                            </div>
+                            <div class="col">
+                                <label for="weight_kg" class="form-label" data-translate="weight_kg">Weight (kg)</label>
+                                {{ form.weight_kg(class="form-control", placeholder="e.g., 75") }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="blood_type" class="form-label" data-translate="blood_type">Blood Type</label>
+                        {{ form.blood_type(class="form-select") }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vital Signs Section -->
+        <div class="card border-info mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-heart-pulse"></i> <span data-translate="vital_signs">Vital Signs</span></h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col">
+                                <label for="blood_pressure_systolic" class="form-label" data-translate="bp_systolic">BP Systolic (mmHg)</label>
+                                {{ form.blood_pressure_systolic(class="form-control", placeholder="e.g., 120") }}
+                            </div>
+                            <div class="col">
+                                <label for="blood_pressure_diastolic" class="form-label" data-translate="bp_diastolic">BP Diastolic (mmHg)</label>
+                                {{ form.blood_pressure_diastolic(class="form-control", placeholder="e.g., 80") }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="heart_rate" class="form-label" data-translate="heart_rate">Heart Rate (bpm)</label>
+                        {{ form.heart_rate(class="form-control", placeholder="e.g., 70") }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="temperature_c" class="form-label" data-translate="temperature">Temperature (°C)</label>
+                        {{ form.temperature_c(class="form-control", placeholder="e.g., 37.0") }}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="oxygen_saturation" class="form-label" data-translate="oxygen_saturation">Oxygen Saturation (%)</label>
+                        {{ form.oxygen_saturation(class="form-control", placeholder="e.g., 98") }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medical History Section -->
+        <div class="card border-warning mb-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="bi bi-capsule"></i> <span data-translate="medical_history">Medical History</span></h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="allergies" class="form-label" data-translate="allergies">Allergies</label>
+                    {{ form.allergies(class="form-control", rows="3", placeholder="List any allergies (e.g., Penicillin, Peanuts, etc.)") }}
+                    <small class="text-muted">Separate multiple items with commas</small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="chronic_conditions" class="form-label" data-translate="chronic">Chronic Conditions</label>
+                    {{ form.chronic_conditions(class="form-control", rows="3", placeholder="List any chronic conditions (e.g., Diabetes, Hypertension, etc.)") }}
+                    <small class="text-muted">Separate multiple items with commas</small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="medications" class="form-label" data-translate="medications">Current Medications</label>
+                    {{ form.medications(class="form-control", rows="3", placeholder="List medications you're currently taking with dosage (e.g., Aspirin 500mg, etc.)") }}
+                    <small class="text-muted">Include dosage information</small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="surgeries" class="form-label" data-translate="surgeries">Previous Surgeries</label>
+                    {{ form.surgeries(class="form-control", rows="3", placeholder="List any previous surgeries with dates if known (e.g., Appendectomy 2015, etc.)") }}
+                    <small class="text-muted">Include approximate dates if possible</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency Contact Section -->
+        <div class="card border-danger mb-4">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="bi bi-telephone"></i> <span data-translate="emergency_contact">Emergency Contact</span></h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="emergency_contact_name" class="form-label" data-translate="contact_name">Contact Name</label>
+                        {{ form.emergency_contact_name(class="form-control", placeholder="Full name") }}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="emergency_contact_relation" class="form-label" data-translate="relationship">Relationship</label>
+                        {{ form.emergency_contact_relation(class="form-control", placeholder="e.g., Mother, Brother, Spouse, etc.") }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="emergency_contact_phone" class="form-label" data-translate="contact_phone">Contact Phone</label>
+                    {{ form.emergency_contact_phone(class="form-control", placeholder="Phone number") }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                {{ form.submit(class="btn btn-primary btn-lg", data_translate="save") }}
+                <a href="{{ url_for('user.dashboard') }}" class="btn btn-secondary btn-lg ms-2" data-translate="back_dashboard">Back to Dashboard</a>
+            </div>
+        </div>
+    </form>
+
+    <!-- Summary Cards (Display Only) -->
+    {% if metrics %}
+    <div class="row mt-5" id="summaryCards">
+        <div class="col-md-12 mb-3">
+            <h4 class="fw-bold mb-3" data-translate="health_summary">Health Summary</h4>
+        </div>
+
+        {% if metrics.weight_kg and metrics.height_cm %}
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted" data-translate="bmi">BMI</h6>
+                    {% set bmi = (metrics.weight_kg / ((metrics.height_cm / 100) ** 2))|round(1) %}
+                    <h3 class="text-primary fw-bold">{{ bmi }}</h3>
+                    <small class="text-muted">
+                        {% if bmi < 18.5 %}
+                            <span data-translate="underweight">Underweight</span>
+                        {% elif bmi < 25 %}
+                            <span data-translate="normal_weight">Normal Weight</span>
+                        {% elif bmi < 30 %}
+                            <span data-translate="overweight">Overweight</span>
+                        {% else %}
+                            <span data-translate="obese">Obese</span>
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if metrics.blood_pressure_systolic and metrics.blood_pressure_diastolic %}
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted" data-translate="blood_pressure">Blood Pressure</h6>
+                    <h3 class="text-info fw-bold">{{ metrics.blood_pressure_systolic }}/{{ metrics.blood_pressure_diastolic }}</h3>
+                    <small class="text-muted">mmHg</small>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if metrics.heart_rate %}
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted" data-translate="heart_rate">Heart Rate</h6>
+                    <h3 class="text-success fw-bold">{{ metrics.heart_rate }}</h3>
+                    <small class="text-muted">bpm</small>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if metrics.oxygen_saturation %}
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted" data-translate="oxygen_level">Oxygen Level</h6>
+                    <h3 class="text-warning fw-bold">{{ metrics.oxygen_saturation }}%</h3>
+                    <small class="text-muted">SpO2</small>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Last Updated -->
+    <div class="alert alert-info mt-4" role="alert">
+        <small><span data-translate="last_updated">Last updated</span>: <strong>{{ metrics.last_updated.strftime('%Y-%m-%d %H:%M:%S') if metrics.last_updated else 'Never' }}</strong></small>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .card {
+        transition: all 0.3s ease;
+    }
+    .card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .form-label {
+        font-weight: 600;
+        color: #2C2C2C;
+        margin-bottom: 0.5rem;
+    }
+    .card-header {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+</style>
+{% endblock %}

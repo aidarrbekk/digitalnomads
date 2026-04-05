@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}<span data-translate="medical_analysis">Medical Analysis</span> - ShipAI{% endblock %}
+
+{% block content %}
+<div class="mt-5 mb-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-4" data-translate="your_analysis">Your Medical Analysis</h1>
+            <p class="lead text-muted" data-translate="health_insights">Health insights and analysis based on your medical data</p>
+        </div>
+    </div>
+
+    <!-- Health Score Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm" style="border-top: 3px solid var(--primary-green);">
+                <div class="card-body text-center">
+                    <h5 class="card-title" data-translate="health_score">Health Score</h5>
+                    <h2 style="color: var(--primary-green); font-weight: 700;">—</h2>
+                    <p class="text-muted small" data-translate="add_medical_data">Add medical data to calculate your score</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm" style="border-top: 3px solid var(--accent-blue);">
+                <div class="card-body text-center">
+                    <h5 class="card-title" data-translate="risk_factors">Risk Factors</h5>
+                    <h2 style="color: var(--accent-blue); font-weight: 700;">0</h2>
+                    <p class="text-muted small" data-translate="identified_risk">Identified risk factors</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm" style="border-top: 3px solid var(--secondary-navy);">
+                <div class="card-body text-center">
+                    <h5 class="card-title" data-translate="recommendations">Recommendations</h5>
+                    <h2 style="color: var(--secondary-navy); font-weight: 700;">0</h2>
+                    <p class="text-muted small" data-translate="health_recommendations">Health recommendations</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis Sections -->
+    <div class="row">
+        <!-- Vital Signs Analysis -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: var(--secondary-navy); font-weight: 600;" data-translate="vital_analysis">Vital Signs Analysis</h5>
+                    <hr>
+                    <p class="text-muted small mb-3" data-translate="no_vital_data">No vital signs data available</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><small>• Blood Pressure</small></li>
+                        <li class="mb-2"><small>• Heart Rate</small></li>
+                        <li class="mb-2"><small>• Temperature</small></li>
+                        <li class="mb-2"><small>• Respiratory Rate</small></li>
+                    </ul>
+                    <button class="btn btn-primary btn-sm mt-3" data-translate="add_vital">Add Vital Signs</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medication Analysis -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: var(--secondary-navy); font-weight: 600;" data-translate="medication_analysis">Medication Analysis</h5>
+                    <hr>
+                    <p class="text-muted small mb-3" data-translate="no_med_data">No medication data available</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><small data-translate="current_meds">• Current Medications</small></li>
+                        <li class="mb-2"><small data-translate="drug_interactions_check">• Drug Interactions</small></li>
+                        <li class="mb-2"><small data-translate="side_effects_check">• Side Effects</small></li>
+                        <li class="mb-2"><small data-translate="dosage_review">• Dosage Review</small></li>
+                    </ul>
+                    <button class="btn btn-primary btn-sm mt-3" data-translate="review_meds">Review Medications</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wellness & Preventive Care -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: var(--secondary-navy); font-weight: 600;" data-translate="wellness_insights">Wellness Insights</h5>
+                    <hr>
+                    <p class="text-muted small" data-translate="personalized_wellness">Personalized wellness recommendations based on your profile</p>
+                    <button class="btn btn-outline-primary btn-sm mt-3" data-translate="view_recommendations">View Recommendations</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: var(--secondary-navy); font-weight: 600;" data-translate="preventive_care">Preventive Care</h5>
+                    <hr>
+                    <p class="text-muted small" data-translate="screening_preventive">Screening and preventive measures tailored to your age and health</p>
+                    <button class="btn btn-outline-primary btn-sm mt-3" data-translate="view_screening">View Screening Checklist</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trend Analysis -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: var(--secondary-navy); font-weight: 600;" data-translate="health_trends">Health Trends</h5>
+                    <hr>
+                    <p class="text-muted small" data-translate="track_health">Track your health metrics over time to identify patterns and trends</p>
+                    <div style="text-align: center; padding: 2rem; background-color: #F5FCF8; border-radius: 8px;">
+                        <p class="text-muted" data-translate="charts_appear">Charts and trends will appear as you add medical data</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

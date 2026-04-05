@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% block title %}<span data-translate="common_illnesses">Common Illnesses</span> - ShipAI{% endblock %}
+{% block content %}
+<div class="container container-normal">
+    <div class="page-header">
+        <h1 data-translate="illnesses_guide">Common Illnesses Guide</h1>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <select id="categorySelect" class="form-select" onchange="loadCategory()">
+                <option value="" data-translate="select_category">Select a category</option>
+                <option value="respiratory" data-translate="respiratory">Respiratory</option>
+                <option value="digestive" data-translate="digestive_sys">Digestive</option>
+                <option value="skin" data-translate="skin">Skin</option>
+                <option value="general" data-translate="general">General</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Search -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm no-animate">
+                <div class="card-body">
+                    <input type="text" class="form-control" data-translate-placeholder="search_illness" placeholder="Search for an illness or condition...">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Illness Cards -->
+    <div class="row">
+        <!-- Common Cold -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm no-animate">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: var(--secondary-navy); font-weight: 600;">Common Cold</h5>
+                    <hr>
+                    
+                    <h6 style="color: var(--primary-green); font-weight: 600;" data-translate="description">Description</h6>
+                    <p class="text-muted small">
+                        A viral infection affecting the upper respiratory tract caused by various viruses including rhinoviruses. 
+                        It's one of the most common infectious diseases.
+                    </p>
+
+                    <h6 style="color: var(--primary-green); font-weight: 600;" data-translate="symptoms">Symptoms</h6>
+                    <ul class="small text-muted">
+                        <li>Nasal congestion or runny nose</li>
+                        <li>Sore throat</li>
+                        <li>Cough</li>
+                        <li>Sneezing</li>
+                        <li>Low-grade fever</li>
+                        <li>Fatigue</li>
+                    </ul>
+
+                    <h6 style="color: var(--primary-green); font-weight: 600;" data-translate="prevention">Prevention</h6>
+                    <ul class="small text-muted">
+                        <li>Wash hands frequently</li>
+                        <li>Avoid touching face, eyes, and nose</li>
+                        <li>Maintain good nutrition and hydration</li>
+                        <li>Get sufficient sleep</li>
+                        <li>Avoid close contact with infected people</li>
+                    </ul>
+
+                    <h6 style="color: var(--primary-green); font-weight: 600;" data-translate="treatment">Treatment</h6>
+                    <p class="text-muted small">
+                        Most colds resolve on their own within 7-10 days. Treatment focuses on symptom relief: rest, fluids, 
+                        over-the-counter pain relievers, and decongestants. Consult a doctor if symptoms persist beyond 10 days.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Influenza (Flu) -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm no-animate">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: var(--secondary-navy); font-weight: 600;">Influenza (Flu)</h5>
+                    <hr>
+                    
+                    <h6 style="color: var(--primary-green); font-weight: 600;" data-translate="description">Description</h6>
+                    <p class="text-muted small">
+                        A contagious respiratory illness caused by influenza viruses. It's more severe than the common cold 
+                        and can lead to serious complications, especially in vulnerable populations.
+                    </p>
+
+                    <h6 style="color: var(--primary-green); font-weight: 600;" data-translate="symptoms">Symptoms</h6>
+                    <ul class="small text-muted">
+                        <li>High fever (103-104°F)</li>
+                        <li>Severe body aches</li>
+                        <li>Chills</li>
+                        <li>Fatigue and weakness</li>
+                        <li>Dry cough</li>
+                        <li>Headache</li>
+                        <li>Sore throat</li>
+                    </ul>
+
+                    <h6 style="color: var(--primary-green); font-weight: 600;" data-translate="prevention">Prevention</h6>
+                    <ul class="small text-muted">
+                        <li>Get annual flu vaccination</li>
+                        <li>Practice good respiratory hygiene</li>
+                        <li>Stay home when sick</li>
+                        <li>Maintain healthy lifestyle</li>
+                        <li>Wash hands frequently</li>
+                    </ul>
+
+                    <h6 style="color: var(--primary-green); font-weight: 600;" data-translate="treatment">Treatment</h6>
+                    <p class="text-muted small">
+                        Antiviral medications (like Tamiflu) are most effective when started early. Supportive care includes rest, 
+                        fluids, and fever management. Seek medical attention for high-risk groups.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- More Illnesses -->
+    <div class="row">
+        <!-- Allergies -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm no-animate">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: var(--secondary-navy); font-weight: 600;">Allergies</h5>
+                    <hr>
+                    
+                    <h6 style="color: var(--primary-green); font-weight: 600;" data-translate="description">Description</h6>
+                    <p class="text-muted small">
+                        Allergies occur when the immune system reacts to a substance (allergen) that's typically harmless. 
+                        Common allergens include pollen, dust, pet dander, and certain foods.
+                    </p>
+
+                    <h6 style="color: var(--primary-green); font-weight: 600;" data-translate="symptoms">Symptoms</h6>
+                    <ul class="small text-muted">
+                        <li>Sneezing and itching</li>
+                        <li>Nasal congestion or runny nose</li>
+                        <li>Watery, itchy eyes</li>
+                        <li>Skin rashes or hives</li>
+                        <li>Itching or swelling of lips, throat, or tongue</li>
+                    </ul>
+
+                    <h6 style="color: var(--primary-green); font-weight: 600;" data-translate="prevention">Prevention & Management</h6>
+                    <ul class="small text-muted">
+                        <li>Avoid known allergens</li>
+                        <li>Keep living spaces clean</li>
+                        <li>Use air filters</li>
+                        <li>Take antihistamines as needed</li>
+                        <li>Consider allergy testing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Migraine Headaches -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm no-animate">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: var(--secondary-navy); font-weight: 600;">Migraine Headaches</h5>
+                    <hr>
+                    
+                    <h6 style="color: var(--primary-green); font-weight: 600;" data-translate="description">Description</h6>
+                    <p class="text-muted small">
+                        Migraines are intense, often debilitating headaches usually affecting one side of the head. 
+                        They may be accompanied by nausea, vomiting, and sensitivity to light and sound.
+                    </p>
+
+                    <h6 style="color: var(--primary-green); font-weight: 600;" data-translate="symptoms">Symptoms</h6>
+                    <ul class="small text-muted">
+                        <li>Throbbing pain on one side of head</li>
+                        <li>Nausea and vomiting</li>
+                        <li>Sensitivity to light (photophobia)</li>
+                        <li>Sensitivity to sound (phonophobia)</li>
+                        <li>Visual disturbances (aura)</li>
+                        <li>Fatigue</li>
+                    </ul>
+
+                    <h6 style="color: var(--primary-green); font-weight: 600;" data-translate="prevention">Prevention & Treatment</h6>
+                    <ul class="small text-muted">
+                        <li>Identify and avoid triggers</li>
+                        <li>Maintain regular sleep schedule</li>
+                        <li>Manage stress effectively</li>
+                        <li>Use preventive medications if frequent</li>
+                        <li>Rest in dark, quiet environment during migraine</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-info" style="background-color: rgba(74, 144, 226, 0.1); border-left: 4px solid var(--accent-blue);">
+                <strong data-translate="important">Important:</strong> <span data-translate="disclaimer">This information is for educational purposes only and should not be used for self-diagnosis 
+                or as a substitute for professional medical advice. Always consult with a qualified healthcare provider for medical concerns.</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
