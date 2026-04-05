@@ -6,6 +6,6 @@ __pycache__/
 .vscode/
 *.log
 instance/
-.env
+# .env  -- included in repo since it's private
 *.db
 .claude/
