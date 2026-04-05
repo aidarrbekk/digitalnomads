@@ -9,7 +9,3 @@ instance/
 .env
 *.db
 .claude/
-config/
-scripts/
-tests/
-docs/
