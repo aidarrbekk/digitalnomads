@@ -1,11 +1,11 @@
-.venv/
+﻿.venv/
+venv/
 __pycache__/
 *.pyc
-*.pyo
-.DS_Store
-.vscode/
-*.log
+.env
+data/embeddings/
+data/faiss_index/
+logs/
 instance/
-# .env  -- included in repo since it's private
-*.db
-.claude/
+
+data/scraped_json/

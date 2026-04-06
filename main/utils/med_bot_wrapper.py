@@ -11,7 +11,7 @@ import logging
 logger = logging.getLogger('med_bot_wrapper')
 
 # Add med_bot to path
-med_bot_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'med_bot', 'src')
+med_bot_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'ai_engine')
 sys.path.insert(0, med_bot_path)
 
 RAG_AVAILABLE = False
