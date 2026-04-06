@@ -130,6 +130,12 @@ def _find_disease_in_query(query: str) -> str | None:
 
 # ── Core ──────────────────────────────────────────────────────────────────────
 def retrieve(query: str, top_k: int | None = None) -> list[dict]:
+
+    real_words = [w for w in query.strip().split() if len(w) >= 3]
+    if len(real_words) < 1:
+        logger.info(f"Query rejected: no real words")
+        return []
+
     k = top_k or TOP_K
     intent = detect_intent(query)
     boost_sections = INTENT_SECTIONS.get(intent, INTENT_SECTIONS["symptoms"])
