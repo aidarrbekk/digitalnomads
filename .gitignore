@@ -1,11 +1,24 @@
-﻿.venv/
-venv/
+﻿# Python
+.venv/
 __pycache__/
 *.pyc
-.env
-data/embeddings/
-data/faiss_index/
+*.pyo
+
+# IDE / OS
+.DS_Store
+.vscode/
+.claude/
+
+# Logs & Database
+*.log
 logs/
 instance/
+*.db
 
-data/scraped_json/
+# Uploads (user files)
+main/uploads/
+
+# AI/ML data (large, regeneratable)
+data/
+
+# .env -- included in repo since it's private

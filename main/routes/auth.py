@@ -8,6 +8,7 @@ from itsdangerous import URLSafeTimedSerializer
 
 from main.models import db, User
 from main.forms import SignUpForm, LoginForm, ForgotPasswordForm, ResetPasswordForm, VerifyOTPForm
+from main.i18n import t
 from main.utils.email_otp import generate_otp, send_otp_email
 from main.utils.email_templates import (
     create_email_message, send_email,
@@ -52,7 +53,7 @@ def signup():
         }
         session.permanent = True
         send_otp_email(form.email.data, otp)
-        flash(f'Code sent to {form.email.data}. Check your inbox.', 'success')
+        flash(t('flash_code_sent', email=form.email.data), 'success')
         return redirect(url_for('auth.verify_otp'))
 
     return render_template('signup.html', form=form)
@@ -62,7 +63,7 @@ def signup():
 def verify_otp():
     """Verify OTP and create account"""
     if 'pending_signup' not in session:
-        flash('Please start registration.', 'warning')
+        flash(t('flash_start_registration'), 'warning')
         return redirect(url_for('auth.signup'))
 
     form = VerifyOTPForm()
@@ -80,10 +81,10 @@ def verify_otp():
             db.session.commit()
             session.pop('pending_signup', None)
 
-            flash('Email verified! Account created. Please log in.', 'success')
+            flash(t('flash_email_verified'), 'success')
             return redirect(url_for('auth.login'))
         else:
-            flash('Invalid code. Try again.', 'danger')
+            flash(t('flash_invalid_code'), 'danger')
             return redirect(url_for('auth.verify_otp'))
 
     return render_template('verify_otp.html', form=form, email=pending_data.get('email', ''))
@@ -93,12 +94,12 @@ def verify_otp():
 def resend_otp():
     """Resend OTP code"""
     if 'pending_signup' not in session:
-        flash('Please start registration.', 'warning')
+        flash(t('flash_start_registration'), 'warning')
         return redirect(url_for('auth.signup'))
 
     pending_data = session['pending_signup']
     send_otp_email(pending_data['email'], pending_data['otp'])
-    flash(f'Code resent to {pending_data["email"]}', 'success')
+    flash(t('flash_code_resent', email=pending_data['email']), 'success')
     return redirect(url_for('auth.verify_otp'))
 
 
@@ -116,11 +117,11 @@ def login():
             user = User.query.filter_by(email=ident).first()
 
         if not user or not user.check_password(form.password.data):
-            flash('Invalid credentials', 'danger')
+            flash(t('flash_invalid_credentials'), 'danger')
             return redirect(url_for('auth.login'))
 
         if not user.is_active:
-            flash('Account disabled', 'danger')
+            flash(t('flash_account_disabled'), 'danger')
             return redirect(url_for('auth.login'))
 
         if not user.email_verified:
@@ -134,7 +135,7 @@ def login():
             except Exception as e:
                 current_app.logger.error(f'Failed to send confirmation email: {e}')
 
-            flash('Email not verified. Confirmation sent. Check inbox.', 'warning')
+            flash(t('flash_email_not_verified'), 'warning')
             return redirect(url_for('auth.login'))
 
         login_user(user, remember=form.remember_me.data)
@@ -149,7 +150,7 @@ def login():
 def logout():
     """User logout"""
     logout_user()
-    flash('Logged out successfully.', 'info')
+    flash(t('flash_logged_out'), 'info')
     return redirect(url_for('home'))
 
 
@@ -159,21 +160,21 @@ def confirm_email(token):
     email = verify_confirmation_token(token)
 
     if not email:
-        flash('Confirmation link invalid or expired.', 'danger')
+        flash(t('flash_link_invalid'), 'danger')
         return redirect(url_for('auth.login'))
 
     user = User.query.filter_by(email=email).first()
     if not user:
-        flash('User not found.', 'danger')
+        flash(t('flash_user_not_found'), 'danger')
         return redirect(url_for('auth.signup'))
 
     if user.email_verified:
-        flash('Account already confirmed.', 'info')
+        flash(t('flash_already_confirmed'), 'info')
         return redirect(url_for('auth.login'))
 
     user.verify_email()
     db.session.commit()
-    flash('Email confirmed! Thank you.', 'success')
+    flash(t('flash_email_confirmed'), 'success')
     return redirect(url_for('auth.login'))
 
 
@@ -182,7 +183,7 @@ def resend_confirmation():
     """Resend confirmation email"""
     if current_user.is_authenticated:
         if current_user.email_verified:
-            flash('Email already confirmed.', 'info')
+            flash(t('flash_already_confirmed_short'), 'info')
             return redirect(url_for('user.dashboard'))
 
         token = generate_confirmation_token(current_user.email)
@@ -195,7 +196,7 @@ def resend_confirmation():
         except Exception as e:
             current_app.logger.error(f'Failed to send confirmation: {e}')
 
-        flash('Confirmation email sent.', 'success')
+        flash(t('flash_confirmation_sent'), 'success')
         return redirect(url_for('user.profile'))
 
     if request.method == 'POST':
@@ -212,7 +213,7 @@ def resend_confirmation():
             except Exception as e:
                 current_app.logger.error(f'Failed to send confirmation: {e}')
 
-        flash('Confirmation email sent if account exists.', 'success')
+        flash(t('flash_confirmation_sent_if'), 'success')
         return redirect(url_for('auth.login'))
 
     return render_template('resend_confirmation.html')
@@ -238,7 +239,7 @@ def forgot_password():
             except Exception as e:
                 current_app.logger.error(f'Failed to send reset email: {e}')
 
-        flash('Password reset instructions sent if account exists.', 'success')
+        flash(t('flash_reset_sent'), 'success')
         return redirect(url_for('auth.login'))
 
     return render_template('forgot_password.html', form=form)
@@ -252,19 +253,19 @@ def reset_password(token):
 
     email = verify_confirmation_token(token, max_age=3600)
     if not email:
-        flash('Reset link invalid or expired.', 'danger')
+        flash(t('flash_reset_link_invalid'), 'danger')
         return redirect(url_for('auth.login'))
 
     user = User.query.filter_by(email=email).first()
     if not user:
-        flash('User not found.', 'danger')
+        flash(t('flash_user_not_found'), 'danger')
         return redirect(url_for('auth.login'))
 
     form = ResetPasswordForm()
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
-        flash('Password reset successfully. Please log in.', 'success')
+        flash(t('flash_password_reset'), 'success')
         return redirect(url_for('auth.login'))
 
     return render_template('reset_password.html', form=form)

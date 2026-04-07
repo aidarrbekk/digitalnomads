@@ -18,6 +18,11 @@ CATEGORIES = [
     {"name": "Vitamins & Supplements", "name_ru": "Витамины и добавки", "icon": "🍊"},
     {"name": "Allergy & Antihistamines", "name_ru": "Аллергия и антигистаминные", "icon": "🤧"},
     {"name": "Nervous System & Sedatives", "name_ru": "Нервная система и седативные", "icon": "🧠"},
+    {"name": "Antiviral & Immunomodulators", "name_ru": "Противовирусные и иммуномодуляторы", "icon": "🛡️"},
+    {"name": "Hepatoprotectors", "name_ru": "Гепатопротекторы", "icon": "🫀"},
+    {"name": "Gynecological & Hormonal", "name_ru": "Гинекологические и гормональные", "icon": "🩺"},
+    {"name": "ENT & Ophthalmology", "name_ru": "ЛОР и офтальмология", "icon": "👂"},
+    {"name": "Urology & Herbal", "name_ru": "Урология и растительные", "icon": "🌿"},
 ]
 
 # category index references (1-based after insert)
@@ -30,6 +35,11 @@ CAT_RESPIRATORY = 5
 CAT_VITAMINS = 6
 CAT_ALLERGY = 7
 CAT_NERVOUS = 8
+CAT_ANTIVIRAL = 9
+CAT_HEPATO = 10
+CAT_GYNO = 11
+CAT_ENT = 12
+CAT_UROLOGY = 13
 
 MEDICATIONS = [
     # A

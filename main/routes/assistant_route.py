@@ -5,6 +5,8 @@ import logging
 from flask import Blueprint, render_template, request, jsonify, session
 from flask_login import login_required
 
+from main.i18n import t
+
 # Use safe wrapper for med_bot
 from main.utils.med_bot_wrapper import answer_question, is_rag_available
 
@@ -67,8 +69,8 @@ def chat():
     except Exception as e:
         logger.error(f"Error in chat: {str(e)}")
         return jsonify({
-            'error': 'An error occurred while processing your request',
-            'response': 'Извините, произошла ошибка. Пожалуйста, попробуйте позже.',
+            'error': t('assistant_error'),
+            'response': t('assistant_error'),
             'success': False
         }), 500
 

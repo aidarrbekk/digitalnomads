@@ -3,25 +3,25 @@
 {% block title %}Settings - ShipAI{% endblock %}
 
 {% block content %}
-<div class="mt-5 mb-5">
-    <h1 class="display-5 mb-3">Settings</h1>
-    <p class="text-muted mb-4">Application-level and account settings (placeholders).</p>
+<div class="py-4 fade-in">
+    <h1 class="section-title">{{ t('settings_title') }}</h1>
+    <p class="section-subtitle">{{ t('settings_desc') }}</p>
 
-    <div class="row">
+    <div class="row g-4">
         <div class="col-md-6">
-            <div class="card mb-4">
+            <div class="card no-hover" style="border-top: 3px solid var(--accent);">
                 <div class="card-body">
-                    <h5 class="card-title">Account</h5>
-                    <p class="card-text">Change email, password, or manage account preferences.</p>
+                    <h5 class="fw-bold text-accent">{{ t('account_section') }}</h5>
+                    <p class="text-muted small">Change email, password, or manage account preferences.</p>
                     <a href="#" class="btn btn-primary btn-sm">Change Password</a>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card mb-4">
+            <div class="card no-hover" style="border-top: 3px solid var(--info-color);">
                 <div class="card-body">
-                    <h5 class="card-title">Notifications</h5>
-                    <p class="card-text">Manage email notifications and preferences.</p>
+                    <h5 class="fw-bold" style="color: var(--info-color);">{{ t('notif_section') }}</h5>
+                    <p class="text-muted small">Manage email notifications and preferences.</p>
                     <a href="#" class="btn btn-outline-secondary btn-sm">Manage</a>
                 </div>
             </div>

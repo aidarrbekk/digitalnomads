@@ -1,7 +1,9 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, FloatField, IntegerField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError, Optional
 from main.models import User
+from main.i18n import t, lazy_t
 import re
 
 def fast_email_validator(form, field):
@@ -13,7 +15,7 @@ def fast_email_validator(form, field):
     email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     
     if not re.match(email_pattern, field.data):
-        raise ValidationError('Invalid email address')
+        raise ValidationError(t('val_invalid_email'))
 
 
 class SignUpForm(FlaskForm):
@@ -22,51 +24,51 @@ class SignUpForm(FlaskForm):
         'Username',
         validators=[
             DataRequired(),
-            Length(min=3, max=80, message='Username must be between 3 and 80 characters')
+            Length(min=3, max=80, message=lazy_t('val_username_length'))
         ]
     )
     email = StringField(
         'Email',
         validators=[
             DataRequired(),
-            fast_email_validator  # Use fast validation without DNS checks
+            fast_email_validator
         ]
     )
     password = PasswordField(
         'Password',
         validators=[
             DataRequired(),
-            Length(min=8, message='Password must be at least 8 characters long')
+            Length(min=8, message=lazy_t('val_password_min'))
         ]
     )
     password_confirm = PasswordField(
         'Confirm Password',
         validators=[
             DataRequired(),
-            EqualTo('password', message='Passwords must match')
+            EqualTo('password', message=lazy_t('val_passwords_must_match'))
         ]
     )
     submit = SubmitField('Sign Up')
-    
+
     def validate_username(self, username) -> None:
         """Check if username already exists"""
         user = User.query.filter_by(username=username.data).first()
         if user:
-            raise ValidationError('Username already exists. Please choose a different one.')
-    
+            raise ValidationError(t('val_username_exists'))
+
     def validate_email(self, email) -> None:
         """Check if email already exists"""
         user = User.query.filter_by(email=email.data).first()
         if user:
-            raise ValidationError('Email already registered. Please use a different one or log in.')
+            raise ValidationError(t('val_email_registered'))
 
 class VerifyOTPForm(FlaskForm):
     """OTP verification form"""
     otp = StringField(
         'Verification Code',
         validators=[
-            DataRequired(message='Please enter the verification code'),
-            Length(min=6, max=6, message='Verification code must be 6 digits')
+            DataRequired(message=lazy_t('val_enter_code')),
+            Length(min=6, max=6, message=lazy_t('val_code_6_digits'))
         ]
     )
     submit = SubmitField('Verify Email')
@@ -77,7 +79,7 @@ class LoginForm(FlaskForm):
     identifier = StringField(
         'Username or Email',
         validators=[
-            DataRequired(message='Please enter your username or email')
+            DataRequired(message=lazy_t('val_enter_username'))
         ]
     )
     password = PasswordField(
@@ -114,14 +116,14 @@ class UpdateProfileForm(FlaskForm):
         if username.data is not None:
             user = User.query.filter_by(username=username.data).first()
             if user and user.id != self.user_id:
-                raise ValidationError('Username already taken.')
-    
+                raise ValidationError(t('val_username_taken'))
+
     def validate_email(self, email) -> None:
         """Check if email is available (excluding current user)"""
         if email.data is not None:
             user = User.query.filter_by(email=email.data).first()
             if user and user.id != self.user_id:
-                raise ValidationError('Email already registered.')
+                raise ValidationError(t('val_email_taken'))
     
     def set_user_id(self, user_id: int) -> None:
         """Set current user ID for validation"""
@@ -144,14 +146,14 @@ class ResetPasswordForm(FlaskForm):
         'New Password',
         validators=[
             DataRequired(),
-            Length(min=8, message='Password must be at least 8 characters long')
+            Length(min=8, message=lazy_t('val_password_min'))
         ]
     )
     password_confirm = PasswordField(
         'Confirm Password',
         validators=[
             DataRequired(),
-            EqualTo('password', message='Passwords must match')
+            EqualTo('password', message=lazy_t('val_passwords_must_match'))
         ]
     )
     submit = SubmitField('Reset Password')
@@ -196,3 +198,14 @@ class MedicalMetricsForm(FlaskForm):
     emergency_contact_relation = StringField('Relationship', validators=[Optional(), Length(max=100)])
     
     submit = SubmitField('Save Medical Information')
+
+
+class MedicalDocumentUploadForm(FlaskForm):
+    """Form for uploading medical documents"""
+    document = FileField('Upload PDF', validators=[
+        FileAllowed(['pdf'], lazy_t('val_pdf_only'))
+    ])
+    text_input = TextAreaField('Or paste your lab report text', validators=[
+        Optional(), Length(max=10000)
+    ])
+    submit = SubmitField('Analyze Document')

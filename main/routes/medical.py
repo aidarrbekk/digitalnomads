@@ -4,7 +4,7 @@ Handles: anatomy data API, pharmacy page, anatomy viewer, medication search
 """
 from flask import Blueprint, render_template, request, jsonify
 
-from main.models import Organ, Disease, Medication, PharmacyStock, MedicationCategory
+from main.models import db, Organ, Disease, Medication, Pharmacy, PharmacyStock, MedicationCategory
 
 medical_bp = Blueprint('medical', __name__)
 
@@ -32,6 +32,7 @@ def _serialize_med(m):
         "requires_prescription": m.requires_prescription,
         "category": m.category.name if m.category else None,
         "pharmacy_count": len(m.pharmacy_stocks),
+        "min_price": min((s.price for s in m.pharmacy_stocks if s.price), default=None),
     }
 
 
@@ -132,8 +133,13 @@ def api_get_medication(med_id):
         pharmacies.append({
             "pharmacy_id": stock.pharmacy_id,
             "pharmacy_name": stock.pharmacy.name,
-            "location": stock.pharmacy.address,
+            "address": stock.pharmacy.address,
             "city": stock.pharmacy.city,
+            "phone": stock.pharmacy.phone,
+            "opening_time": stock.pharmacy.opening_time,
+            "closing_time": stock.pharmacy.closing_time,
+            "operates_24_7": stock.pharmacy.operates_24_7,
+            "delivery_available": stock.pharmacy.delivery_available,
             "quantity": stock.quantity,
             "price": float(stock.price) if stock.price else None,
             "currency": stock.currency,
@@ -218,9 +224,11 @@ def pharmacy():
     letters = _get_letter_counts()
     total_medications = Medication.query.count()
     categories = MedicationCategory.query.all()
+    cities = [c[0] for c in db.session.query(Pharmacy.city).distinct().order_by(Pharmacy.city).all() if c[0]]
     return render_template(
         'pharmacy.html',
         available_letters=letters,
         total_medications=total_medications,
         categories=categories,
+        cities=cities,
     )

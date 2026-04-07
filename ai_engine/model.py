@@ -1,18 +1,17 @@
-# src/model.py
+﻿# ai_engine/model.py
 """
-Ollama LLM client.
+Groq LLM client for RAG pipeline.
 Exposes generate_answer(prompt) and set_model(name).
 """
 
 import os
-import json
 import logging
-import requests
 import yaml
 from dotenv import load_dotenv
+from groq import Groq
 
 
-# ── Config ────────────────────────────────────────────────────────────────────
+# -- Config --------------------------------------------------------------------
 
 def load_config() -> dict:
     src  = os.path.dirname(os.path.abspath(__file__))
@@ -35,19 +34,26 @@ logger = logging.getLogger("model")
 
 cfg = load_config()
 
-OLLAMA_URL     = os.getenv("OLLAMA_URL", cfg["model"]["ollama_url"]).rstrip("/")
-DEFAULT_MODEL  = os.getenv("OLLAMA_MODEL", cfg["model"]["default_model"])
-ALLOWED_MODELS = cfg["model"]["allowed_models"]
-MAX_TOKENS     = cfg["model"]["max_tokens"]
-TEMPERATURE    = cfg["model"]["temperature"]
+MAX_TOKENS  = cfg["model"]["max_tokens"]
+TEMPERATURE = cfg["model"]["temperature"]
+
+DEFAULT_MODEL = "llama-3.3-70b-versatile"
+ALLOWED_MODELS = [
+    "llama-3.3-70b-versatile",
+    "llama-3.1-8b-instant",
+    "mixtral-8x7b-32768",
+    "gemma2-9b-it",
+]
 
 CURRENT_MODEL: str = DEFAULT_MODEL
 
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-# ── Public API ────────────────────────────────────────────────────────────────
+
+# -- Public API ----------------------------------------------------------------
 
 def set_model(name: str) -> None:
-    """Switch the active Ollama model. Raises ValueError for unknown names."""
+    """Switch the active model. Raises ValueError for unknown names."""
     global CURRENT_MODEL
     if name not in ALLOWED_MODELS:
         raise ValueError(f"Unknown model '{name}'. Allowed: {ALLOWED_MODELS}")
@@ -56,33 +62,16 @@ def set_model(name: str) -> None:
 
 
 def generate_answer(prompt: str) -> str:
-    """Send prompt to Ollama via streaming /api/generate and return full response."""
-    url     = f"{OLLAMA_URL}/api/generate"
-    payload = {
-        "model":       CURRENT_MODEL,
-        "prompt":      prompt,
-        "stream":      True,
-        "options": {
-            "temperature": TEMPERATURE,
-            "num_predict": MAX_TOKENS,
-        },
-    }
-
+    """Send prompt to Groq API and return the response."""
     try:
-        resp = requests.post(url, json=payload, stream=True, timeout=300)
-        resp.raise_for_status()
-    except requests.RequestException as e:
-        logger.error(f"Ollama request failed: {e}")
+        response = client.chat.completions.create(
+            model=CURRENT_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=MAX_TOKENS,
+            temperature=TEMPERATURE,
+        )
+        answer = response.choices[0].message.content
+        return answer.strip() if answer else ""
+    except Exception as e:
+        logger.error(f"Groq request failed: {e}")
         raise
-
-    answer = ""
-    for line in resp.iter_lines():
-        if not line:
-            continue
-        try:
-            data   = json.loads(line.decode("utf-8"))
-            answer += data.get("response", "")
-        except json.JSONDecodeError:
-            continue
-
-    return answer.strip()

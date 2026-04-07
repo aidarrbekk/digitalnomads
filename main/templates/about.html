@@ -1,171 +1,286 @@
 {% extends "base.html" %}
 
-{% block title %}About Us - ShipAI{% endblock %}
+{% block title %}About - ShipAI{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<div class="py-5 mt-5 mb-5">
-    <h1 class="display-3 fw-bold mb-4" data-translate="about_title">About ShipAI</h1>
-    <p class="lead text-muted" data-translate="about_subtitle">
-        Connecting remote professionals and freelancers from around the world
-    </p>
-</div>
-
-<!-- Mission Section -->
-<div class="row mb-5 align-items-center">
-    <div class="col-md-6 mb-4 mb-md-0">
-        <h2 class="fw-bold mb-4" data-translate="our_mission">Our Mission</h2>
-        <p class="text-muted mb-3" data-translate="mission_content_part1">
-            We believe that location should never limit opportunity. Our mission is to build a thriving, 
-            supportive community where digital professionals can connect, collaborate, and grow together.
-        </p>
-        <p class="text-muted mb-3" data-translate="mission_content_part2">
-            Whether you're a freelancer, entrepreneur, remote employee, or anyone embracing location independence,
-            ShipAI is your platform to find like-minded individuals, share experiences, and discover new opportunities.
-        </p>
+<div class="py-4 fade-in">
+    <!-- Hero -->
+    <div class="mb-5">
+        <h1 class="hero-title">{{ t('about_title') }}</h1>
+        <p class="hero-subtitle">{{ t('about_subtitle') }}</p>
     </div>
-    <div class="col-md-6">
-        <div class="card bg-light border-0">
-            <div class="card-body p-5 text-center">
-                    <h4 class="fw-bold text-primary mb-3" data-translate="shipai_member_definition">What Defines a ShipAI Member?</h4>
-                <p class="text-muted" data-translate="nomad_definition">
-                    A digital nomad is someone who leverages technology to work remotely and 
-                    pursues a lifestyle of relocation, travel, and freedom.
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- Values Section -->
-<div class="py-5 mb-5">
-    <h2 class="fw-bold text-center mb-5" data-translate="core_values">Our Core Values</h2>
-    <div class="row g-4">
-        <div class="col-md-3 col-sm-6">
-            <div class="card border-0 text-center h-100">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <span class="badge bg-primary p-3" style="font-size: 2rem;">🌍</span>
-                    </div>
-                    <h5 class="card-title fw-bold" data-translate="global_community_title">Global Community</h5>
-                    <p class="text-muted" data-translate="global_community_desc">We celebrate diversity...                    </p>
-                </div>
-            </div>
+    <!-- Mission -->
+    <div class="row mb-5 align-items-center g-4">
+        <div class="col-md-7">
+            <h2 class="section-title">{{ t('our_mission') }}</h2>
+            <p class="mb-3" style="color: var(--text-secondary);">
+                {{ t('mission_p1') }}
+            </p>
+            <p style="color: var(--text-secondary);">
+                {{ t('mission_p2') }}
+            </p>
         </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card border-0 text-center h-100">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <span class="badge bg-success p-3" style="font-size: 2rem;">🤝</span>
-                    </div>
-                    <h5 class="card-title fw-bold" data-translate="collaboration_title">Collaboration</h5>
-                    <p class="text-muted" data-translate="collaboration_desc">Together we are stronger...                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card border-0 text-center h-100">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <span class="badge bg-info p-3" style="font-size: 2rem;">💡</span>
-                    </div>
-                    <h5 class="card-title fw-bold" data-translate="innovation_title">Innovation</h5>
-                    <p class="text-muted" data-translate="innovation_desc">We continuously evolve...                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card border-0 text-center h-100">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <span class="badge bg-warning p-3" style="font-size: 2rem;">📈</span>
-                    </div>
-                    <h5 class="card-title fw-bold" data-translate="growth_title">Growth</h5>
-                    <p class="text-muted" data-translate="growth_desc">We empower members...                    </p>
+        <div class="col-md-5">
+            <div class="card no-hover" style="background: var(--accent-bg); border: none;">
+                <div class="card-body p-4 text-center">
+                    <div class="stat-number mb-2">ShipAI</div>
+                    <p style="color: var(--text-secondary);">Health Platform</p>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Why Choose Us -->
-<div class="bg-light py-5 mb-5 rounded">
-    <h2 class="fw-bold text-center mb-5" data-translate="why_choose_title">Why Choose ShipAI?</h2>
-    <div class="row">
-        <div class="col-md-6 mb-4">
-            <div class="d-flex">
-                <div class="flex-shrink-0">
-                    <div class="d-flex align-items-center justify-content-center h-100 w-100" 
-                         style="width: 40px; height: 40px; background-color: #0d6efd; border-radius: 50%; color: white; font-weight: bold;">
-                        ✓
+    <!-- Values -->
+    <div class="mb-5">
+        <h2 class="section-title text-center mb-4">{{ t('core_values') }}</h2>
+        <div class="row g-4">
+            <div class="col-md-3 col-6">
+                <div class="card h-100 feature-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon-circle">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                        </div>
+                        <h6 class="fw-bold mt-2">{{ t('val_access_title') }}</h6>
+                        <p class="small text-muted">{{ t('val_access_desc') }}</p>
                     </div>
-                </div>
-                <div class="flex-grow-1 ms-3">
-                    <h5 class="fw-bold mb-2" data-translate="professional_network_title">Professional Network</h5>
-                    <p class="text-muted" data-translate="professional_network_desc">Connect with thousands of remote professionals globally</p>
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-6 mb-4">
-            <div class="d-flex">
-                <div class="flex-shrink-0">
-                    <div class="d-flex align-items-center justify-content-center h-100 w-100" 
-                         style="width: 40px; height: 40px; background-color: #0d6efd; border-radius: 50%; color: white; font-weight: bold;">
-                        ✓
+            <div class="col-md-3 col-6">
+                <div class="card h-100 feature-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon-circle">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <h6 class="fw-bold mt-2">{{ t('val_secure_title') }}</h6>
+                        <p class="small text-muted">{{ t('val_secure_desc') }}</p>
                     </div>
-                </div>
-                <div class="flex-grow-1 ms-3">
-                    <h5 class="fw-bold mb-2" data-translate="resource_sharing_title">Resource Sharing</h5>
-                    <p class="text-muted" data-translate="resource_sharing_desc">Access valuable tools, tips, and best practices from the community</p>
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-6 mb-4">
-            <div class="d-flex">
-                <div class="flex-shrink-0">
-                    <div class="d-flex align-items-center justify-content-center h-100 w-100" 
-                         style="width: 40px; height: 40px; background-color: #0d6efd; border-radius: 50%; color: white; font-weight: bold;">
-                        ✓
+            <div class="col-md-3 col-6">
+                <div class="card h-100 feature-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon-circle">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        </div>
+                        <h6 class="fw-bold mt-2">{{ t('val_innov_title') }}</h6>
+                        <p class="small text-muted">{{ t('val_innov_desc') }}</p>
                     </div>
-                </div>
-                <div class="flex-grow-1 ms-3">
-                    <h5 class="fw-bold mb-2" data-translate="opportunity_marketplace_title">Opportunity Marketplace</h5>
-                    <p class="text-muted" data-translate="opportunity_marketplace_desc">Find projects, collaborations, and career opportunities</p>
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-6 mb-4">
-            <div class="d-flex">
-                <div class="flex-shrink-0">
-                    <div class="d-flex align-items-center justify-content-center h-100 w-100" 
-                         style="width: 40px; height: 40px; background-color: #0d6efd; border-radius: 50%; color: white; font-weight: bold;">
-                        ✓
+            <div class="col-md-3 col-6">
+                <div class="card h-100 feature-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon-circle">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </div>
+                        <h6 class="fw-bold mt-2">{{ t('val_trust_title') }}</h6>
+                        <p class="small text-muted">{{ t('val_trust_desc') }}</p>
                     </div>
-                </div>
-                <div class="flex-grow-1 ms-3">
-                    <h5 class="fw-bold mb-2" data-translate="community_support_title">Supportive Community</h5>
-                    <p class="text-muted" data-translate="community_support_desc">Join a welcoming community of like-minded professionals</p>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Join CTA -->
-<div class="card bg-primary text-white border-0 mb-5">
-    <div class="card-body text-center py-5">
-        <h2 class="card-title fw-bold mb-3">Join Our Growing Community</h2>
-        <p class="lead mb-4">
-            Become part of a worldwide network of digital nomads and remote professionals.
-        </p>
-        {% if not current_user.is_authenticated %}
-            <a href="{{ url_for('auth.signup') }}" class="btn btn-light btn-lg">Get Started Today</a>
-        {% else %}
-            <p class="mb-0">Thank you for being part of our community!</p>
-        {% endif %}
+    <!-- Our Products & Features -->
+    <div class="mb-5">
+        <h2 class="section-title text-center mb-4">{{ t('products_title') }}</h2>
+        <div class="row g-4">
+            <!-- Medical Card -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon-circle mb-3">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        </div>
+                        <h5 class="fw-bold mb-3">{{ t('prod_medical_card') }}</h5>
+                        <p class="small text-muted">Store and manage your personal health information securely. Keep all your medical records, vitals, and health metrics in one organized place accessible anytime, anywhere.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pharmacy Search -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon-circle mb-3">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        </div>
+                        <h5 class="fw-bold mb-3">{{ t('prod_pharmacy') }}</h5>
+                        <p class="small text-muted">Find medications with real-time pricing and availability across 50+ partner pharmacies. Search by medication name, compare prices, and discover the most convenient location.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Human Anatomy -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon-circle mb-3">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="2"/><path d="M12 10v8M7 14l-2 5M17 14l2 5M12 18h0"/></svg>
+                        </div>
+                        <h5 class="fw-bold mb-3">{{ t('prod_anatomy') }}</h5>
+                        <p class="small text-muted">Explore interactive 3D models of the human body. Learn about skeletal and muscular systems with detailed visualizations that help you understand anatomy and body systems.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Assistant -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="feature-icon-circle mb-3">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                        </div>
+                        <h5 class="fw-bold mb-3">{{ t('prod_ai') }}</h5>
+                        <p class="small text-muted">Ask medical questions and get AI-powered answers instantly. Our intelligent assistant helps you understand symptoms, conditions, and health concerns with accurate, easy-to-understand information.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- By The Numbers -->
+    <div class="mb-5">
+        <h2 class="section-title text-center mb-4">{{ t('stats_title') }}</h2>
+        <div class="row g-4">
+            <div class="col-md-3 col-6">
+                <div class="card no-hover text-center shadow-sm" style="background: var(--accent-bg); border: none;">
+                    <div class="card-body p-4">
+                        <div class="stat-number" style="color: var(--accent);">500+</div>
+                        <p class="text-muted small mt-2">{{ t('stats_users') }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="card no-hover text-center shadow-sm" style="background: var(--accent-bg); border: none;">
+                    <div class="card-body p-4">
+                        <div class="stat-number" style="color: var(--accent);">1000+</div>
+                        <p class="text-muted small mt-2">{{ t('stats_meds') }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="card no-hover text-center shadow-sm" style="background: var(--accent-bg); border: none;">
+                    <div class="card-body p-4">
+                        <div class="stat-number" style="color: var(--accent);">50+</div>
+                        <p class="text-muted small mt-2">{{ t('stats_pharmacies') }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="card no-hover text-center shadow-sm" style="background: var(--accent-bg); border: none;">
+                    <div class="card-body p-4">
+                        <div class="stat-number" style="color: var(--accent);">100+</div>
+                        <p class="text-muted small mt-2">{{ t('stats_organs') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Why Choose ShipAI -->
+    <div class="mb-5">
+        <h2 class="section-title text-center mb-4">{{ t('why_choose') }}</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="d-flex gap-3">
+                    <div style="flex-shrink: 0;">
+                        <div class="feature-icon-circle" style="width: 48px; height: 48px; font-size: 1.2rem;">✓</div>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-2">{{ t('benefit_free') }}</h6>
+                        <p class="text-muted small">No hidden fees or premium tiers. All features are available to every user at no cost.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex gap-3">
+                    <div style="flex-shrink: 0;">
+                        <div class="feature-icon-circle" style="width: 48px; height: 48px; font-size: 1.2rem;">✓</div>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-2">{{ t('benefit_privacy') }}</h6>
+                        <p class="text-muted small">Your health data remains yours. We use industry-standard encryption to protect your information.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex gap-3">
+                    <div style="flex-shrink: 0;">
+                        <div class="feature-icon-circle" style="width: 48px; height: 48px; font-size: 1.2rem;">✓</div>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-2">{{ t('benefit_simple') }}</h6>
+                        <p class="text-muted small">Easy-to-use interface designed for everyone, regardless of technical background.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex gap-3">
+                    <div style="flex-shrink: 0;">
+                        <div class="feature-icon-circle" style="width: 48px; height: 48px; font-size: 1.2rem;">✓</div>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-2">{{ t('benefit_multilang') }}</h6>
+                        <p class="text-muted small">Available in multiple languages to serve a global audience.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contacts Section -->
+    <div class="mb-5" id="contacts">
+        <h2 class="section-title text-center mb-4">{{ t('contacts_title') }}</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 feature-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon-circle">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        </div>
+                        <h6 class="fw-bold mt-2">{{ t('contact_email_title') }}</h6>
+                        <p class="small text-muted">support@shipai.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 feature-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon-circle">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                        </div>
+                        <h6 class="fw-bold mt-2">{{ t('contact_phone_title') }}</h6>
+                        <p class="small text-muted">+7 (777) 123-45-67</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 feature-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon-circle">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        </div>
+                        <h6 class="fw-bold mt-2">{{ t('contact_address_title') }}</h6>
+                        <p class="small text-muted">{{ t('contact_address_text') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    {% if not current_user.is_authenticated %}
+    <section class="mb-5">
+        <div class="card no-hover" style="border: none; background: var(--accent-bg); border-radius: var(--radius-xl);">
+            <div class="card-body text-center py-5">
+                <h2 class="fw-bold mb-3">{{ t('cta_title') }}</h2>
+                <p class="mb-4 text-muted">{{ t('cta_desc') }}</p>
+                <a href="{{ url_for('auth.signup') }}" class="btn btn-primary btn-lg">{{ t('cta_btn') }}</a>
+            </div>
+        </div>
+    </section>
+    {% endif %}
 </div>
 {% endblock %}

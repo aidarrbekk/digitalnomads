@@ -1,0 +1,89 @@
+PRIVACY POLICY — ShipAI
+Last Updated: April 2026
+
+1. INTRODUCTION
+
+ShipAI ("we", "us", "our") operates the ShipAI medical information platform. This Privacy Policy describes how we collect, use, store, and protect your personal data when you use our website and services.
+
+2. INFORMATION WE COLLECT
+
+2.1 Personal Information
+- Name, email address, username
+- Country of residence
+- Profile biography
+
+2.2 Medical Information
+- Height, weight, blood type
+- Vital signs (blood pressure, heart rate, temperature, oxygen saturation)
+- Allergies, chronic conditions, current medications
+- Surgical history
+- Emergency contact information
+
+2.3 Usage Data
+- Pages visited, features used
+- Browser type and version
+- Session duration
+
+3. HOW WE USE YOUR INFORMATION
+
+We use your information to:
+- Provide and maintain our medical information services
+- Store your personal health records securely
+- Enable medication search and pharmacy availability features
+- Power AI-assisted medical information queries
+- Send email verification and password reset communications
+- Improve our platform and user experience
+
+4. DATA STORAGE AND SECURITY
+
+- Your data is stored in encrypted databases
+- Passwords are hashed using industry-standard algorithms (Werkzeug/PBKDF2)
+- We use HTTPS for all data transmission
+- Access to personal data is restricted to authorized personnel only
+- Medical data is not shared with third parties without your explicit consent
+
+5. DATA SHARING
+
+We do NOT sell your personal or medical data to third parties.
+
+Your data may be shared only in the following cases:
+- With your explicit consent
+- To comply with legal obligations
+- To protect our rights and safety
+
+6. YOUR RIGHTS
+
+You have the right to:
+- Access your personal data
+- Correct inaccurate data
+- Delete your account and associated data
+- Export your medical records
+- Withdraw consent at any time
+
+7. COOKIES AND LOCAL STORAGE
+
+We use browser local storage to:
+- Remember your language preference (KZ/RU/EN)
+- Remember your theme preference (light/dark)
+- Maintain your session
+
+8. CHILDREN'S PRIVACY
+
+Our services are not directed to individuals under the age of 18. We do not knowingly collect data from minors.
+
+9. MEDICAL DISCLAIMER
+
+ShipAI provides medical INFORMATION only. We are NOT a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions regarding a medical condition.
+
+The AI Assistant feature provides general medical information based on protocols and should never be used for self-diagnosis or treatment decisions.
+
+10. CHANGES TO THIS POLICY
+
+We may update this Privacy Policy from time to time. We will notify users of significant changes via email or platform notification.
+
+11. CONTACT US
+
+For questions about this Privacy Policy:
+Email: support@shipai.com
+
+© 2026 ShipAI. All rights reserved.

@@ -1,4 +1,4 @@
-# main/med_bot_wrapper.py
+﻿# main/med_bot_wrapper.py
 """
 Wrapper for med_bot RAG engine with graceful fallback
 Handles missing FAISS index and other import errors
@@ -10,7 +10,7 @@ import logging
 
 logger = logging.getLogger('med_bot_wrapper')
 
-# Add med_bot to path
+# Add ai_engine to path
 med_bot_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'ai_engine')
 sys.path.insert(0, med_bot_path)
 
@@ -22,7 +22,6 @@ def _safe_import_rag():
     global RAG_AVAILABLE, IMPORT_ERROR
     
     try:
-        # Try to import the answer_question function
         from rag_engine import answer_question as _answer_question
         RAG_AVAILABLE = True
         return _answer_question
@@ -42,28 +41,30 @@ def _safe_import_rag():
 # Try to load RAG engine
 _answer_question_orig = _safe_import_rag()
 
-def answer_question(question: str) -> str:
+def answer_question(question: str, medical_context: str = "") -> str:
     """
-    Answer medical questions using RAG engine with graceful fallback
-    Returns helpful message if RAG is not available
+    Answer medical questions using RAG engine with graceful fallback.
+    medical_context: optional string with user's medical card info.
     """
     if not _answer_question_orig:
-        # Provide fallback response
         return (
-            "⚠️ База протоколов временно недоступна.\n\n"
-            "В случае неотложной ситуации (боль в груди, сильная одышка, обморок) "
-            "немедленно вызовите скорую помощь: *103*.\n\n"
-            "Пожалуйста, обратитесь к врачу для профессиональной консультации.\n\n"
-            f"Техническая информация: {IMPORT_ERROR}"
+            "Warning: Protocol database is temporarily unavailable.\n\n"
+            "In case of emergency (chest pain, severe shortness of breath, fainting) "
+            "call an ambulance immediately: *103*.\n\n"
+            "Please consult a doctor for professional advice.\n\n"
+            f"Technical info: {IMPORT_ERROR}"
         )
     
     try:
+        return _answer_question_orig(question, medical_context=medical_context)
+    except TypeError:
+        # Fallback if rag_engine doesn't accept medical_context yet
         return _answer_question_orig(question)
     except Exception as e:
         logger.error(f"Error in RAG pipeline: {e}")
         return (
-            "Извините, произошла ошибка при обработке вашего вопроса.\n\n"
-            "В случае неотложной ситуации обратитесь к врачу."
+            "Sorry, an error occurred while processing your question.\n\n"
+            "In case of emergency, please consult a doctor."
         )
 
 def is_rag_available() -> bool:

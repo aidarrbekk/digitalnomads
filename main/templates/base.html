@@ -1,87 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ current_lang }}" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <title>{% block title %}ShipAI{% endblock %}</title>
 </head>
 <body>
     <div class="wrapper">
         <!-- Navigation Bar -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom sticky-top">
-            <div class="container-fluid">
-                <a class="navbar-brand d-flex align-items-center" href="/">
-                    <img class="header_logo me-2" src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
-                    <span class="fw-bold">ShipAI</span>
+        <nav class="navbar navbar-expand-lg sticky-top">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <img class="header_logo" src="{{ url_for('static', filename='images/logo.PNG') }}" alt="logo">
+                    <span>ShipAI</span>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav main-nav ms-auto">
+                    <ul class="navbar-nav mx-auto">
                         <li class="nav-item">
-                            <a href="{{ url_for('home') }}" class="nav-link {% if request.endpoint == 'home' %}active{% endif %}" data-translate="home">Home</a>
+                            <a href="{{ url_for('home') }}" class="nav-link {% if request.endpoint == 'home' %}active{% endif %}">{{ t('home') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ url_for('about') }}" class="nav-link {% if request.endpoint == 'about' %}active{% endif %}" data-translate="about">About</a>
+                            <a href="{{ url_for('about') }}" class="nav-link {% if request.endpoint == 'about' %}active{% endif %}">{{ t('about') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ url_for('medical.pharmacy') }}" class="nav-link {% if request.endpoint == 'medical.pharmacy' %}active{% endif %}" data-translate="pharmacy">Pharmacy</a>
+                            <a href="{{ url_for('medical.pharmacy') }}" class="nav-link {% if request.endpoint == 'medical.pharmacy' %}active{% endif %}">{{ t('pharmacy') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ url_for('medical.human_anatomy') }}" class="nav-link {% if request.endpoint == 'medical.human_anatomy' %}active{% endif %}" data-translate="human_anatomy">Human Anatomy</a>
+                            <a href="{{ url_for('medical.human_anatomy') }}" class="nav-link {% if request.endpoint == 'medical.human_anatomy' %}active{% endif %}">{{ t('human_anatomy') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ url_for('assistant.assistant_page') }}" class="nav-link {% if request.endpoint == 'assistant.assistant_page' %}active{% endif %}" data-translate="assistant">Assistant</a>
+                            <a href="{{ url_for('assistant.assistant_page') }}" class="nav-link {% if request.endpoint == 'assistant.assistant_page' %}active{% endif %}">{{ t('assistant') }}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url_for('about') }}#contacts" class="nav-link">{{ t('contact') }}</a>
                         </li>
                     </ul>
 
-                            <ul class="navbar-nav nav-actions">
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span id="currentLang">EN</span>
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
-                                        <li><a class="dropdown-item" href="#" onclick="setLanguage('en', event); return false;">ᴇɴ English</a></li>
-                                        <li><a class="dropdown-item" href="#" onclick="setLanguage('ru', event); return false;">🇷🇺 Русский</a></li>
-                                    </ul>
-                                </li>
+                    <div class="navbar-controls d-flex align-items-center gap-2">
+                        <!-- Theme Toggle -->
+                        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                            <span id="themeIcon">&#9790;</span>
+                        </button>
 
-                {% if current_user.is_authenticated %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle account-link" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        {{ current_user.username }}
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                                    <li><a class="dropdown-item" href="{{ url_for('user.profile') }}" data-translate="profile">Profile</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('user.edit_profile') }}" data-translate="edit_profile">Edit Profile</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('user.medical_card') }}" data-translate="medical_card">My Medical Card</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('assistant.assistant_page') }}" data-translate="medical_assistant">AI Medical Assistant</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('user.settings') }}" data-translate="settings">Settings</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}" data-translate="logout">Logout</a></li>
-                                </ul>
-                            </li>
-                            {% else %}
-                            <li class="nav-item">
-                                <a href="{{ url_for('auth.login') }}" class="nav-link account-link" data-translate="login">Login / Sign Up</a>
-                            </li>
-                            {% endif %}
-                        </ul>
+                        <!-- Language Switcher -->
+                        <div class="lang-switcher" style="display: flex; gap: 0; background: var(--accent-bg); border: 1px solid var(--border-color); border-radius: var(--radius-sm); overflow: hidden;">
+                            <a href="?lang=en" class="lang-btn" style="background: {{ 'var(--accent)' if current_lang == 'en' else 'transparent' }}; color: {{ '#fff' if current_lang == 'en' else 'var(--text-secondary)' }}; font-size: 0.75rem; font-weight: {{ '700' if current_lang == 'en' else '600' }}; padding: 0.4rem 0.6rem; cursor: pointer; text-transform: uppercase; text-decoration: none; transition: all 0.2s ease;">EN</a>
+                            <a href="?lang=ru" class="lang-btn" style="background: {{ 'var(--accent)' if current_lang == 'ru' else 'transparent' }}; color: {{ '#fff' if current_lang == 'ru' else 'var(--text-secondary)' }}; font-size: 0.75rem; font-weight: {{ '700' if current_lang == 'ru' else '600' }}; padding: 0.4rem 0.6rem; cursor: pointer; text-transform: uppercase; text-decoration: none; border-left: 1px solid var(--border-color); transition: all 0.2s ease;">RU</a>
+                            <a href="?lang=kz" class="lang-btn" style="background: {{ 'var(--accent)' if current_lang == 'kz' else 'transparent' }}; color: {{ '#fff' if current_lang == 'kz' else 'var(--text-secondary)' }}; font-size: 0.75rem; font-weight: {{ '700' if current_lang == 'kz' else '600' }}; padding: 0.4rem 0.6rem; cursor: pointer; text-transform: uppercase; text-decoration: none; border-left: 1px solid var(--border-color); transition: all 0.2s ease;">KZ</a>
+                        </div>
+
+                        {% if current_user.is_authenticated %}
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" style="font-weight:600; color: var(--text-primary);">
+                                {{ current_user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{{ url_for('user.dashboard') }}">{{ t('dashboard') }}</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('user.profile') }}">{{ t('profile') }}</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('user.medical_card') }}">{{ t('medical_card') }}</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('user.settings') }}">{{ t('settings') }}</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">{{ t('logout') }}</a></li>
+                            </ul>
+                        </div>
+                        {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-sm">{{ t('login_btn') }}</a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </nav>
 
         <!-- Flash Messages -->
-        <div class="container mt-4">
+        <div class="container mt-3">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-                        <div class="alert alert-{{ 'danger' if category == 'error' else 'success' if category == 'success' else 'info' if category == 'info' else 'warning' }} alert-dismissible fade show" role="alert">
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
                             {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     {% endfor %}
                 {% endif %}
@@ -96,466 +101,131 @@
         </main>
 
         <!-- Footer -->
-        <footer class="bg-light border-top mt-5 py-4">
+        <footer class="site-footer">
             <div class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6 data-translate="shipai">ShipAI</h6>
-                        <p class="text-muted" data-translate="connect_world">Connect with remote professionals from around the world.</p>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <span class="footer-brand">ShipAI</span>
+                        <p class="footer-description">{{ t('footer_desc') }}</p>
                     </div>
-                    <div class="col-md-6 text-end">
+                    <div class="col-lg-2 col-md-6">
+                        <h6>{{ t('footer_nav') }}</h6>
                         <ul class="list-unstyled">
-                            <li><a href="#" class="text-decoration-none" data-translate="privacy">Privacy Policy</a></li>
-                            <li><a href="#" class="text-decoration-none" data-translate="terms">Terms of Service</a></li>
-                            <li><a href="#" class="text-decoration-none" data-translate="contact">Contact</a></li>
+                            <li><a href="{{ url_for('home') }}">{{ t('home') }}</a></li>
+                            <li><a href="{{ url_for('about') }}">{{ t('about') }}</a></li>
+                            <li><a href="{{ url_for('medical.pharmacy') }}">{{ t('pharmacy') }}</a></li>
+                            <li><a href="{{ url_for('medical.human_anatomy') }}">{{ t('human_anatomy') }}</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <h6>{{ t('footer_account') }}</h6>
+                        <ul class="list-unstyled">
+                            {% if current_user.is_authenticated %}
+                            <li><a href="{{ url_for('user.dashboard') }}">{{ t('dashboard') }}</a></li>
+                            <li><a href="{{ url_for('user.profile') }}">{{ t('profile') }}</a></li>
+                            <li><a href="{{ url_for('user.medical_card') }}">{{ t('medical_card') }}</a></li>
+                            {% else %}
+                            <li><a href="{{ url_for('auth.login') }}">{{ t('login_nav') }}</a></li>
+                            <li><a href="{{ url_for('auth.signup') }}">{{ t('signup_nav') }}</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <h6>{{ t('footer_legal') }}</h6>
+                        <ul class="list-unstyled">
+                            <li>
+                                <a href="{{ url_for('download_privacy_policy') }}" class="footer-download-btn">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                    {{ t('privacy_download') }}
+                                </a>
+                            </li>
+                            <li class="mt-2">
+                                <a href="{{ url_for('download_terms') }}" class="footer-download-btn">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                    {{ t('terms_download') }}
+                                </a>
+                            </li>
+                            <li class="mt-2"><a href="{{ url_for('about') }}#contacts">{{ t('contact') }}</a></li>
                         </ul>
                     </div>
                 </div>
-                <hr>
-                <div class="text-center text-muted">
-                    <p>&copy; 2026 ShipAI. <span data-translate="all_rights">All rights reserved.</span></p>
+                <div class="footer-bottom text-center">
+                    <p class="mb-0">&copy; 2026 ShipAI. {{ t('all_rights') }}</p>
                 </div>
             </div>
         </footer>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDe+15S929KS8FfESSPQmXQPvnmhc2xKP3yLVVVLLkdUw4Q9i2EFWW3TJq" crossorigin="anonymous"></script>
-    <!-- Enhanced JS fallback for collapse, dropdown, and alert dismiss if Bootstrap JS fails to load -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
     <script>
-        (function(){
-            // If bootstrap collapse is available, do nothing
-            if (window.bootstrap) {
-                // Still add custom alert dismiss handler
-                setupAlertDismiss();
-                return;
-            }
-
-            function setupAlertDismiss() {
-                document.addEventListener('click', function(e){
-                    // Handle alert close button
-                    if (e.target.closest && e.target.closest('.btn-close')){
-                        var closeBtn = e.target.closest('.btn-close');
-                        var alert = closeBtn.closest('.alert');
-                        if (alert){
-                            // Remove the alert with fade effect
-                            alert.classList.remove('show');
-                            setTimeout(function(){
-                                alert.remove();
-                            }, 150);
-                            e.preventDefault();
-                            e.stopPropagation();
-                        }
-                    }
-                });
-            }
-
+    (function(){
+        if (window.bootstrap) { setupAlertDismiss(); return; }
+        function setupAlertDismiss() {
             document.addEventListener('click', function(e){
-                var t = e.target;
-                // Find toggler
-                if (t.closest && t.closest('.navbar-toggler')){
-                    var btn = t.closest('.navbar-toggler');
-                    var target = document.querySelector(btn.getAttribute('data-bs-target'));
-                    if (target){
-                        target.classList.toggle('show');
-                        var expanded = btn.getAttribute('aria-expanded') === 'true';
-                        btn.setAttribute('aria-expanded', (!expanded).toString());
-                    }
-                }
-
-                // Dropdown toggles
-                if (t.classList && t.classList.contains('dropdown-toggle')){
-                    var menu = t.parentElement.querySelector('.dropdown-menu');
-                    if (menu){
-                        menu.classList.toggle('show');
-                        var expanded = t.getAttribute('aria-expanded') === 'true';
-                        t.setAttribute('aria-expanded', (!expanded).toString());
-                        e.preventDefault();
-                    }
+                if (e.target.closest && e.target.closest('.btn-close')){
+                    var alert = e.target.closest('.alert');
+                    if (alert){ alert.classList.remove('show'); setTimeout(function(){ alert.remove(); }, 150); }
                 }
             });
-
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', function(e){
-                var openMenus = document.querySelectorAll('.dropdown-menu.show');
-                openMenus.forEach(function(menu){
-                    if (!menu.parentElement.contains(e.target)){
-                        menu.classList.remove('show');
-                        var toggle = menu.parentElement.querySelector('.dropdown-toggle');
-                        if (toggle) toggle.setAttribute('aria-expanded', 'false');
-                    }
-                });
+        }
+        document.addEventListener('click', function(e){
+            var t = e.target;
+            if (t.closest && t.closest('.navbar-toggler')){
+                var btn = t.closest('.navbar-toggler');
+                var target = document.querySelector(btn.getAttribute('data-bs-target'));
+                if (target) target.classList.toggle('show');
+            }
+            if (t.classList && t.classList.contains('dropdown-toggle')){
+                var menu = t.parentElement.querySelector('.dropdown-menu');
+                if (menu){ menu.classList.toggle('show'); e.preventDefault(); }
+            }
+        });
+        document.addEventListener('click', function(e){
+            document.querySelectorAll('.dropdown-menu.show').forEach(function(menu){
+                if (!menu.parentElement.contains(e.target)) menu.classList.remove('show');
             });
-
-            // Setup alert dismiss
-            setupAlertDismiss();
-        })();
+        });
+        setupAlertDismiss();
+    })();
     </script>
 
-    <!-- Sidebar Toggle Button & Container Width Control -->
-    <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle container width">
-        <span id="toggleIcon">↔</span>
+    <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle width">
+        <span id="toggleIcon">&#8596;</span>
     </button>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            const containers = document.querySelectorAll('.container');
-            let isExpanded = false;
-
-            // Load saved state from localStorage
-            if (localStorage.getItem('containerExpanded') === 'true') {
-                isExpanded = true;
-                containers.forEach(container => {
-                    container.classList.add('container-expanded');
-                    container.classList.remove('container-normal');
-                });
-                document.getElementById('toggleIcon').textContent = '⊕';
-            } else {
-                containers.forEach(container => {
-                    container.classList.add('container-normal');
-                });
-                document.getElementById('toggleIcon').textContent = '↔';
-            }
-
-            // Toggle container width on button click
-            sidebarToggle.addEventListener('click', function() {
-                isExpanded = !isExpanded;
-                containers.forEach(container => {
-                    if (isExpanded) {
-                        container.classList.remove('container-normal');
-                        container.classList.add('container-expanded');
-                    } else {
-                        container.classList.remove('container-expanded');
-                        container.classList.add('container-normal');
-                    }
-                });
-                
-                // Update icon
-                document.getElementById('toggleIcon').textContent = isExpanded ? '⊕' : '↔';
-                
-                // Save state
-                localStorage.setItem('containerExpanded', isExpanded);
-            });
-            
-            // Language switching
-            const translations = {
-                en: {
-                    // Navigation
-                    home: "Home", about: "About", human_anatomy: "Human Anatomy", 
-                    common_illnesses: "Common Illnesses", pharmacy: "Pharmacy",
-                    dashboard: "Dashboard", profile: "Profile", edit_profile: "Edit Profile",
-                    settings: "Settings", logout: "Logout", login: "Login / Sign Up",
-                    medical: "Medical", medical_card: "My Medical Card", medical_analysis: "Medical Analysis",
-                    medical_assistant: "AI Medical Assistant",
-                    preferences: "Preferences", medical_info: "Medical Information",
-                    // Footer
-                    privacy: "Privacy Policy", terms: "Terms of Service", contact: "Contact",
-                    // Page titles
-                    shipai: "ShipAI", connect_world: "Connect with remote professionals from around the world",
-                    // Medical Card
-                    personal_info: "Personal Health Information", full_name: "Full Name", date_birth: "Date of Birth",
-                    blood_type: "Blood Type", emergency_contact: "Emergency Contact", phone: "Phone",
-                    email: "Email", address: "Address", medical_history: "Medical History",
-                    allergies: "Allergies", medications: "Current Medications", chronic: "Chronic Conditions",
-                    save: "Save", edit: "Edit", download: "Download PDF", back_dashboard: "Back to Dashboard" , send: "Send",
-                    height_cm: "Height (cm)", weight_kg: "Weight (kg)", vital_signs: "Vital Signs",
-                    bp_systolic: "BP Systolic (mmHg)", bp_diastolic: "BP Diastolic (mmHg)", heart_rate: "Heart Rate (bpm)",
-                    temperature: "Temperature (°C)", oxygen_saturation: "Oxygen Saturation (%)",
-                    contact_name: "Contact Name", relationship: "Relationship", contact_phone: "Contact Phone",
-                    surgeries: "Previous Surgeries", health_summary: "Health Summary", bmi: "BMI",
-                    blood_pressure: "Blood Pressure", oxygen_level: "Oxygen Level", last_updated: "Last updated",
-                    underweight: "Underweight", normal_weight: "Normal Weight", overweight: "Overweight", obese: "Obese",
-                    add_medical_data: "Add medical data to calculate your score",
-                    // Pharmacy
-                    find_meds: "Find Medications", search_meds: "Search for medications...", search_drugs: "Search drugs, medicines...",
-                    category: "Category", all_categories: "All Categories", search_btn: "Search",
-                    pain_relief: "Pain Relief", antibiotics: "Antibiotics", vitamins: "Vitamins",
-                    digestive: "Digestive Health", allergy: "Allergy", cold_flu: "Cold & Flu", skincare: "Skincare",
-                    price: "Price", in_stock: "In Stock", out_stock: "Out of Stock", add_cart: "Add to Card", view_details: "View Details",
-                    description: "Description", dosage: "Dosage", side_effects: "Common Side Effects", find_pharmacy: "Find in Pharmacy",
-                    available_pharmacies: "Available Pharmacies", pharmacy_name: "Pharmacy Name", location: "Location", 
-                    rating: "Rating", stock_status: "Stock Status", action: "Action", order: "Order", unavailable: "Unavailable",
-                    drug_interactions: "Check Drug Interactions", enter_medications: "Enter medication names separated by commas...",
-                    check_interactions: "Check Interactions", low_stock: "Low Stock",
-                    total_medications_label: "Total:", total_medications: "medications in database",
-                    browse_categories: "Browse by Category:", all_medications: "All",
-                    // Common Illnesses
-                    illnesses_guide: "Common Illnesses Guide", select_category: "Select a category",
-                    respiratory: "Respiratory", digestive_sys: "Digestive", skin: "Skin", general: "General",
-                    symptoms: "Symptoms", treatment: "Treatment", prevention: "Prevention", see_doctor: "When to See a Doctor",
-                    // Human Anatomy
-                    gender: "Gender", body_system: "Body System", controls: "Controls",
-                    select_gender: "Select Gender", male: "Male", female: "Female", skeleton: "Skeleton", muscular_sys: "Muscular System",
-                    select_system: "Select System", skeletal: "Skeletal", muscular: "Muscular",
-                    nervous: "Nervous", circulatory: "Circulatory", resp_system: "Respiratory System",
-                    dig_system: "Digestive System", interactive_3d: "Interactive 3D Model",
-                    click_drag: "🖱 Drag to rotate | Scroll to zoom | Auto-rotating", scroll_zoom: "Scroll to zoom",
-                    details: "Model Information", loading_model: "Loading 3D model...", current_system: "Current System",
-                    database_organs: "Database Organs", select_system_explore: "Select a body system to explore",
-                    no_organs: "No organs in database", loading_organs: "Loading organs...",
-                    // Common Illnesses
-                    search_illness: "Search for an illness or condition...", important: "Important", disclaimer: "This information is for educational purposes only and should not be used for self-diagnosis or as a substitute for professional medical advice. Always consult with a qualified healthcare provider for medical concerns.",
-                    // Analysis
-                    your_analysis: "Your Medical Analysis", health_insights: "Health insights and analysis based on your medical data",
-                    health_score: "Health Score", risk_factors: "Risk Factors", recommendations: "Recommendations",
-                    identified_risk: "Identified risk factors", health_recommendations: "Health recommendations",
-                    vital_analysis: "Vital Signs Analysis", no_vital_data: "No vital signs data available",
-                    medication_analysis: "Medication Analysis", no_med_data: "No medication data available",
-                    current_meds: "Current Medications", drug_interactions_check: "Drug Interactions", 
-                    side_effects_check: "Side Effects", dosage_review: "Dosage Review",
-                    add_vital: "Add Vital Signs", review_meds: "Review Medications",
-                    wellness_insights: "Wellness Insights", personalized_wellness: "Personalized wellness recommendations based on your profile",
-                    view_recommendations: "View Recommendations", preventive_care: "Preventive Care",
-                    screening_preventive: "Screening and preventive measures tailored to your age and health",
-                    view_screening: "View Screening Checklist", health_trends: "Health Trends",
-                    track_health: "Track your health metrics over time to identify patterns and trends",
-                    charts_appear: "Charts and trends will appear as you add medical data",
-                    // General
-                    search: "Search", language: "Language", welcome: "Welcome", loading: "Loading...",
-                    no_results: "No results found", error: "Error", success: "Success",
-                    about_title: "About ShipAI", destinations: "Destinations", travel: "Travel",
-                    community: "Community", blog: "Blog", faq: "FAQ", support: "Support",
-                    all_rights: "All rights reserved",
-                    // Home Page
-                    home_hero_title: "Work From Anywhere", get_started_btn: "Get Started",
-                    home_hero_description: "Join a thriving community of digital nomads working remotely from around the world. Share experiences, find collaborators, and build meaningful connections with like-minded professionals.",
-                    sign_in_btn: "Sign In", go_dashboard_btn: "Go to Dashboard",
-                    why_join_title: "Why Join Our Community?",
-                    feature_network_title: "Connect & Network", feature_network_desc: "Meet professionals from all over the world. Build relationships and expand your network.",
-                    feature_resources_title: "Share Resources", feature_resources_desc: "Exchange tips, tools, and best practices for remote work and living abroad.",
-                    feature_opportunities_title: "Find Opportunities", feature_opportunities_desc: "Discover projects, collaborations, and career opportunities within our community.",
-                    // About Page
-                    about_subtitle: "Connecting remote professionals and freelancers from around the world",
-                    our_mission: "Our Mission", mission_content_part1: "ShipAI is built to connect remote professionals and digital nomads from around the world.",
-                    mission_content_part2: "Whether you're a freelancer, entrepreneur, remote employee, or anyone embracing location independence, ShipAI is your platform to find like-minded individuals, share experiences, and discover new opportunities.",
-                    shipai_member_definition: "What Defines a ShipAI Member?", nomad_definition: "A digital nomad is someone who works remotely and travels around the world.",
-                    core_values: "Our Core Values", global_community_title: "Global Community",
-                    global_community_desc: "We celebrate diversity and create an inclusive environment for everyone.",
-                    collaboration_title: "Collaboration", collaboration_desc: "Together we are stronger. We believe in the power of teamwork.",
-                    innovation_title: "Innovation", innovation_desc: "We continuously evolve and adapt to a changing world.",
-                    growth_title: "Growth", growth_desc: "We empower members to achieve their goals.",
-                    why_choose_title: "Why Choose ShipAI?",
-                    professional_network_title: "Professional Network", professional_network_desc: "Connect with thousands of remote professionals globally",
-                    resource_sharing_title: "Resource Sharing", resource_sharing_desc: "Access valuable tools, tips, and best practices from the community",
-                    opportunity_marketplace_title: "Opportunity Marketplace", opportunity_marketplace_desc: "Find projects, collaborations, and career opportunities",
-                    community_support_title: "Supportive Community", community_support_desc: "Join a welcoming community of like-minded professionals",
-                    // Login Page
-                    login_title: "Log In", login_subtitle: "Welcome back to ShipAI",
-                    no_account_text: "Don't have an account?", signup_link_text: "Sign up here",
-                    no_confirmation_text: "Didn't receive a confirmation email?", resend_link: "Resend",
-                    forgot_password: "Forgot Password?", request_password_reset: "Request Password Reset",
-                    password_reset_info: "Enter your email address and we'll send you a link to reset your password.",
-                    reset_password: "Reset Password", new_password: "New Password",
-                    confirm_password: "Confirm Password", remember_password: "Remember your password?",
-                    // Signup Page
-                    signup_title: "Create Your Account", signup_subtitle: "Join the ShipAI community",
-                    signup_email_verification_info: "📧 Email Verification: We'll send a confirmation code to your email.",
-                    password_requirements_label: "Password Requirements:",
-                    password_req_length: "Minimum 8 characters", password_req_uppercase: "At least 1 uppercase character",
-                    password_req_number: "At least 1 number", password_req_special: "At least 1 special character (!@#$%^&*)",
-                    continue_verification_btn: "Continue to Verification", already_account_text: "Already have an account?",
-                    login_link_text: "Log in here",
-                    // Anatomy Page
-                    anatomy_subtitle: "Interactive human body with detailed organ and system information",
-                    anatomy_default_title: "Click on body parts",
-                    anatomy_default_info: "Select any body part to view detailed information about that organ or system."
-                },
-                ru: {
-                    // Navigation
-                    home: "Главная", about: "О нас", human_anatomy: "Анатомия человека",
-                    common_illnesses: "Распространённые болезни", pharmacy: "Аптека",
-                    dashboard: "Панель управления", profile: "Профиль", edit_profile: "Редактировать профиль",
-                    settings: "Настройки", logout: "Выйти", login: "Вход / Регистрация",
-                    medical: "Медицина", medical_card: "Моя медкарта", medical_analysis: "Медицинский анализ",
-                    medical_assistant: "AI Медицинский помощник",
-                    preferences: "Предпочтения", medical_info: "Медицинская информация",
-                    // Footer
-                    privacy: "Политика конфиденциальности", terms: "Условия использования", contact: "Контакты",
-                    // Page titles
-                    shipai: "ShipAI", connect_world: "Связь с удалёнными профессионалами со всего мира",
-                    // Medical Card
-                    personal_info: "Личная медицинская информация", full_name: "Полное имя", date_birth: "Дата рождения",
-                    blood_type: "Группа крови", emergency_contact: "Экстренный контакт", phone: "Телефон",
-                    email: "Email", address: "Адрес", medical_history: "История болезней",
-                    allergies: "Аллергии", medications: "Текущие лекарства", chronic: "Хронические заболевания",
-                    save: "Сохранить", edit: "Редактировать", download: "Скачать PDF", back_dashboard: "Назад к панели", send: "Отправить",
-                    height_cm: "Рост (см)", weight_kg: "Вес (кг)", vital_signs: "Жизненные показатели",
-                    bp_systolic: "Верхнее давление (мм рт.ст.)", bp_diastolic: "Нижнее давление (мм рт.ст.)", heart_rate: "Пульс (уд/мин)",
-                    temperature: "Температура (°C)", oxygen_saturation: "Сатурация (%)",
-                    contact_name: "Имя контакта", relationship: "Родство", contact_phone: "Телефон контакта",
-                    surgeries: "Предыдущие операции", health_summary: "Сводка здоровья", bmi: "ИМТ",
-                    blood_pressure: "Артериальное давление", oxygen_level: "Уровень кислорода", last_updated: "Обновлено",
-                    underweight: "Недовес", normal_weight: "Нормальный вес", overweight: "Избыточный вес", obese: "Ожирение",
-                    add_medical_data: "Добавьте медицинские данные для расчёта",
-                    // Pharmacy
-                    find_meds: "Найти лекарства", search_meds: "Поиск лекарств...", search_drugs: "Поиск препаратов...",
-                    category: "Категория", all_categories: "Все категории", search_btn: "Поиск",
-                    pain_relief: "Обезболивающие", antibiotics: "Антибиотики", vitamins: "Витамины",
-                    digestive: "Пищеварение", allergy: "Аллергия", cold_flu: "Простуда и грипп", skincare: "Уход за кожей",
-                    price: "Цена", in_stock: "В наличии", out_stock: "Нет в наличии", add_cart: "В корзину", view_details: "Подробнее",
-                    description: "Описание", dosage: "Дозировка", side_effects: "Побочные эффекты", find_pharmacy: "Найти в аптеке",
-                    available_pharmacies: "Доступные аптеки", pharmacy_name: "Название аптеки", location: "Местоположение",
-                    rating: "Рейтинг", stock_status: "Наличие", action: "Действие", order: "Заказать", unavailable: "Недоступно",
-                    drug_interactions: "Проверить взаимодействия", enter_medications: "Введите названия лекарств через запятую...",
-                    check_interactions: "Проверить взаимодействия", low_stock: "Мало",
-                    total_medications_label: "Всего:", total_medications: "лекарств в базе",
-                    browse_categories: "Просмотр по категориям:", all_medications: "Все",
-                    // Common Illnesses
-                    illnesses_guide: "Руководство по болезням", select_category: "Выберите категорию",
-                    respiratory: "Дыхательная система", digestive_sys: "Пищеварительная", skin: "Кожа", general: "Общее",
-                    symptoms: "Симптомы", treatment: "Лечение", prevention: "Профилактика", see_doctor: "Когда к врачу",
-                    // Human Anatomy
-                    gender: "Пол", body_system: "Система организма", controls: "Управление",
-                    select_gender: "Выберите пол", male: "Мужской", female: "Женский", skeleton: "Скелет", muscular_sys: "Мышечная система",
-                    select_system: "Выберите систему", skeletal: "Скелетная", muscular: "Мышечная",
-                    nervous: "Нервная", circulatory: "Кровеносная", resp_system: "Дыхательная система",
-                    dig_system: "Пищеварительная система", interactive_3d: "Интерактивная 3D модель",
-                    click_drag: "🖱 Перетащите для поворота | Колесо для зума | Автовращение", scroll_zoom: "Прокрутите для увеличения",
-                    details: "Информация о модели", loading_model: "Загрузка 3D модели...", current_system: "Текущая система",
-                    database_organs: "Органы в базе", select_system_explore: "Выберите систему органов",
-                    no_organs: "Нет органов в базе", loading_organs: "Загрузка органов...",
-                    // Common Illnesses
-                    search_illness: "Поиск заболеваний...", important: "Важно", disclaimer: "Эта информация предназначена только для образовательных целей и не должна использоваться для самодиагностики или вместо профессиональной медицинской консультации. Всегда консультируйтесь с квалифицированным врачом.",
-                    // Analysis
-                    your_analysis: "Ваш медицинский анализ", health_insights: "Анализ здоровья на основе ваших данных",
-                    health_score: "Показатель здоровья", risk_factors: "Факторы риска", recommendations: "Рекомендации",
-                    identified_risk: "Выявленные факторы риска", health_recommendations: "Рекомендации по здоровью",
-                    vital_analysis: "Анализ жизненных показателей", no_vital_data: "Нет данных о жизненных показателях",
-                    medication_analysis: "Анализ препаратов", no_med_data: "Нет данных о препаратах",
-                    current_meds: "Текущие препараты", drug_interactions_check: "Взаимодействия лекарств",
-                    side_effects_check: "Побочные эффекты", dosage_review: "Проверка дозировки",
-                    add_vital: "Добавить показатели", review_meds: "Проверить препараты",
-                    wellness_insights: "Рекомендации по оздоровлению", personalized_wellness: "Персонализированные рекомендации",
-                    view_recommendations: "Смотреть рекомендации", preventive_care: "Профилактика",
-                    screening_preventive: "Скрининг и профилактика с учётом возраста и здоровья",
-                    view_screening: "Смотреть чеклист", health_trends: "Тренды здоровья",
-                    track_health: "Отслеживайте показатели здоровья для выявления закономерностей",
-                    charts_appear: "Графики появятся после добавления данных",
-                    // General
-                    search: "Поиск", language: "Язык", welcome: "Добро пожаловать", loading: "Загрузка...",
-                    no_results: "Ничего не найдено", error: "Ошибка", success: "Успешно",
-                    about_title: "О ShipAI", destinations: "Направления", travel: "Путешествия",
-                    community: "Сообщество", blog: "Блог", faq: "FAQ", support: "Поддержка",
-                    all_rights: "Все права защищены",
-                    // Home Page
-                    home_hero_title: "Работайте откуда угодно", get_started_btn: "Начать",
-                    home_hero_description: "Присоединяйтесь к сообществу цифровых кочевников, работающих удалённо со всего мира. Делитесь опытом, находите сотрудников и создавайте значимые связи с единомышленниками.",
-                    sign_in_btn: "Вход", go_dashboard_btn: "Перейти на панель",
-                    why_join_title: "Почему присоединиться к нашему сообществу?",
-                    feature_network_title: "Общайтесь и расширяйте сеть", feature_network_desc: "Встречайте профессионалов со всего мира. Создавайте связи и расширяйте свою сеть контактов.",
-                    feature_resources_title: "Делитесь ресурсами", feature_resources_desc: "Обменивайтесь советами, инструментами и лучшими практиками для удалённой работы.",
-                    feature_opportunities_title: "Найдите возможности", feature_opportunities_desc: "Откройте для себя проекты, сотрудничество и карьерные возможности в нашем сообществе.",
-                    // About Page
-                    about_subtitle: "Связь удалённых профессионалов и фрилансеров со всего мира",
-                    our_mission: "Наша миссия", mission_content_part1: "ShipAI создана для соединения удалённых профессионалов и цифровых кочевников со всего мира.",
-                    mission_content_part2: "Являетесь ли вы фрилансером, предпринимателем, удалённым работником или кем-либо, кто выбрал независимый образ жизни, ShipAI - это ваша платформа для поиска единомышленников, обмена опытом и открытия новых возможностей.",
-                    shipai_member_definition: "Что определяет члена ShipAI?", nomad_definition: "Цифровой кочевник - это человек, работающий удалённо и путешествующий по миру.",
-                    core_values: "Наши основные ценности", global_community_title: "Глобальное сообщество",
-                    global_community_desc: "Мы ценим разнообразие и создаём инклюзивную среду для всех.",
-                    collaboration_title: "Сотрудничество", collaboration_desc: "Вместе мы сильнее. Мы верим в силу командной работы.",
-                    innovation_title: "Инновация", innovation_desc: "Мы постоянно развиваемся и адаптируемся к изменяющемуся миру.",
-                    growth_title: "Рост", growth_desc: "Мы даём возможность нашим членам достигать их целей.",
-                    why_choose_title: "Почему выбрать ShipAI?",
-                    professional_network_title: "Профессиональная сеть", professional_network_desc: "Общайтесь с тысячами удалённых профессионалов со всего мира",
-                    resource_sharing_title: "Обмен ресурсами", resource_sharing_desc: "Получите доступ к ценным инструментам, советам и лучшим практикам от сообщества",
-                    opportunity_marketplace_title: "Рынок возможностей", opportunity_marketplace_desc: "Найдите проекты, сотрудничество и карьерные возможности",
-                    community_support_title: "Поддержка сообщества", community_support_desc: "Присоединитесь к дружелюбному сообществу единомышленников",
-                    // Login Page
-                    login_title: "Вход", login_subtitle: "Добро пожаловать в ShipAI",
-                    no_account_text: "Нет учётной записи?", signup_link_text: "Зарегистрируйтесь здесь",
-                    no_confirmation_text: "Не получили письмо с подтверждением?", resend_link: "Отправить повторно",
-                    forgot_password: "Забыли пароль?", request_password_reset: "Запросить сброс пароля",
-                    password_reset_info: "Введите свой адрес электронной почты, и мы отправим вам ссылку для сброса пароля.",
-                    reset_password: "Сбросить пароль", new_password: "Новый пароль",
-                    confirm_password: "Подтвердить пароль", remember_password: "Помните свой пароль?",
-                    // Signup Page
-                    signup_title: "Создать учётную запись", signup_subtitle: "Присоединяйтесь к сообществу ShipAI",
-                    signup_email_verification_info: "📧 Проверка электронной почты: Мы отправим код подтверждения.",
-                    password_requirements_label: "Требования к паролю:",
-                    password_req_length: "Минимум 8 символов", password_req_uppercase: "Минимум 1 заглавная буква",
-                    password_req_number: "Минимум 1 цифра", password_req_special: "Минимум 1 спецсимвол (!@#$%^&*)",
-                    continue_verification_btn: "Перейти к проверке", already_account_text: "Уже есть учётная запись?",
-                    login_link_text: "Войти здесь",
-                    // Anatomy Page
-                    anatomy_subtitle: "Интерактивное человеческое тело с подробной информацией об органах и системах",
-                    anatomy_default_title: "Кликните на части тела",
-                    anatomy_default_info: "Выберите любую часть тела для просмотра подробной информации об органе или системе."
-                }
-            };
-            
-            // Load saved language
-            let currentLang = localStorage.getItem('language') || 'en';
-            applyTranslations(currentLang);
-            
-            window.setLanguage = function(lang, event) {
-                // Prevent link navigation
-                if (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                
-                // Save language preference
-                localStorage.setItem('language', lang);
-                
-                // Apply translations
-                applyTranslations(lang);
-                
-                // Update dropdown text
-                document.getElementById('currentLang').textContent = lang.toUpperCase();
-                
-                // Close dropdown menu using Bootstrap
-                try {
-                    const dropdownToggle = document.getElementById('langDropdown');
-                    if (dropdownToggle) {
-                        // Use Bootstrap's collapse if available
-                        if (window.bootstrap && window.bootstrap.Dropdown) {
-                            const dropdown = new window.bootstrap.Dropdown(dropdownToggle);
-                            dropdown.hide();
-                        } else {
-                            // Fallback: manually close dropdown
-                            dropdownToggle.setAttribute('aria-expanded', 'false');
-                            const dropdownMenu = dropdownToggle.nextElementSibling;
-                            if (dropdownMenu) {
-                                dropdownMenu.classList.remove('show');
-                            }
-                        }
-                    }
-                } catch (e) {
-                    console.log('Dropdown close handled');
-                }
-                
-                return false;
-            };
-            
-            function applyTranslations(lang) {
-                const t = translations[lang];
-                if (!t) return;
-                
-                // Update nav links data-translate attribute
-                document.querySelectorAll('[data-translate]').forEach(el => {
-                    const key = el.getAttribute('data-translate');
-                    if (t[key]) el.textContent = t[key];
-                });
-                
-                // Update placeholders
-                document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
-                    const key = el.getAttribute('data-translate-placeholder');
-                    if (t[key]) el.placeholder = t[key];
-                });
-                
-                // Update page title if has data-translate-title
-                document.querySelectorAll('[data-translate-title]').forEach(el => {
-                    const key = el.getAttribute('data-translate-title');
-                    if (t[key]) el.setAttribute('title', t[key]);
-                });
-                
-                // Update current language display
-                document.getElementById('currentLang').textContent = lang.toUpperCase();
-                
-                // Store for JS access
-                window.currentLanguage = lang;
-            }
+    document.addEventListener('DOMContentLoaded', function() {
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const html = document.documentElement;
+        function setTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeIcon.innerHTML = theme === 'dark' ? '&#9728;' : '&#9790;';
+        }
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setTheme(savedTheme);
+        themeToggle.addEventListener('click', function() {
+            const current = html.getAttribute('data-theme');
+            setTheme(current === 'dark' ? 'light' : 'dark');
         });
+
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const containers = document.querySelectorAll('.container');
+        let isExpanded = localStorage.getItem('containerExpanded') === 'true';
+        function applyExpanded() {
+            containers.forEach(c => { c.classList.toggle('container-expanded', isExpanded); });
+            document.getElementById('toggleIcon').innerHTML = isExpanded ? '&#8853;' : '&#8596;';
+        }
+        applyExpanded();
+        sidebarToggle.addEventListener('click', function() {
+            isExpanded = !isExpanded;
+            localStorage.setItem('containerExpanded', isExpanded);
+            applyExpanded();
+        });
+    });
     </script>
+    {% block scripts %}{% endblock %}
 </body>
 </html>

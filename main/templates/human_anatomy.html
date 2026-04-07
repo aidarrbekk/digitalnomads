@@ -1,26 +1,38 @@
 {% extends "base.html" %}
 
-{% block title %}<span data-translate="human_anatomy">Human Anatomy</span> - ShipAI{% endblock %}
+{% block title %}{{ t('human_anatomy') }} - ShipAI{% endblock %}
 
 {% block content %}
 <div class="container container-normal">
     <div class="page-header">
-        <h1 data-translate="human_anatomy">Human Anatomy</h1>
-        <p class="lead text-muted" data-translate="anatomy_subtitle">Interactive human body with detailed organ and system information</p>
+        <h1>{{ t('human_anatomy') }}</h1>
+        <p class="lead">{{ t('anatomy_subtitle') }}</p>
     </div>
 
-    <!-- Gender Selection -->
+    <!-- Controls: Gender & System Selection -->
     <div class="row mb-4">
         <div class="col-md-12">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <label for="genderSwitch" class="form-label" style="color: var(--secondary-navy); font-weight: 600;" data-translate="select_gender">Select Gender:</label>
-                    <div class="btn-group" role="group">
-                        <input type="radio" class="btn-check" name="gender" id="maleOption" value="male" checked>
-                        <label class="btn btn-outline-primary" for="maleOption" data-translate="male">Male</label>
-                        
-                        <input type="radio" class="btn-check" name="gender" id="femaleOption" value="female">
-                        <label class="btn btn-outline-primary" for="femaleOption" data-translate="female">Female</label>
+            <div class="card no-animate">
+                <div class="card-body d-flex flex-wrap align-items-center gap-4">
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="form-label mb-0 fw-semibold" style="color: var(--accent); white-space: nowrap;">{{ t('gender') }}</label>
+                        <div class="btn-group" role="group">
+                            <input type="radio" class="btn-check" name="gender" id="maleOption" value="male" checked>
+                            <label class="btn btn-outline-primary" for="maleOption">{{ t('male') }}</label>
+
+                            <input type="radio" class="btn-check" name="gender" id="femaleOption" value="female">
+                            <label class="btn btn-outline-primary" for="femaleOption">{{ t('female') }}</label>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="form-label mb-0 fw-semibold" style="color: var(--accent); white-space: nowrap;">{{ t('body_system') }}</label>
+                        <div class="btn-group" role="group">
+                            <input type="radio" class="btn-check" name="bodySystem" id="skeletonOption" value="skeleton" checked>
+                            <label class="btn btn-outline-primary" for="skeletonOption">{{ t('skeleton') }}</label>
+
+                            <input type="radio" class="btn-check" name="bodySystem" id="muscularOption" value="muscular">
+                            <label class="btn btn-outline-primary" for="muscularOption">{{ t('muscular_sys') }}</label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -31,30 +43,34 @@
     <div class="row">
         <!-- Body Display -->
         <div class="col-md-6 mb-4">
-            <div class="card shadow-sm" style="height: 600px; display: flex; align-items: center; justify-content: center;">
+            <div class="card no-animate" style="height: 600px; display: flex; align-items: center; justify-content: center;">
                 <div style="text-align: center; width: 100%;">
                     <svg id="bodyModel" viewBox="0 0 200 500" style="max-width: 300px; height: auto;">
                         <!-- Head -->
-                        <circle id="head" cx="100" cy="60" r="35" fill="#d4a574" stroke="var(--secondary-navy)" stroke-width="2" style="cursor: pointer;"/>
+                        <circle id="head" cx="100" cy="60" r="35" fill="rgba(100,255,218,0.15)" stroke="var(--neon-mint)" stroke-width="1.5" style="cursor: pointer;"/>
                         <!-- Body -->
-                        <rect id="torso" x="80" y="100" width="40" height="80" rx="5" fill="#e8b4a8" stroke="var(--secondary-navy)" stroke-width="2" style="cursor: pointer;"/>
+                        <rect id="torso" x="80" y="100" width="40" height="80" rx="5" fill="rgba(100,255,218,0.1)" stroke="var(--neon-mint)" stroke-width="1.5" style="cursor: pointer;"/>
                         <!-- Heart -->
-                        <circle id="heart" cx="100" cy="130" r="8" fill="#dc3545" style="cursor: pointer;"/>
+                        <circle id="heart" cx="100" cy="130" r="8" fill="rgba(255,82,82,0.6)" stroke="#ff5252" stroke-width="1" style="cursor: pointer;">
+                            <animate attributeName="r" values="7;9;7" dur="1.2s" repeatCount="indefinite"/>
+                        </circle>
                         <!-- Lungs -->
-                        <ellipse id="lungs-left" cx="85" cy="140" rx="6" ry="12" fill="#87CEEB" style="cursor: pointer;"/>
-                        <ellipse id="lungs-right" cx="115" cy="140" rx="6" ry="12" fill="#87CEEB" style="cursor: pointer;"/>
+                        <ellipse id="lungs-left" cx="85" cy="140" rx="6" ry="12" fill="rgba(64,196,255,0.3)" stroke="var(--info-color)" stroke-width="1" style="cursor: pointer;"/>
+                        <ellipse id="lungs-right" cx="115" cy="140" rx="6" ry="12" fill="rgba(64,196,255,0.3)" stroke="var(--info-color)" stroke-width="1" style="cursor: pointer;"/>
                         <!-- Stomach -->
-                        <ellipse id="stomach" cx="100" cy="165" rx="8" ry="12" fill="#FFB6C1" style="cursor: pointer;"/>
+                        <ellipse id="stomach" cx="100" cy="165" rx="8" ry="12" fill="rgba(255,171,64,0.3)" stroke="var(--warning-color)" stroke-width="1" style="cursor: pointer;"/>
                         <!-- Liver -->
-                        <ellipse id="liver" cx="115" cy="155" rx="6" ry="10" fill="#8B4513" style="cursor: pointer;"/>
+                        <ellipse id="liver" cx="115" cy="155" rx="6" ry="10" fill="rgba(105,240,174,0.3)" stroke="var(--success-color)" stroke-width="1" style="cursor: pointer;"/>
                         <!-- Arms -->
-                        <rect id="arm-left" x="40" y="110" width="40" height="15" rx="7" fill="#e8b4a8" stroke="var(--secondary-navy)" stroke-width="2" style="cursor: pointer;"/>
-                        <rect id="arm-right" x="120" y="110" width="40" height="15" rx="7" fill="#e8b4a8" stroke="var(--secondary-navy)" stroke-width="2" style="cursor: pointer;"/>
+                        <rect id="arm-left" x="40" y="110" width="40" height="15" rx="7" fill="rgba(100,255,218,0.08)" stroke="var(--neon-mint)" stroke-width="1.5" style="cursor: pointer;"/>
+                        <rect id="arm-right" x="120" y="110" width="40" height="15" rx="7" fill="rgba(100,255,218,0.08)" stroke="var(--neon-mint)" stroke-width="1.5" style="cursor: pointer;"/>
                         <!-- Legs -->
-                        <rect id="leg-left" x="85" y="185" width="12" height="80" rx="6" fill="#e8b4a8" stroke="var(--secondary-navy)" stroke-width="2" style="cursor: pointer;"/>
-                        <rect id="leg-right" x="103" y="185" width="12" height="80" rx="6" fill="#e8b4a8" stroke="var(--secondary-navy)" stroke-width="2" style="cursor: pointer;"/>
+                        <rect id="leg-left" x="85" y="185" width="12" height="80" rx="6" fill="rgba(100,255,218,0.08)" stroke="var(--neon-mint)" stroke-width="1.5" style="cursor: pointer;"/>
+                        <rect id="leg-right" x="103" y="185" width="12" height="80" rx="6" fill="rgba(100,255,218,0.08)" stroke="var(--neon-mint)" stroke-width="1.5" style="cursor: pointer;"/>
                         <!-- Brain -->
-                        <circle id="brain" cx="100" cy="40" r="6" fill="#FFD700" style="cursor: pointer;"/>
+                        <circle id="brain" cx="100" cy="40" r="6" fill="rgba(255,171,64,0.5)" stroke="var(--warning-color)" stroke-width="1" style="cursor: pointer;">
+                            <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/>
+                        </circle>
                     </svg>
                 </div>
             </div>
@@ -62,16 +78,14 @@
 
         <!-- Information Panel -->
         <div class="col-md-6 mb-4">
-            <div class="card shadow-sm" style="height: 600px; overflow-y: auto;">
+            <div class="card no-animate" style="height: 600px; overflow-y: auto;">
                 <div class="card-body">
-                    <h5 class="card-title" id="organ-title" style="color: var(--secondary-navy); font-weight: 600;" data-translate="anatomy_default_title">Click on body parts</h5>
+                    <h5 class="card-title" id="organ-title" style="color: var(--neon-mint); font-weight: 600;">{{ t('anatomy_default_title') }}</h5>
                     <hr>
-                    <p id="organ-info" class="text-muted" data-translate="anatomy_default_info">
-                        Select any body part to view detailed information about that organ or system.
+                    <p id="organ-info" style="color: var(--text-secondary);">
+                        {{ t('anatomy_default_info') }}
                     </p>
-                    <div id="organ-details" style="margin-top: 1.5rem;">
-                        <!-- Details will be populated here -->
-                    </div>
+                    <div id="organ-details" style="margin-top: 1.5rem;"></div>
                 </div>
             </div>
         </div>
@@ -81,66 +95,18 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const organInfo = {
-        'head': {
-            title: 'Head & Brain',
-            info: 'The head contains the brain and sensory organs including eyes, ears, and nose.',
-            details: 'The brain controls all bodily functions and processes information from the environment.'
-        },
-        'brain': {
-            title: 'Brain',
-            info: 'Central control center of the nervous system.',
-            details: 'Responsible for thinking, memory, coordination, and controlling all body functions.'
-        },
-        'torso': {
-            title: 'Torso',
-            info: 'Contains vital organs including the heart, lungs, liver, and digestive organs.',
-            details: 'The main body cavity housing the majority of internal organs.'
-        },
-        'heart': {
-            title: 'Heart',
-            info: 'Pumps blood throughout the body',
-            details: 'A muscular organ about the size of a fist that beats approximately 100,000 times per day.'
-        },
-        'lungs-left': {
-            title: 'Left Lung',
-            info: 'Responsible for oxygen exchange',
-            details: 'Slightly smaller than the right lung to make room for the heart.'
-        },
-        'lungs-right': {
-            title: 'Right Lung',
-            info: 'Responsible for oxygen exchange',
-            details: 'Larger than the left lung, has three lobes compared to the left\'s two.'
-        },
-        'stomach': {
-            title: 'Stomach',
-            info: 'Digests food using acids and enzymes',
-            details: 'Mixes food with gastric juices for digestion. Food stays in stomach for 1-2 hours.'
-        },
-        'liver': {
-            title: 'Liver',
-            info: 'Filters blood and produces bile',
-            details: 'The largest internal organ, detoxifies chemicals and maintains metabolic processes.'
-        },
-        'arm-left': {
-            title: 'Left Arm',
-            info: 'Contains bones, muscles, and blood vessels',
-            details: 'Composed of the shoulder, forearm, and hand with complex movement capabilities.'
-        },
-        'arm-right': {
-            title: 'Right Arm',
-            info: 'Contains bones, muscles, and blood vessels',
-            details: 'Composed of the shoulder, forearm, and hand with complex movement capabilities.'
-        },
-        'leg-left': {
-            title: 'Left Leg',
-            info: 'Supports body weight and enables movement',
-            details: 'Contains the thigh, calf, and foot with multiple joints for flexibility.'
-        },
-        'leg-right': {
-            title: 'Right Leg',
-            info: 'Supports body weight and enables movement',
-            details: 'Contains the thigh, calf, and foot with multiple joints for flexibility.'
-        }
+        'head': { title: 'Head & Brain', info: 'The head contains the brain and sensory organs including eyes, ears, and nose.', details: 'The brain controls all bodily functions and processes information from the environment.' },
+        'brain': { title: 'Brain', info: 'Central control center of the nervous system.', details: 'Responsible for thinking, memory, coordination, and controlling all body functions.' },
+        'torso': { title: 'Torso', info: 'Contains vital organs including the heart, lungs, liver, and digestive organs.', details: 'The main body cavity housing the majority of internal organs.' },
+        'heart': { title: 'Heart', info: 'Pumps blood throughout the body', details: 'A muscular organ about the size of a fist that beats approximately 100,000 times per day.' },
+        'lungs-left': { title: 'Left Lung', info: 'Responsible for oxygen exchange', details: 'Slightly smaller than the right lung to make room for the heart.' },
+        'lungs-right': { title: 'Right Lung', info: 'Responsible for oxygen exchange', details: 'Larger than the left lung, has three lobes compared to the left\'s two.' },
+        'stomach': { title: 'Stomach', info: 'Digests food using acids and enzymes', details: 'Mixes food with gastric juices for digestion. Food stays in stomach for 1-2 hours.' },
+        'liver': { title: 'Liver', info: 'Filters blood and produces bile', details: 'The largest internal organ, detoxifies chemicals and maintains metabolic processes.' },
+        'arm-left': { title: 'Left Arm', info: 'Contains bones, muscles, and blood vessels', details: 'Composed of the shoulder, forearm, and hand with complex movement capabilities.' },
+        'arm-right': { title: 'Right Arm', info: 'Contains bones, muscles, and blood vessels', details: 'Composed of the shoulder, forearm, and hand with complex movement capabilities.' },
+        'leg-left': { title: 'Left Leg', info: 'Supports body weight and enables movement', details: 'Contains the thigh, calf, and foot with multiple joints for flexibility.' },
+        'leg-right': { title: 'Right Leg', info: 'Supports body weight and enables movement', details: 'Contains the thigh, calf, and foot with multiple joints for flexibility.' }
     };
 
     Object.keys(organInfo).forEach(organId => {
@@ -151,19 +117,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('organ-title').textContent = info.title;
                 document.getElementById('organ-info').textContent = info.info;
                 document.getElementById('organ-details').innerHTML = `
-                    <div style="background-color: #F5FCF8; padding: 1rem; border-radius: 6px; border-left: 3px solid var(--primary-green);">
-                        <p>${info.details}</p>
+                    <div style="background: rgba(100, 255, 218, 0.05); padding: 1rem; border-radius: 10px; border-left: 3px solid var(--neon-mint);">
+                        <p style="color: var(--text-secondary); margin: 0;">${info.details}</p>
                     </div>
                 `;
             });
         }
     });
 
-    // Gender toggle functionality
     const genderOptions = document.querySelectorAll('input[name="gender"]');
     genderOptions.forEach(option => {
         option.addEventListener('change', function() {
-            // This could be used to display different body types
             console.log('Gender selected:', this.value);
         });
     });

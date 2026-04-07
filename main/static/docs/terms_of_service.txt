@@ -1,0 +1,84 @@
+TERMS OF SERVICE — ShipAI
+Last Updated: April 2026
+
+1. ACCEPTANCE OF TERMS
+
+By accessing or using the ShipAI platform, you agree to be bound by these Terms of Service. If you do not agree, please do not use our services.
+
+2. DESCRIPTION OF SERVICE
+
+ShipAI is a medical information platform that provides:
+- Personal health record management (Medical Card)
+- Medication search and pharmacy availability database
+- Interactive human anatomy 3D viewer
+- AI-powered medical information assistant
+- User authentication and profile management
+
+3. USER ACCOUNTS
+
+3.1 You must provide accurate information when creating an account.
+3.2 You are responsible for maintaining the confidentiality of your account credentials.
+3.3 You must be at least 18 years old to create an account.
+3.4 One person may only maintain one account.
+
+4. ACCEPTABLE USE
+
+You agree NOT to:
+- Provide false or misleading personal or medical information
+- Attempt to access other users' data
+- Use the platform for any unlawful purpose
+- Interfere with or disrupt the platform's operation
+- Attempt to reverse engineer any part of the platform
+- Use automated tools to scrape or collect data
+
+5. MEDICAL DISCLAIMER
+
+5.1 ShipAI provides medical INFORMATION only and is NOT a medical service.
+5.2 Content on ShipAI should NOT be considered medical advice.
+5.3 Always consult a qualified healthcare professional before making health decisions.
+5.4 The AI Assistant provides general information based on medical protocols and databases. It is NOT a substitute for professional medical consultation.
+5.5 In case of a medical emergency, call emergency services (103 in Kazakhstan) immediately.
+
+6. PHARMACY INFORMATION
+
+6.1 Medication availability and pricing data is provided for informational purposes only.
+6.2 Actual availability and prices may vary. Verify with the pharmacy directly.
+6.3 ShipAI does not sell medications and is not a pharmacy.
+
+7. INTELLECTUAL PROPERTY
+
+7.1 The ShipAI platform, including its design, code, and content, is protected by copyright and intellectual property laws.
+7.2 3D anatomy models are used under their respective licenses.
+7.3 You may not reproduce or distribute platform content without permission.
+
+8. DATA AND PRIVACY
+
+Your use of ShipAI is also governed by our Privacy Policy. By using our services, you consent to the collection and use of data as described in the Privacy Policy.
+
+9. LIMITATION OF LIABILITY
+
+9.1 ShipAI is provided "as is" without warranties of any kind.
+9.2 We are not liable for any damages arising from the use of our platform.
+9.3 We are not responsible for medical decisions made based on information from our platform.
+9.4 We do not guarantee the accuracy of medication data or pharmacy availability.
+
+10. TERMINATION
+
+10.1 We may terminate or suspend your account at any time for violation of these terms.
+10.2 You may delete your account at any time through the Settings page.
+10.3 Upon termination, your data will be deleted in accordance with our Privacy Policy.
+
+11. CHANGES TO TERMS
+
+We reserve the right to modify these Terms at any time. Continued use of the platform after changes constitutes acceptance of the new Terms.
+
+12. GOVERNING LAW
+
+These Terms are governed by the laws of the Republic of Kazakhstan.
+
+13. CONTACT
+
+For questions about these Terms of Service:
+Email: support@shipai.com
+
+© 2026 ShipAI. All rights reserved.

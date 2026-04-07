@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}<span data-translate="human_anatomy">Human Anatomy</span> - ShipAI{% endblock %}
+{% block title %}{{ t('human_anatomy') }} - ShipAI{% endblock %}
 {% block content %}
 <div class="container container-normal" style="max-width: 1200px;">
     <div class="page-header">
-        <h1 data-translate="human_anatomy">Human Anatomy</h1>
-        <p class="text-muted" data-translate="interactive_3d">Interactive 3D Model</p>
+        <h1>{{ t('human_anatomy') }}</h1>
+        <p class="text-muted">{{ t('interactive_3d') }}</p>
     </div>
 
   <!-- Gender & System Selection -->
@@ -14,25 +14,25 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-4">
-              <label class="form-label" style="color: var(--secondary-navy); font-weight: 600;" data-translate="gender">Gender:</label>
+              <label class="form-label" style="color: #6DB9A6; font-weight: 600;">{{ t('gender') }}</label>
               <div class="btn-group" role="group">
                 <input type="radio" class="btn-check" name="gender" id="maleOption" value="male" checked>
-                <label class="btn btn-outline-primary" for="maleOption" data-translate="male">♂ Male</label>
-                
+                <label class="btn btn-outline-primary" for="maleOption">{{ t('male') }}</label>
+
                 <input type="radio" class="btn-check" name="gender" id="femaleOption" value="female">
-                <label class="btn btn-outline-primary" for="femaleOption" data-translate="female">♀ Female</label>
+                <label class="btn btn-outline-primary" for="femaleOption">{{ t('female') }}</label>
               </div>
             </div>
             <div class="col-md-4">
-              <label class="form-label" style="color: var(--secondary-navy); font-weight: 600;" data-translate="body_system">Body System:</label>
+              <label class="form-label" style="color: #6DB9A6; font-weight: 600;">{{ t('body_system') }}</label>
               <select class="form-select" id="systemSelect">
-                <option value="skeleton" data-translate="skeleton">Skeleton</option>
-                <option value="muscular" data-translate="muscular_sys">Muscular System</option>
+                <option value="skeleton">{{ t('skeleton') }}</option>
+                <option value="muscular">{{ t('muscular_sys') }}</option>
               </select>
             </div>
             <div class="col-md-4">
-              <label class="form-label" style="color: var(--secondary-navy); font-weight: 600;" data-translate="controls">Controls:</label>
-              <small class="text-muted d-block" data-translate="click_drag">🖱 Drag to rotate | Scroll to zoom | Auto-rotating</small>
+              <label class="form-label" style="color: #6DB9A6; font-weight: 600;">{{ t('controls') }}</label>
+              <small class="text-muted d-block">{{ t('click_drag') }}</small>
             </div>
           </div>
         </div>
@@ -46,9 +46,11 @@
     <div class="col-lg-8 mb-4">
       <div class="card shadow-sm no-animate" style="height: 600px; position: relative; overflow: hidden; max-width: 100%;">
         <div id="canvas3d" style="width: 100%; height: 100%; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); display: flex; align-items: center; justify-content: center;"></div>
+        <!-- Hover tooltip -->
+        <div id="hoverTooltip" style="position: absolute; display: none; pointer-events: none; background: rgba(0,0,0,0.8); color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; z-index: 20; white-space: nowrap;"></div>
         <div id="loadingSpinner" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 10; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); min-width: 200px;">
           <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;"><span class="visually-hidden">Loading...</span></div>
-          <p class="text-muted mt-3 mb-2" id="loadingText" data-translate="loading_model">Loading 3D model...</p>
+          <p class="text-muted mt-3 mb-2" id="loadingText">{{ t('loading_model') }}</p>
           <div class="progress" style="height: 8px; border-radius: 4px; background-color: #e9ecef;">
             <div id="loadingProgress" class="progress-bar bg-success" role="progressbar" style="width: 0%; transition: width 0.3s ease;"></div>
           </div>
@@ -57,23 +59,18 @@
       </div>
     </div>
 
-    <!-- Organ Details Panel -->
+    <!-- Details Panel -->
     <div class="col-lg-4 mb-4">
       <div class="card shadow-sm no-animate" style="height: 600px; overflow-y: auto; max-width: 100%;">
-        <div class="card-header" style="background-color: var(--secondary-navy); color: white;">
-          <h5 class="mb-0" data-translate="details">Model Information</h5>
+        <div class="card-header" style="background-color: #6DB9A6; color: white;">
+          <h5 class="mb-0">{{ t('details') }}</h5>
         </div>
         <div class="card-body">
-          <h6 style="color: var(--secondary-navy);" data-translate="current_system">Current System</h6>
-          <p id="systemInfo" data-translate="select_system_explore">Select a body system to explore</p>
-          
-          <h6 style="color: var(--secondary-navy); margin-top: 1.5rem;" data-translate="description">Description</h6>
+          <h6 style="color: #6DB9A6;">{{ t('current_system') }}</h6>
+          <p id="systemInfo">{{ t('select_system_explore') }}</p>
+
+          <h6 style="color: #6DB9A6; margin-top: 1.5rem;">{{ t('description') }}</h6>
           <p id="modelDescription"></p>
-          
-          <h6 style="color: var(--secondary-navy); margin-top: 1.5rem;" data-translate="database_organs">Database Organs</h6>
-          <div id="organsList" style="max-height: 300px; overflow-y: auto;">
-            <p class="text-muted" data-translate="loading_organs">Loading organs...</p>
-          </div>
         </div>
       </div>
     </div>
@@ -86,7 +83,51 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
 <script>
+const AT = {
+  skeleton_name: {{ t('skeleton_name')|tojson }},
+  muscular_name: {{ t('muscular_name')|tojson }},
+  skeleton_desc: {{ t('skeleton_desc')|tojson }},
+  muscular_desc: {{ t('muscular_desc')|tojson }},
+  male: {{ t('male')|tojson }},
+  female: {{ t('female')|tojson }},
+  model_load_failed: {{ t('model_load_failed')|tojson }},
+  model_load_failed_desc: {{ t('model_load_failed_desc')|tojson }},
+};
+
+// Translated body region names
+const R = {
+  skull: {{ t('region_skull')|tojson }},
+  face: {{ t('region_face')|tojson }},
+  neck: {{ t('region_neck')|tojson }},
+  shoulder_r: {{ t('region_shoulder_r')|tojson }},
+  shoulder_l: {{ t('region_shoulder_l')|tojson }},
+  upper_arm_r: {{ t('region_upper_arm_r')|tojson }},
+  upper_arm_l: {{ t('region_upper_arm_l')|tojson }},
+  forearm_r: {{ t('region_forearm_r')|tojson }},
+  forearm_l: {{ t('region_forearm_l')|tojson }},
+  hand_r: {{ t('region_hand_r')|tojson }},
+  hand_l: {{ t('region_hand_l')|tojson }},
+  chest: {{ t('region_chest')|tojson }},
+  abdomen: {{ t('region_abdomen')|tojson }},
+  spine: {{ t('region_spine')|tojson }},
+  pelvis: {{ t('region_pelvis')|tojson }},
+  upper_leg_r: {{ t('region_upper_leg_r')|tojson }},
+  upper_leg_l: {{ t('region_upper_leg_l')|tojson }},
+  knee_r: {{ t('region_knee_r')|tojson }},
+  knee_l: {{ t('region_knee_l')|tojson }},
+  lower_leg_r: {{ t('region_lower_leg_r')|tojson }},
+  lower_leg_l: {{ t('region_lower_leg_l')|tojson }},
+  foot_r: {{ t('region_foot_r')|tojson }},
+  foot_l: {{ t('region_foot_l')|tojson }},
+  ribcage: {{ t('region_ribcage')|tojson }},
+  lower_back: {{ t('region_lower_back')|tojson }},
+};
+
 let scene, camera, renderer, controls, currentModel;
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let modelBounds = null; // will store {min, max, height} after model loads
+
 const modelPaths = {
   male: {
     skeleton: '/static/models/male_human_skeleton_-_zbrush_-_anatomy_study.glb',
@@ -98,15 +139,13 @@ const modelPaths = {
   }
 };
 
-let organsData = [];
-
 // Initialize Three.js
 function initThreeJS() {
   const container = document.getElementById('canvas3d');
-  
+
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf5f7fa);
-  
+
   camera = new THREE.PerspectiveCamera(
     75,
     container.clientWidth / container.clientHeight,
@@ -114,31 +153,35 @@ function initThreeJS() {
     1000
   );
   camera.position.z = 3;
-  
+
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setClearColor(0xf5f7fa, 1);
   container.appendChild(renderer.domElement);
-  
+
   // Lighting
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
   scene.add(ambientLight);
-  
+
   const directionalLight = new THREE.DirectionalLight(0xffffff, 0.9);
   directionalLight.position.set(5, 10, 7);
   scene.add(directionalLight);
-  
+
   // Controls
   controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.enableZoom = true;
   controls.enablePan = true;
   controls.autoRotate = true;
   controls.autoRotateSpeed = 2;
-  
+
+  // Hover detection
+  renderer.domElement.addEventListener('mousemove', onMouseMove);
+  renderer.domElement.addEventListener('mouseleave', onMouseLeave);
+
   // Animation loop
   animate();
-  
+
   // Handle window resize
   window.addEventListener('resize', onWindowResize);
 }
@@ -156,46 +199,141 @@ function onWindowResize() {
   renderer.setSize(container.clientWidth, container.clientHeight);
 }
 
+// Detect body region from world-space intersection point
+// After glTF root transform: Y = up/down (head+, feet-), X = left/right, Z = front/back
+function getBodyRegion(point) {
+  if (!modelBounds) return null;
+  const mn = modelBounds.min, mx = modelBounds.max;
+
+  // Normalize Y (vertical) to 0 (feet) .. 1 (head)
+  const ny = (point.y - mn.y) / (mx.y - mn.y);
+  // X for left/right, use absolute for distance from center
+  const px = point.x;
+  const absX = Math.abs(px);
+  // Width of torso at any height (roughly half the total X range * 0.4)
+  const halfWidth = (mx.x - mn.x) * 0.2;
+  // Z for front/back
+  const midZ = (mn.z + mx.z) * 0.5;
+  const isFront = point.z > midZ;
+
+  // --- Head (top 12%) ---
+  if (ny > 0.88) {
+    return isFront ? R.face : R.skull;
+  }
+
+  // --- Neck (88% - 84%) ---
+  if (ny > 0.84) return R.neck;
+
+  // --- Upper body: arms vs torso (84% - 52%) ---
+  if (ny > 0.52) {
+    // Arms: outside the torso width
+    if (absX > halfWidth) {
+      const side = px > 0 ? 'l' : 'r';
+      if (ny > 0.79) return R['shoulder_' + side];
+      if (ny > 0.70) return R['upper_arm_' + side];
+      if (ny > 0.60) return R['forearm_' + side];
+      return R['hand_' + side];
+    }
+    // Torso center
+    if (!isFront) return ny > 0.65 ? R.spine : R.lower_back;
+    if (ny > 0.72) return R.chest;
+    if (ny > 0.62) return R.ribcage;
+    return R.abdomen;
+  }
+
+  // --- Hands/forearms hanging below torso ---
+  if (ny > 0.42 && absX > halfWidth * 1.5) {
+    const side = px > 0 ? 'l' : 'r';
+    if (absX > halfWidth * 2) return R['hand_' + side];
+    return R['forearm_' + side];
+  }
+
+  // --- Pelvis / Hips (52% - 44%) ---
+  if (ny > 0.44) {
+    if (!isFront) return R.lower_back;
+    return R.pelvis;
+  }
+
+  // --- Legs (below 44%) ---
+  const side = px > 0 ? 'l' : 'r';
+  if (ny > 0.28) return R['upper_leg_' + side];
+  if (ny > 0.24) return R['knee_' + side];
+  if (ny > 0.07) return R['lower_leg_' + side];
+  return R['foot_' + side];
+}
+
+function onMouseMove(event) {
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+  if (!currentModel) return;
+
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObject(currentModel, true);
+  const tooltip = document.getElementById('hoverTooltip');
+
+  if (intersects.length > 0) {
+    // Use world-space point directly (modelBounds is also in world space)
+    const regionName = getBodyRegion(intersects[0].point);
+    if (regionName) {
+      tooltip.textContent = regionName;
+      tooltip.style.display = 'block';
+      tooltip.style.left = (event.clientX - rect.left + 15) + 'px';
+      tooltip.style.top = (event.clientY - rect.top - 10) + 'px';
+      renderer.domElement.style.cursor = 'pointer';
+      return;
+    }
+  }
+
+  tooltip.style.display = 'none';
+  renderer.domElement.style.cursor = 'grab';
+}
+
+function onMouseLeave() {
+  document.getElementById('hoverTooltip').style.display = 'none';
+  renderer.domElement.style.cursor = 'grab';
+}
+
 // Load 3D model with progress
 function loadModel(gender, system) {
   if (!modelPaths[gender] || !modelPaths[gender][system]) {
     console.error('Invalid gender or system:', {gender, system});
-    document.getElementById('loadingSpinner').innerHTML = '<p class="text-danger">Invalid model selection</p>';
+    document.getElementById('loadingSpinner').innerHTML = `<p class="text-danger">${AT.model_load_failed}</p>`;
     return;
   }
-  
+
   const modelPath = modelPaths[gender][system];
   const loadingSpinner = document.getElementById('loadingSpinner');
-  
-  if (!loadingSpinner) {
-    console.error('Loading spinner not found');
-    return;
-  }
-  
+
+  if (!loadingSpinner) return;
+
   loadingSpinner.style.display = 'flex';
   loadingSpinner.style.flexDirection = 'column';
   loadingSpinner.style.alignItems = 'center';
   loadingSpinner.style.justifyContent = 'center';
-  
+
   document.getElementById('loadingProgress').style.width = '0%';
   document.getElementById('loadingPercent').textContent = '0%';
-  
+
   if (currentModel) {
     scene.remove(currentModel);
     currentModel = null;
   }
-  
-  console.log('Loading model:', modelPath);
-  
+  modelBounds = null;
+
   const loader = new THREE.GLTFLoader();
   loader.load(
     modelPath,
     (gltf) => {
       currentModel = gltf.scene;
       scene.add(currentModel);
-      
-      // Fit camera to model
+
+      // Compute model bounds for body region detection
       const box = new THREE.Box3().setFromObject(currentModel);
+      modelBounds = { min: box.min, max: box.max };
+
+      // Fit camera to model
       const size = box.getSize(new THREE.Vector3());
       const maxDim = Math.max(size.x, size.y, size.z);
       const fov = camera.fov * (Math.PI / 180);
@@ -204,8 +342,7 @@ function loadModel(gender, system) {
       camera.position.z = cameraZ;
       controls.target = box.getCenter(new THREE.Vector3());
       controls.update();
-      
-      // Show 100% before hiding
+
       document.getElementById('loadingProgress').style.width = '100%';
       document.getElementById('loadingPercent').textContent = '100%';
       setTimeout(() => {
@@ -222,7 +359,7 @@ function loadModel(gender, system) {
     },
     (error) => {
       console.error('Error loading model:', error);
-      document.getElementById('loadingSpinner').innerHTML = '<div class="text-center"><p class="text-danger"><strong>Model Load Failed</strong></p><p class="text-muted small">The 3D model could not be loaded. Try selecting a different option.</p></div>';
+      document.getElementById('loadingSpinner').innerHTML = `<div class="text-center"><p class="text-danger"><strong>${AT.model_load_failed}</strong></p><p class="text-muted small">${AT.model_load_failed_desc}</p></div>`;
       setTimeout(() => {
         document.getElementById('loadingSpinner').style.display = 'none';
       }, 5000);
@@ -232,60 +369,19 @@ function loadModel(gender, system) {
 
 // Update details panel
 function updateDetails(gender, system) {
-  const systemNames = {
-    skeleton: 'Human Skeleton',
-    muscular: 'Muscular System'
-  };
-  
-  const descriptions = {
-    skeleton: 'The human skeleton is composed of 206 bones in adults. It provides structural support, enables movement, protects vital organs, and produces blood cells. The skeleton is incredibly strong yet lightweight.',
-    muscular: 'The human muscular system has over 600 muscles. These muscles work with the skeleton to enable movement, maintain posture, generate heat, and support internal structures through contractions.'
-  };
-  
-  document.getElementById('systemInfo').textContent = `${gender.toUpperCase()} - ${systemNames[system]}`;
+  const systemNames = { skeleton: AT.skeleton_name, muscular: AT.muscular_name };
+  const descriptions = { skeleton: AT.skeleton_desc, muscular: AT.muscular_desc };
+  const genderLabel = gender === 'male' ? AT.male : AT.female;
+
+  document.getElementById('systemInfo').textContent = `${genderLabel} - ${systemNames[system]}`;
   document.getElementById('modelDescription').textContent = descriptions[system];
-  
-  renderOrgansList();
-}
-
-// Fetch organs from API
-async function loadOrgans() {
-  try {
-    const response = await fetch('/api/organs');
-    const data = await response.json();
-    organsData = data.organs;
-    renderOrgansList();
-  } catch (error) {
-    console.error('Error loading organs:', error);
-  }
-}
-
-// Render organs list
-function renderOrgansList() {
-  const container = document.getElementById('organsList');
-  container.innerHTML = '';
-  
-  if (organsData.length === 0) {
-    container.innerHTML = '<p class="text-muted">No organs in database</p>';
-    return;
-  }
-  
-  organsData.forEach(organ => {
-    const btn = document.createElement('button');
-    btn.className = 'btn btn-sm btn-outline-primary w-100 mb-2 text-start';
-    btn.innerHTML = `<strong>${organ.name}</strong><br><small class="text-muted">${organ.system}</small>`;
-    btn.style.fontSize = '0.85rem';
-    btn.style.padding = '0.5rem';
-    container.appendChild(btn);
-  });
 }
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
   initThreeJS();
-  loadOrgans();
   loadModel('male', 'skeleton');
-  
+
   // Gender change
   document.querySelectorAll('input[name="gender"]').forEach(radio => {
     radio.addEventListener('change', (e) => {
@@ -293,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loadModel(e.target.value, system);
     });
   });
-  
+
   // System change
   document.getElementById('systemSelect').addEventListener('change', (e) => {
     const gender = document.querySelector('input[name="gender"]:checked').value;

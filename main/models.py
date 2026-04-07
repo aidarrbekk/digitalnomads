@@ -487,6 +487,61 @@ class DoctorSpecialization(db.Model):
     license_number = db.Column(db.String(100))
     
     doctor = db.relationship('Doctor', backref='specializations', lazy=True)
-    
+
     def __repr__(self) -> str:
         return f'<DoctorSpecialization {self.specialization}>'
+
+
+class MedicalDocument(db.Model):
+    """Uploaded medical document (PDF or pasted text)"""
+    __tablename__ = 'medical_documents'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    filename = db.Column(db.String(255))
+    file_path = db.Column(db.String(500))
+    input_type = db.Column(db.String(20), nullable=False)  # 'pdf' or 'text'
+    raw_text = db.Column(db.Text)
+    content_hash = db.Column(db.String(64), index=True)  # SHA-256 hash for duplicate detection
+
+    status = db.Column(db.String(20), default='pending')  # pending/extracted/confirmed/failed
+    error_message = db.Column(db.Text)
+    ai_summary = db.Column(db.Text)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    confirmed_at = db.Column(db.DateTime)
+
+    user = db.relationship('User', backref='medical_documents', lazy=True)
+    lab_results = db.relationship('LabResult', backref='document', lazy=True,
+                                  cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return f'<MedicalDocument {self.id} - {self.input_type}>'
+
+
+class LabResult(db.Model):
+    """Individual lab result extracted from a medical document"""
+    __tablename__ = 'lab_results'
+
+    id = db.Column(db.Integer, primary_key=True)
+    document_id = db.Column(db.Integer, db.ForeignKey('medical_documents.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    test_name = db.Column(db.String(100), nullable=False)
+    test_name_ru = db.Column(db.String(100))
+    value = db.Column(db.Float)
+    unit = db.Column(db.String(50))
+    reference_range_low = db.Column(db.Float)
+    reference_range_high = db.Column(db.Float)
+    reference_range_text = db.Column(db.String(100))
+    status = db.Column(db.String(20))  # normal/low/high/critical
+    category = db.Column(db.String(50))  # blood_sugar/lipid/hematology/kidney/liver/thyroid/minerals/vitamins/urine
+
+    is_confirmed = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', backref='lab_results', lazy=True)
+
+    def __repr__(self):
+        return f'<LabResult {self.test_name}: {self.value} {self.unit}>'

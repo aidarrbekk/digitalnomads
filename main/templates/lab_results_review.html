@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Review Lab Results - ShipAI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-5 fw-bold" style="color: var(--secondary-navy);">
+                {{ t('lab_review_title') }}
+            </h1>
+            <p class="lead text-muted">
+                {{ t('uploaded_on') }} {{ doc.created_at.strftime('%Y-%m-%d %H:%M') }} &middot; {{ doc.input_type|upper }}
+            </p>
+        </div>
+        <div class="col-md-4 text-end d-flex align-items-center justify-content-end">
+            <a href="{{ url_for('user.lab_upload') }}" class="btn btn-outline-secondary">
+                {{ t('back_to_upload') }}
+            </a>
+        </div>
+    </div>
+
+    {% if doc.status == 'failed' %}
+    <!-- Error State -->
+    <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>{{ t('extraction_failed') }}</strong>: {{ doc.error_message }}
+    </div>
+    <div class="text-center py-4">
+        <a href="{{ url_for('user.lab_upload') }}" class="btn btn-primary">
+            {{ t('try_again') }}
+        </a>
+    </div>
+
+    {% elif doc.lab_results|length == 0 %}
+    <!-- No results -->
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-circle me-2"></i>
+        {{ t('no_lab_values') }}
+    </div>
+    <a href="{{ url_for('user.lab_upload') }}" class="btn btn-primary">
+        {{ t('try_again') }}
+    </a>
+
+    {% else %}
+    <!-- AI Summary -->
+    {% if doc.ai_summary %}
+    <div class="card shadow-sm mb-4" style="border-left: 5px solid var(--bs-info);">
+        <div class="card-body">
+            <h6 class="text-muted mb-2"><i class="bi bi-robot me-1"></i> {{ t('ai_summary') }}</h6>
+            <p class="mb-0">{{ doc.ai_summary }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Info alert -->
+    {% if doc.status == 'extracted' %}
+    <div class="alert alert-warning d-flex align-items-start mb-4">
+        <i class="bi bi-pencil-square me-2 mt-1"></i>
+        <div>
+            {{ t('lab_review_desc') }}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Lab Results Table -->
+    <form method="POST">
+
+        <div class="card shadow-sm mb-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>{{ t('test_name') }}</th>
+                            <th>{{ t('value_col') }}</th>
+                            <th>{{ t('unit_col') }}</th>
+                            <th>{{ t('reference_range') }}</th>
+                            <th>{{ t('status_col') }}</th>
+                            <th>{{ t('category_col') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lab in doc.lab_results %}
+                        <tr>
+                            <td>
+                                <strong>{{ lab.test_name }}</strong>
+                            </td>
+                            <td>
+                                {% if doc.status == 'extracted' %}
+                                <input type="number" step="any" name="value_{{ lab.id }}"
+                                       value="{{ lab.value }}" class="form-control form-control-sm"
+                                       style="width: 100px;">
+                                {% else %}
+                                <span class="fw-bold text-{% if lab.status == 'normal' %}success{% elif lab.status in ('low', 'high') %}warning{% else %}danger{% endif %}">
+                                    {{ lab.value }}
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if doc.status == 'extracted' %}
+                                <input type="text" name="unit_{{ lab.id }}"
+                                       value="{{ lab.unit }}" class="form-control form-control-sm"
+                                       style="width: 80px;">
+                                {% else %}
+                                {{ lab.unit }}
+                                {% endif %}
+                            </td>
+                            <td class="text-muted small">{{ lab.reference_range_text or '—' }}</td>
+                            <td>
+                                <span class="badge bg-{% if lab.status == 'normal' %}success{% elif lab.status in ('low', 'high') %}warning{% else %}danger{% endif %}">
+                                    {% if lab.status == 'normal' %}
+                                    {{ t('status_normal') }}
+                                    {% elif lab.status == 'low' %}
+                                    {{ t('status_low') }}
+                                    {% elif lab.status == 'high' %}
+                                    {{ t('status_high') }}
+                                    {% elif lab.status == 'critical' %}
+                                    {{ t('status_critical') }}
+                                    {% else %}
+                                    {{ lab.status|capitalize }}
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td><span class="badge bg-light text-dark">{{ lab.category }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex gap-2">
+            {% if doc.status == 'extracted' %}
+            <button type="submit" class="btn btn-success btn-lg">
+                <i class="bi bi-check-circle me-1"></i>
+                {{ t('confirm_save') }}
+            </button>
+            {% endif %}
+            <a href="{{ url_for('user.lab_upload') }}" class="btn btn-secondary btn-lg">
+                {{ t('back_to_upload') }}
+            </a>
+            {% if doc.status == 'confirmed' %}
+            <a href="{{ url_for('user.medical_analysis') }}" class="btn btn-primary btn-lg">
+                {{ t('view_analysis') }}
+            </a>
+            {% endif %}
+        </div>
+    </form>
+    {% endif %}
+</div>
+
+{% endblock %}
