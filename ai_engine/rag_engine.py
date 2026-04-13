@@ -55,6 +55,12 @@ SECTION_LABELS = {
     "general":        "Общая информация",
 }
 
+MULTILANG_INSTRUCTION = (
+    "ВАЖНО: Определи язык вопроса пользователя и отвечай на том же языке "
+    "(русский, английский или казахский). Контекст протоколов на русском — "
+    "переведи ответ на язык вопроса.\n"
+)
+
 SAFETY_TEXT = (
     "⚠️ Я не врач и не ставлю диагноз. Я помогаю ориентироваться по симптомам "
     "и показываю выдержки из клинических протоколов.\n"
@@ -66,7 +72,8 @@ SAFETY_TEXT = (
 SYSTEM_PROMPTS = {
     "symptoms": (
         "Ты — МедАссистент, виртуальный помощник по клиническим протоколам МЗ РК.\n"
-        "Ты НЕ врач и НЕ ставишь диагноз. Отвечай ТОЛЬКО на русском языке.\n\n"
+        "Ты НЕ врач и НЕ ставишь диагноз.\n"
+        f"{MULTILANG_INSTRUCTION}\n"
         "СТРОГИЕ ПРАВИЛА:\n"
         "1. Отвечай ИСКЛЮЧИТЕЛЬНО на основании предоставленного контекста.\n"
         "2. НИКОГДА не выдумывай информацию, лекарства, дозировки или диагнозы.\n"
@@ -80,7 +87,8 @@ SYSTEM_PROMPTS = {
     ),
     "treatment": (
         "Ты — МедАссистент, виртуальный помощник по клиническим протоколам МЗ РК.\n"
-        "Ты НЕ врач и НЕ назначаешь лечение. Отвечай ТОЛЬКО на русском языке.\n\n"
+        "Ты НЕ врач и НЕ назначаешь лечение.\n"
+        f"{MULTILANG_INSTRUCTION}\n"
         "Пользователь спрашивает о лечении. Ответь строго на основании контекста.\n\n"
         "СТРОГИЕ ПРАВИЛА:\n"
         "1. Описывай только то лечение, которое указано в протоколах.\n"
@@ -95,7 +103,8 @@ SYSTEM_PROMPTS = {
     ),
     "info": (
         "Ты — МедАссистент, виртуальный помощник по клиническим протоколам МЗ РК.\n"
-        "Ты НЕ врач. Отвечай ТОЛЬКО на русском языке.\n\n"
+        "Ты НЕ врач.\n"
+        f"{MULTILANG_INSTRUCTION}\n"
         "Пользователь хочет узнать информацию о заболевании. Ответь на основании контекста.\n\n"
         "СТРОГИЕ ПРАВИЛА:\n"
         "1. Отвечай ИСКЛЮЧИТЕЛЬНО на основании предоставленного контекста.\n"
@@ -110,14 +119,33 @@ SYSTEM_PROMPTS = {
     ),
 }
 
-NOT_MEDICAL_RESPONSE = (
-    "Я — МедАссистент и могу помочь только с медицинскими вопросами.\n\n"
-    "Вы можете:\n"
-    "• Описать симптомы (например: 'температура 38, кашель, слабость')\n"
-    "• Спросить о заболевании (например: 'что такое бронхиальная астма')\n"
-    "• Узнать о лечении (например: 'как лечить гастрит')\n\n"
-    f"{SAFETY_TEXT}"
-)
+NOT_MEDICAL_RESPONSES = {
+    "ru": (
+        "Я — МедАссистент и могу помочь только с медицинскими вопросами.\n\n"
+        "Вы можете:\n"
+        "• Описать симптомы (например: 'температура 38, кашель, слабость')\n"
+        "• Спросить о заболевании (например: 'что такое бронхиальная астма')\n"
+        "• Узнать о лечении (например: 'как лечить гастрит')\n\n"
+        f"{SAFETY_TEXT}"
+    ),
+    "en": (
+        "I am MedAssistant and can only help with medical questions.\n\n"
+        "You can:\n"
+        "• Describe symptoms (e.g. 'fever 38, cough, weakness')\n"
+        "• Ask about a disease (e.g. 'what is bronchial asthma')\n"
+        "• Learn about treatment (e.g. 'how to treat gastritis')\n\n"
+        "⚠️ I am not a doctor. For emergencies call *103*.\n"
+    ),
+    "kz": (
+        "Мен — МедАссистентпін, тек медициналық сұрақтарға көмектесе аламын.\n\n"
+        "Сіз:\n"
+        "• Белгілерді сипаттай аласыз (мысалы: 'температура 38, жөтел, әлсіздік')\n"
+        "• Ауру туралы сұрай аласыз (мысалы: 'бронхиалды астма дегеніміз не')\n"
+        "• Емдеу туралы біле аласыз (мысалы: 'гастритті қалай емдеу керек')\n\n"
+        "⚠️ Мен дәрігер емеспін. Шұғыл жағдайда *103* нөміріне хабарласыңыз.\n"
+    ),
+}
+NOT_MEDICAL_RESPONSE = NOT_MEDICAL_RESPONSES["ru"]  # default fallback
 
 FOLLOWUP_QUESTIONS = [
     "Как давно начались симптомы и усиливаются ли они?",
@@ -177,7 +205,10 @@ def _build_context(docs: list[dict]) -> str:
 
     return "\n".join(parts) if parts else "Подходящие протоколы не найдены."
 
-def _build_prompt(question: str, docs: list[dict], intent: str) -> str:
+LANG_NAMES = {"ru": "русском", "en": "English", "kz": "қазақ тілінде"}
+
+def _build_prompt(question: str, docs: list[dict], intent: str,
+                  medical_context: str = "", lang: str = "ru") -> str:
         context = _build_context(docs)
         system_prompt = SYSTEM_PROMPTS.get(intent, SYSTEM_PROMPTS["symptoms"])
 
@@ -188,13 +219,35 @@ def _build_prompt(question: str, docs: list[dict], intent: str) -> str:
         }
         user_action = intent_labels.get(intent, "описал симптомы")
 
+        medical_block = ""
+        if medical_context:
+            medical_block = (
+                "\nДанные из медицинской карты пациента:\n"
+                f"{medical_context}\n\n"
+                "Учитывай данные медицинской карты при ответе "
+                "(аллергии, хронические заболевания, текущие лекарства).\n"
+            )
+
+        # Language reminder at the very end so LLM follows it
+        lang_reminder = ""
+        if lang != "ru":
+            lang_name = LANG_NAMES.get(lang, lang)
+            lang_reminder = (
+                f"\nОБЯЗАТЕЛЬНО отвечай на {lang_name}. "
+                f"ВСЕ заголовки, пункты и текст ответа должны быть на {lang_name}. "
+                "НЕ упоминай перевод, язык протоколов или смену языка. "
+                "Просто отвечай на нужном языке напрямую."
+            )
+
         return (
             "<s>[INST] "
             f"{system_prompt}\n"
+            f"{medical_block}"
             f"Пользователь {user_action}: {question}\n\n"
             f"Выдержки из клинических протоколов МЗ РК:\n\n{context}\n\n"
             "Ответь строго по контексту выше. Если информации недостаточно — "
             "так и скажи. Не выдумывай."
+            f"{lang_reminder}"
             " [/INST]"
         )
 
@@ -210,7 +263,18 @@ def _fallback_answer(docs: list[dict]) -> str:
 
     # ── Public API ────────────────────────────────────────────────────────────────
 
-def answer_question(question: str) -> str:
+def _detect_lang(text: str) -> str:
+    """Simple heuristic: Kazakh-specific chars → kz, Latin-majority → en, else ru."""
+    kz_chars = set("ӘәҒғҚқҢңӨөҰұҮүІіҺһ")
+    if any(c in kz_chars for c in text):
+        return "kz"
+    latin = sum(1 for c in text if 'a' <= c.lower() <= 'z')
+    cyrillic = sum(1 for c in text if '\u0400' <= c <= '\u04ff')
+    if latin > cyrillic:
+        return "en"
+    return "ru"
+
+def answer_question(question: str, medical_context: str = "") -> str:
         """
         Full RAG pipeline:
           1. Red-flag check → emergency message
@@ -221,6 +285,8 @@ def answer_question(question: str) -> str:
           6. Fallback if generation fails
           7. Log interaction
         """
+        lang = _detect_lang(question)
+
         # 1. Red flags
         flags = detect_red_flags(question)
         if flags:
@@ -236,17 +302,18 @@ def answer_question(question: str) -> str:
         logger.info(f"Intent for '{question[:50]}': {intent}")
 
         # 3. Retrieve
-        docs = retrieve(question)
+        docs = retrieve(question, lang=lang)
         logger.info(f"Retrieved {len(docs)} docs for: {question!r}")
 
         # 4. No relevant results — likely not a medical question
         if not docs:
-            answer = NOT_MEDICAL_RESPONSE
+            answer = NOT_MEDICAL_RESPONSES.get(lang, NOT_MEDICAL_RESPONSE)
             _log_interaction(question, answer)
             return answer
 
-        # 5. Generate with intent-specific prompt
-        prompt = _build_prompt(question, docs[:TOP_DOCS], intent)
+        # 5. Generate with intent-specific prompt (include medical card context)
+        prompt = _build_prompt(question, docs[:TOP_DOCS], intent,
+                               medical_context=medical_context, lang=lang)
 
         try:
             answer = generate_answer(prompt)

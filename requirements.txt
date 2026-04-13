@@ -16,6 +16,7 @@ faiss-cpu
 sentence-transformers
 pyyaml
 requests
+beautifulsoup4
 groq
 pdfplumber
 pypdf

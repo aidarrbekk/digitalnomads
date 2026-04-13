@@ -3,20 +3,126 @@
 {% block title %}Medical AI Assistant - ShipAI{% endblock %}
 
 {% block content %}
-<div class="container-fluid" style="padding: 0;">
-    <div class="row" style="height: 100vh; margin: 0;">
+<style>
+    /* Assistant page: fill remaining viewport after navbar */
+    .assistant-page-wrap .row { height: calc(100vh - 88px); margin: 0; }
+    .assistant-page-wrap .chat-col { max-height: calc(100vh - 88px); }
+    .assistant-page-wrap .sidebar-col { max-height: calc(100vh - 88px); }
+
+    /* Sidebar */
+    .chat-sidebar {
+        background: var(--bg-secondary);
+        border-right: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .chat-sidebar-header {
+        padding: 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+        flex-shrink: 0;
+    }
+    .chat-sidebar-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 0.5rem;
+    }
+    .convo-item {
+        display: flex;
+        align-items: center;
+        padding: 0.55rem 0.7rem;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-bottom: 2px;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        transition: background 0.15s;
+        word-break: break-word;
+    }
+    .convo-item:hover { background: rgba(100, 255, 218, 0.06); }
+    .convo-item.active { background: rgba(100, 255, 218, 0.12); color: var(--text-primary); font-weight: 600; }
+    .convo-item .convo-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .convo-item .convo-delete {
+        opacity: 0;
+        border: none;
+        background: none;
+        color: var(--text-muted);
+        padding: 2px 4px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: opacity 0.15s;
+    }
+    .convo-item:hover .convo-delete { opacity: 1; }
+    .convo-item .convo-delete:hover { color: var(--danger-color); }
+    .no-convos { text-align: center; color: var(--text-muted); font-size: 0.82rem; padding: 1.5rem 0.5rem; }
+
+    /* Compact chat padding */
+    #messagesContainer { padding: 0.75rem 1rem !important; }
+    .assistant-input-area { padding: 0.5rem 0.75rem !important; }
+    .assistant-input-area .form-control { padding: 0.4rem 0.75rem; font-size: 0.9rem; }
+    .assistant-input-area .btn { padding: 0.4rem 1rem; font-size: 0.9rem; }
+    .assistant-input-area small { font-size: 0.78rem; margin-top: 0.25rem !important; }
+
+    /* Assistant message formatting */
+    .assistant-message { white-space: pre-wrap; line-height: 1.5; }
+
+    /* Typewriter cursor */
+    .typing-cursor::after {
+        content: '\25AE';
+        animation: blink-cursor 0.7s step-end infinite;
+        color: var(--accent);
+        margin-left: 1px;
+    }
+    @keyframes blink-cursor {
+        50% { opacity: 0; }
+    }
+
+    /* Mobile sidebar toggle */
+    @media (max-width: 767.98px) {
+        .chat-sidebar { display: none; }
+        .chat-sidebar.show { display: flex; position: absolute; z-index: 10; width: 260px; height: 100%; }
+    }
+</style>
+<div class="assistant-page-wrap">
+    <div class="row g-0">
+        <!-- Sidebar: Conversations -->
+        <div class="col-md-3 col-lg-2 sidebar-col">
+            <div class="chat-sidebar" id="chatSidebar">
+                <div class="chat-sidebar-header d-flex align-items-center gap-2">
+                    <button class="btn btn-sm btn-primary flex-grow-1" id="newChatBtn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        {{ t('new_chat') }}
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" id="clearHistoryBtn" title="{{ t('clear_history') }}">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                    </button>
+                </div>
+                <div class="chat-sidebar-list" id="convoList">
+                    <div class="no-convos">{{ t('no_conversations') }}</div>
+                </div>
+            </div>
+        </div>
+
         <!-- Chat Area -->
-        <div class="col-md-8 d-flex flex-column" style="max-height: 100vh; padding: 0;">
+        <div class="col-md-9 col-lg-10 d-flex flex-column chat-col" style="padding: 0;">
             <!-- Header -->
-            <div class="p-4" style="background: rgba(100, 255, 218, 0.08); border-bottom: 1px solid var(--border-color);">
-                <h2 class="mb-1" style="color: var(--neon-mint);">{{ t('assistant_title') }}</h2>
-                <p class="mb-0" style="color: var(--text-muted);">{{ t('assistant_subtitle') }}</p>
+            <div class="p-3 d-flex align-items-center justify-content-between" style="background: rgba(100, 255, 218, 0.08); border-bottom: 1px solid var(--border-color); flex-shrink: 0;">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-sm btn-outline-secondary d-md-none" id="toggleSidebarBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    </button>
+                    <div>
+                        <h5 class="mb-0" style="color: var(--neon-mint);">{{ t('assistant_title') }}</h5>
+                        <small class="mb-0" style="color: var(--text-muted);">{{ t('assistant_subtitle') }}</small>
+                    </div>
+                </div>
             </div>
 
             <!-- Messages Container -->
-            <div id="messagesContainer" class="flex-grow-1 overflow-auto p-4" style="background: var(--bg-primary);">
+            <div id="messagesContainer" class="flex-grow-1 overflow-auto p-4" style="background: var(--bg-primary); min-height: 0;">
                 <!-- Welcome Message -->
-                <div class="mb-3">
+                <div class="mb-3" id="welcomeMessage">
                     <div class="alert alert-info" role="alert">
                         <strong>{{ t('assistant_welcome') }}</strong><br>
                         {{ t('assistant_intro') }}
@@ -27,7 +133,7 @@
             </div>
 
             <!-- Input Area -->
-            <div class="p-3" style="border-top: 1px solid var(--border-color); background: var(--bg-secondary);">
+            <div class="assistant-input-area" style="border-top: 1px solid var(--border-color); background: var(--bg-secondary); flex-shrink: 0;">
                 <div class="input-group">
                     <input
                         type="text"
@@ -49,55 +155,42 @@
                 </small>
             </div>
         </div>
+    </div>
+</div>
 
-        <!-- Sidebar -->
-        <div class="col-md-4 d-none d-md-block" style="max-height: 100vh; overflow-y: auto; background: var(--bg-secondary); border-left: 1px solid var(--border-color);">
-            <div class="p-4">
-                <!-- Quick Actions -->
-                <h5 class="mb-3" style="color: var(--neon-mint);">{{ t('quick_questions') }}</h5>
-                <div class="d-grid gap-2 mb-4">
-                    <button class="btn btn-outline-primary btn-sm quick-action" data-message="{{ t('headache_query') }}">
-                        {{ t('headache_query') }}
-                    </button>
-                    <button class="btn btn-outline-primary btn-sm quick-action" data-message="{{ t('stomach_query') }}">
-                        {{ t('stomach_query') }}
-                    </button>
-                    <button class="btn btn-outline-primary btn-sm quick-action" data-message="{{ t('temperature_query') }}">
-                        {{ t('temperature_query') }}
-                    </button>
-                    <button class="btn btn-outline-primary btn-sm quick-action" data-message="{{ t('throat_query') }}">
-                        {{ t('throat_query') }}
-                    </button>
+<!-- Welcome / Instructions Modal -->
+<div class="modal fade" id="welcomeModal" tabindex="-1" aria-labelledby="welcomeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color);">
+                <h5 class="modal-title" id="welcomeModalLabel" style="color: var(--accent); font-weight: 700;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2" style="vertical-align: -3px;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    {{ t('how_to_use_title') }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <ol class="mb-0 ps-3" style="color: var(--text-secondary); font-size: 0.92rem;">
+                        <li class="mb-2">{{ t('how_to_use_1') }}</li>
+                        <li class="mb-2">{{ t('how_to_use_2') }}</li>
+                        <li class="mb-2">{{ t('how_to_use_3') }}</li>
+                        <li class="mb-2">{{ t('how_to_use_4') }}</li>
+                        <li>{{ t('how_to_use_5') }}</li>
+                    </ol>
                 </div>
-
-                <!-- Tips -->
-                <h5 class="mb-3" style="color: var(--neon-mint);">{{ t('useful_tips') }}</h5>
-                <div class="alert alert-light small" style="background: rgba(100, 255, 218, 0.05) !important; border: 1px solid var(--border-color); color: var(--text-secondary) !important;">
-                    <strong style="color: var(--neon-mint);">{{ t('assistant_what_can') }}</strong>
-                    <ul class="mb-0 mt-2">
-                        <li>{{ t('tip_1') }}</li>
-                        <li>{{ t('tip_2') }}</li>
-                        <li>{{ t('tip_3') }}</li>
-                        <li>{{ t('tip_4') }}</li>
-                    </ul>
+                <div class="alert alert-warning small mb-0" style="border-left: 4px solid var(--danger-color);">
+                    <h6 class="mb-2" style="color: var(--danger-color); font-weight: 700;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1" style="vertical-align: -2px;"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        {{ t('disclaimer_title') }}
+                    </h6>
+                    <p class="mb-2">{{ t('disclaimer_text') }}</p>
+                    <p class="mb-2"><strong>{{ t('disclaimer_responsibility') }}</strong></p>
+                    <p class="mb-0">{{ t('disclaimer_emergency') }}</p>
                 </div>
-
-                <!-- Red Flags -->
-                <h5 class="mb-3" style="color: var(--danger-color);">{{ t('red_flags') }}</h5>
-                <div class="alert alert-danger small">
-                    <ul class="mb-0">
-                        <li>{{ t('red_flag_1') }}</li>
-                        <li>{{ t('red_flag_2') }}</li>
-                        <li>{{ t('red_flag_3') }}</li>
-                        <li>{{ t('red_flag_4') }}</li>
-                        <li>{{ t('red_flag_5') }}</li>
-                    </ul>
-                </div>
-
-                <!-- Clear History -->
-                <button class="btn btn-sm btn-outline-secondary w-100" id="clearHistoryBtn">
-                    {{ t('clear_history') }}
-                </button>
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
+                <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal">{{ t('send_btn') }} &mdash; {{ t('assistant_title') }}</button>
             </div>
         </div>
     </div>
@@ -117,26 +210,169 @@ document.addEventListener('DOMContentLoaded', function() {
     const sendBtn = document.getElementById('sendBtn');
     const clearHistoryBtn = document.getElementById('clearHistoryBtn');
     const loadingSpinner = document.getElementById('loadingSpinner');
-    const quickActionButtons = document.querySelectorAll('.quick-action');
+    const convoList = document.getElementById('convoList');
+    const newChatBtn = document.getElementById('newChatBtn');
+    const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+    const chatSidebar = document.getElementById('chatSidebar');
+    const welcomeModal = new bootstrap.Modal(document.getElementById('welcomeModal'));
 
+    let currentConvoId = null;
+
+    // ── Show welcome modal only when navigating from another page ──
+    // Uses sessionStorage: set a flag on first visit, skip modal on reloads
+    const MODAL_KEY = 'assistant_modal_shown';
+    const modalShown = sessionStorage.getItem(MODAL_KEY);
+
+    // ── Mobile sidebar toggle ──
+    if (toggleSidebarBtn) {
+        toggleSidebarBtn.addEventListener('click', function() {
+            chatSidebar.classList.toggle('show');
+        });
+    }
+
+    // ── Conversation sidebar ──
+    async function loadConversations() {
+        try {
+            const resp = await fetch('{{ url_for("assistant.list_conversations") }}');
+            const data = await resp.json();
+            renderConversations(data.conversations || []);
+        } catch (e) {
+            console.error('Error loading conversations:', e);
+        }
+    }
+
+    function renderConversations(convos) {
+        if (!convos.length) {
+            convoList.innerHTML = '<div class="no-convos">{{ t("no_conversations") }}</div>';
+            return;
+        }
+        convoList.innerHTML = '';
+        convos.forEach(function(c) {
+            const item = document.createElement('div');
+            item.className = 'convo-item' + (c.id === currentConvoId ? ' active' : '');
+            item.innerHTML =
+                '<span class="convo-title">' + escapeHtml(c.title) + '</span>' +
+                '<button class="convo-delete" title="{{ t("delete_chat") }}">&times;</button>';
+            item.querySelector('.convo-title').addEventListener('click', function() {
+                loadConversation(c.id);
+                chatSidebar.classList.remove('show');
+            });
+            item.querySelector('.convo-delete').addEventListener('click', function(e) {
+                e.stopPropagation();
+                deleteConversation(c.id);
+            });
+            convoList.appendChild(item);
+        });
+    }
+
+    function escapeHtml(text) {
+        var d = document.createElement('div');
+        d.textContent = text;
+        return d.innerHTML;
+    }
+
+    async function loadConversation(convoId) {
+        currentConvoId = convoId;
+        messagesContainer.innerHTML = '';
+        highlightActiveConvo();
+        try {
+            const resp = await fetch('{{ url_for("assistant.get_history") }}?conversation_id=' + convoId);
+            const data = await resp.json();
+            if (data.history && data.history.length > 0) {
+                data.history.forEach(function(entry) {
+                    if (entry.user) addMessageToUI(entry.user, 'user', true);
+                    if (entry.assistant) addMessageToUI(entry.assistant, 'assistant', true);
+                });
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        } catch (e) {
+            console.error('Error loading conversation:', e);
+        }
+    }
+
+    function highlightActiveConvo() {
+        convoList.querySelectorAll('.convo-item').forEach(function(el, idx) {
+            // items rendered in order from loadConversations
+        });
+        // Re-render is simpler
+        loadConversations();
+    }
+
+    async function deleteConversation(convoId) {
+        if (!confirm('{{ t("delete_chat_confirm") }}')) return;
+        try {
+            await fetch('{{ url_for("assistant.delete_conversation", convo_id=0) }}'.replace('/0', '/' + convoId), {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (currentConvoId === convoId) {
+                currentConvoId = null;
+                showWelcomeMessage();
+            }
+            loadConversations();
+        } catch (e) {
+            console.error('Error deleting conversation:', e);
+        }
+    }
+
+    function startNewChat() {
+        currentConvoId = null;
+        showWelcomeMessage();
+        highlightActiveConvo();
+        messageInput.focus();
+    }
+
+    function showWelcomeMessage() {
+        messagesContainer.innerHTML = `
+            <div class="mb-3" id="welcomeMessage">
+                <div class="alert alert-info" role="alert">
+                    <strong>{{ t('assistant_welcome') }}</strong><br>
+                    {{ t('assistant_intro') }}
+                    <br><br>
+                    {{ t('assistant_disclaimer') }}
+                </div>
+            </div>
+        `;
+    }
+
+    newChatBtn.addEventListener('click', function() {
+        startNewChat();
+        chatSidebar.classList.remove('show');
+    });
+
+    // ── Send message ──
     async function sendMessage() {
         const message = messageInput.value.trim();
         if (!message) return;
+
+        // Remove welcome message if present
+        var wm = document.getElementById('welcomeMessage');
+        if (wm) wm.remove();
+
         addMessageToUI(message, 'user');
         messageInput.value = '';
         messageInput.focus();
         showLoading();
 
         try {
+            const body = { message: message };
+            if (currentConvoId) body.conversation_id = currentConvoId;
+
             const response = await fetch('{{ url_for("assistant.chat") }}', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: message })
+                body: JSON.stringify(body)
             });
             const data = await response.json();
             hideLoading();
             if (response.ok && data.success) {
                 addMessageToUI(data.response, 'assistant');
+                // Update current conversation id
+                if (data.conversation_id) {
+                    currentConvoId = data.conversation_id;
+                }
+                // Refresh sidebar to show new/updated conversation
+                loadConversations();
             } else {
                 addMessageToUI(data.response || '{{ t("assistant_error") }}', 'assistant');
             }
@@ -147,12 +383,63 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function addMessageToUI(text, sender) {
+    // ── Text formatting ──
+    function formatAssistantText(text) {
+        var result = text.replace(/\s*(\d+[\).:])\s*/g, '\n$1 ').trim();
+        result = result.replace(/\n{2,}/g, '\n');
+        return result;
+    }
+
+    function applyBoldHeaders(element) {
+        var html = element.textContent
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/\n/g, '<br>');
+        var boldPhrases = [
+            'Возможные заболевания:',
+            'Рекомендации на основании протоколов:',
+            'Когда необходимо обратиться к врачу:',
+            'Напоминание:'
+        ];
+        boldPhrases.forEach(function(phrase) {
+            html = html.replace(phrase, '<strong>' + phrase + '</strong>');
+        });
+        element.innerHTML = html;
+    }
+
+    function typewriterEffect(element, text, speed) {
+        speed = speed || 12;
+        element.classList.add('typing-cursor');
+        let i = 0;
+        function type() {
+            if (i < text.length) {
+                element.textContent = text.slice(0, i + 1);
+                i++;
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                requestAnimationFrame(function() { setTimeout(type, speed); });
+            } else {
+                element.classList.remove('typing-cursor');
+                applyBoldHeaders(element);
+            }
+        }
+        type();
+    }
+
+    function addMessageToUI(text, sender, skipAnimation) {
         const messageRow = document.createElement('div');
         messageRow.className = `message-row ${sender}`;
         const messageBubble = document.createElement('div');
         messageBubble.className = `message-bubble ${sender}-message`;
-        messageBubble.textContent = text;
+        if (sender === 'assistant') {
+            const formatted = formatAssistantText(text);
+            if (skipAnimation) {
+                messageBubble.textContent = formatted;
+                applyBoldHeaders(messageBubble);
+            } else {
+                typewriterEffect(messageBubble, formatted, 12);
+            }
+        } else {
+            messageBubble.textContent = text;
+        }
         messageRow.appendChild(messageBubble);
         messagesContainer.appendChild(messageRow);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -161,19 +448,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function showLoading() { loadingSpinner.classList.remove('d-none'); }
     function hideLoading() { loadingSpinner.classList.add('d-none'); }
 
+    // ── Event listeners ──
     sendBtn.addEventListener('click', sendMessage);
     messageInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             sendMessage();
         }
-    });
-
-    quickActionButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            messageInput.value = this.getAttribute('data-message');
-            messageInput.focus();
-        });
     });
 
     clearHistoryBtn.addEventListener('click', async function() {
@@ -183,19 +464,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' }
                 });
-                messagesContainer.innerHTML = `
-                    <div class="mb-3">
-                        <div class="alert alert-info" role="alert">
-                            <strong>{{ t('assistant_welcome') }}</strong><br>
-                            {{ t('assistant_intro') }}
-                            <br><br>
-                            {{ t('assistant_disclaimer') }}
-                        </div>
-                    </div>
-                `;
+                currentConvoId = null;
+                showWelcomeMessage();
+                loadConversations();
             } catch (error) {
                 console.error('Error clearing history:', error);
             }
+        }
+    });
+
+    // ── Init: load conversations, show modal only on first navigation ──
+    loadConversations().then(function() {
+        // If coming from another page (no modal flag yet), show modal
+        if (!modalShown) {
+            welcomeModal.show();
+            sessionStorage.setItem(MODAL_KEY, '1');
         }
     });
 });

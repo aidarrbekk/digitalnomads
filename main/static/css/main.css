@@ -226,11 +226,19 @@ a:hover { color: var(--accent-dark); }
     cursor: pointer;
     transition: var(--transition);
     text-transform: uppercase;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.lang-btn + .lang-btn {
+    border-left: 1px solid var(--border-color);
 }
 .lang-btn:hover { color: var(--accent); background: var(--accent-bg-hover); }
 .lang-btn.active {
     color: var(--text-on-accent);
     background: var(--accent);
+    font-weight: 700;
 }
 
 /* Dropdown menu */
@@ -263,6 +271,28 @@ a:hover { color: var(--accent-dark); }
     box-shadow: var(--card-shadow);
     transition: var(--transition-slow);
     overflow: hidden;
+    color: var(--text-primary);
+}
+.card-body,
+.card-title,
+.card-text,
+.card-body h1,
+.card-body h2,
+.card-body h3,
+.card-body h4,
+.card-body h5,
+.card-body h6,
+.card-body p,
+.card-body li,
+.card-body span,
+.card-body label,
+.card-body small {
+    color: inherit;
+}
+.card-body .text-muted,
+.card-text.text-muted,
+.card-body small.text-muted {
+    color: var(--text-secondary) !important;
 }
 .card:hover {
     box-shadow: var(--card-shadow-hover);
@@ -601,6 +631,16 @@ main { flex-grow: 1; }
 .feature-card {
     text-align: center;
     padding: 2rem 1.5rem;
+    color: var(--text-primary);
+}
+.feature-card .card-body,
+.feature-card h5,
+.feature-card h6 {
+    color: var(--text-primary);
+}
+.feature-card p,
+.feature-card .text-muted {
+    color: var(--text-secondary) !important;
 }
 .feature-icon-circle {
     width: 72px;
@@ -805,7 +845,7 @@ html { scroll-behavior: smooth; }
 .chat-messages {
     max-height: 500px;
     overflow-y: auto;
-    padding: 1.5rem;
+    padding: 1rem;
 }
 .chat-bubble {
     max-width: 80%;

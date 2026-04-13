@@ -9,7 +9,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 
 from main.models import db, User, MedicalMetrics, MedicalDocument, LabResult
-from main.forms import UpdateProfileForm, MedicalMetricsForm, MedicalDocumentUploadForm
+from main.forms import UpdateProfileForm, MedicalMetricsForm, MedicalDocumentUploadForm, ChangePasswordForm
 from main.i18n import t
 
 user_bp = Blueprint('user', __name__)
@@ -26,7 +26,27 @@ def profile():
 @login_required
 def settings():
     """User settings page"""
-    return render_template('settings.html')
+    form = ChangePasswordForm()
+    return render_template('settings.html', form=form)
+
+
+@user_bp.route('/change-password', methods=['POST'])
+@login_required
+def change_password():
+    """Change user password"""
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        if not current_user.check_password(form.current_password.data):
+            flash(t('wrong_current_password'), 'error')
+            return redirect(url_for('user.settings'))
+        current_user.set_password(form.new_password.data)
+        db.session.commit()
+        flash(t('password_changed'), 'success')
+        return redirect(url_for('user.settings'))
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(error, 'error')
+    return redirect(url_for('user.settings'))
 
 
 @user_bp.route('/dashboard')

@@ -51,13 +51,16 @@
                         </button>
 
                         <!-- Language Switcher -->
-                        <div class="lang-switcher" style="display: flex; gap: 0; background: var(--accent-bg); border: 1px solid var(--border-color); border-radius: var(--radius-sm); overflow: hidden;">
-                            <a href="?lang=en" class="lang-btn" style="background: {{ 'var(--accent)' if current_lang == 'en' else 'transparent' }}; color: {{ '#fff' if current_lang == 'en' else 'var(--text-secondary)' }}; font-size: 0.75rem; font-weight: {{ '700' if current_lang == 'en' else '600' }}; padding: 0.4rem 0.6rem; cursor: pointer; text-transform: uppercase; text-decoration: none; transition: all 0.2s ease;">EN</a>
-                            <a href="?lang=ru" class="lang-btn" style="background: {{ 'var(--accent)' if current_lang == 'ru' else 'transparent' }}; color: {{ '#fff' if current_lang == 'ru' else 'var(--text-secondary)' }}; font-size: 0.75rem; font-weight: {{ '700' if current_lang == 'ru' else '600' }}; padding: 0.4rem 0.6rem; cursor: pointer; text-transform: uppercase; text-decoration: none; border-left: 1px solid var(--border-color); transition: all 0.2s ease;">RU</a>
-                            <a href="?lang=kz" class="lang-btn" style="background: {{ 'var(--accent)' if current_lang == 'kz' else 'transparent' }}; color: {{ '#fff' if current_lang == 'kz' else 'var(--text-secondary)' }}; font-size: 0.75rem; font-weight: {{ '700' if current_lang == 'kz' else '600' }}; padding: 0.4rem 0.6rem; cursor: pointer; text-transform: uppercase; text-decoration: none; border-left: 1px solid var(--border-color); transition: all 0.2s ease;">KZ</a>
+                        <div class="lang-switcher">
+                            <a href="?lang=en" class="lang-btn {% if current_lang == 'en' %}active{% endif %}">EN</a>
+                            <a href="?lang=ru" class="lang-btn {% if current_lang == 'ru' %}active{% endif %}">RU</a>
+                            <a href="?lang=kz" class="lang-btn {% if current_lang == 'kz' %}active{% endif %}">KZ</a>
                         </div>
 
                         {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('user.settings') }}" class="btn btn-outline-secondary btn-sm" title="{{ t('settings') }}" style="padding: 0.35rem 0.5rem; line-height: 1;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </a>
                         <div class="dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" style="font-weight:600; color: var(--text-primary);">
                                 {{ current_user.username }}

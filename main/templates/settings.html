@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Settings - ShipAI{% endblock %}
+{% block title %}{{ t('settings_title') }} - ShipAI{% endblock %}
 
 {% block content %}
 <div class="py-4 fade-in">
@@ -8,24 +8,106 @@
     <p class="section-subtitle">{{ t('settings_desc') }}</p>
 
     <div class="row g-4">
+        <!-- Change Password -->
         <div class="col-md-6">
             <div class="card no-hover" style="border-top: 3px solid var(--accent);">
                 <div class="card-body">
-                    <h5 class="fw-bold text-accent">{{ t('account_section') }}</h5>
-                    <p class="text-muted small">Change email, password, or manage account preferences.</p>
-                    <a href="#" class="btn btn-primary btn-sm">Change Password</a>
+                    <h5 class="fw-bold text-accent">{{ t('change_password') }}</h5>
+                    <p class="text-muted small">{{ t('account_desc') }}</p>
+                    <form method="POST" action="{{ url_for('user.change_password') }}">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">{{ t('current_password') }}</label>
+                            {{ form.current_password(class="form-control form-control-sm", placeholder=t('current_password')) }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">{{ t('new_password') }}</label>
+                            {{ form.new_password(class="form-control form-control-sm", placeholder=t('new_password')) }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">{{ t('confirm_new_password') }}</label>
+                            {{ form.confirm_password(class="form-control form-control-sm", placeholder=t('confirm_new_password')) }}
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">{{ t('change_password') }}</button>
+                    </form>
                 </div>
             </div>
         </div>
+
+        <!-- Appearance (Dark/Light Mode) -->
         <div class="col-md-6">
             <div class="card no-hover" style="border-top: 3px solid var(--info-color);">
                 <div class="card-body">
-                    <h5 class="fw-bold" style="color: var(--info-color);">{{ t('notif_section') }}</h5>
-                    <p class="text-muted small">Manage email notifications and preferences.</p>
-                    <a href="#" class="btn btn-outline-secondary btn-sm">Manage</a>
+                    <h5 class="fw-bold" style="color: var(--info-color);">{{ t('appearance_section') }}</h5>
+                    <p class="text-muted small">{{ t('appearance_desc') }}</p>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary btn-sm settings-theme-btn" data-theme="light">
+                            <span>&#9728;</span> {{ t('light_mode') }}
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm settings-theme-btn" data-theme="dark">
+                            <span>&#9790;</span> {{ t('dark_mode') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Language -->
+        <div class="col-md-6">
+            <div class="card no-hover" style="border-top: 3px solid var(--warning-color);">
+                <div class="card-body">
+                    <h5 class="fw-bold" style="color: var(--warning-color);">{{ t('language_section') }}</h5>
+                    <p class="text-muted small">{{ t('language_desc') }}</p>
+                    <div class="d-flex gap-2">
+                        <a href="?lang=en" class="btn btn-sm {{ 'btn-primary' if current_lang == 'en' else 'btn-outline-secondary' }}">English</a>
+                        <a href="?lang=ru" class="btn btn-sm {{ 'btn-primary' if current_lang == 'ru' else 'btn-outline-secondary' }}">Русский</a>
+                        <a href="?lang=kz" class="btn btn-sm {{ 'btn-primary' if current_lang == 'kz' else 'btn-outline-secondary' }}">Қазақша</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications -->
+        <div class="col-md-6">
+            <div class="card no-hover" style="border-top: 3px solid var(--success-color);">
+                <div class="card-body">
+                    <h5 class="fw-bold" style="color: var(--success-color);">{{ t('notif_section') }}</h5>
+                    <p class="text-muted small">{{ t('notif_desc') }}</p>
+                    <a href="#" class="btn btn-outline-secondary btn-sm">{{ t('manage_btn') }}</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const themeBtns = document.querySelectorAll('.settings-theme-btn');
+    function updateActive() {
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        themeBtns.forEach(function(btn) {
+            if (btn.dataset.theme === current) {
+                btn.classList.remove('btn-outline-secondary');
+                btn.classList.add('btn-primary');
+            } else {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-outline-secondary');
+            }
+        });
+    }
+    updateActive();
+    themeBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const theme = btn.dataset.theme;
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            var icon = document.getElementById('themeIcon');
+            if (icon) icon.innerHTML = theme === 'dark' ? '&#9728;' : '&#9790;';
+            updateActive();
+        });
+    });
+});
+</script>
 {% endblock %}

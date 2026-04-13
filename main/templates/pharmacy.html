@@ -9,51 +9,46 @@
         {{ t('total_medications') }}
     </p>
 
-    <!-- City Filter + Search Bar -->
-    <div class="pharmacy-search-box mb-4">
-        <div class="row g-2 align-items-center">
-            <div class="col-md-3">
-                <select class="form-select" id="cityFilter">
-                    <option value="">{{ t('all_cities') }}</option>
-                    {% for city in cities %}
-                    <option value="{{ city }}">{{ city }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-md-9">
-                <div class="input-group">
+    <!-- Search Filters Panel -->
+    <div class="card no-hover mb-4">
+        <div class="card-body">
+            <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-2"></i>{{ t('search_filters') }}</h6>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label small text-muted">{{ t('medication_name_label') }}</label>
                     <input type="text" class="form-control" id="searchInput" placeholder="{{ t('search_meds') }}">
-                    <button class="btn btn-primary" id="searchBtn">{{ t('search') }}</button>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Category Navigation -->
-    <div class="card no-hover mb-4">
-        <div class="card-body">
-            <h6 class="text-muted mb-3">{{ t('browse_categories') }}</h6>
-            <div class="d-flex flex-wrap gap-2" id="categoryNav">
-                <span class="category-chip active" data-category="all">{{ t('all_medications') }}</span>
-                {% for cat in categories %}
-                <span class="category-chip" data-category="{{ cat.id }}">{{ cat.icon }} {{ cat.name }}</span>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-
-    <!-- Alphabet Navigation -->
-    <div class="card no-hover mb-4">
-        <div class="card-body">
-            <h6 class="text-muted mb-3">A-Z:</h6>
-            <div class="d-flex flex-wrap gap-2" id="alphabetNav">
-                {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-                    {% if letter in available_letters %}
-                        <button class="letter-btn alphabet-btn" data-letter="{{ letter }}">{{ letter }}</button>
-                    {% else %}
-                        <button class="letter-btn" disabled style="opacity:0.3;">{{ letter }}</button>
-                    {% endif %}
-                {% endfor %}
+                <div class="col-md-6">
+                    <label class="form-label small text-muted">{{ t('city_filter_label') }}</label>
+                    <select class="form-select" id="cityFilter">
+                        <option value="">{{ t('all_cities') }}</option>
+                        {% for city in cities %}
+                        <option value="{{ city.value }}">{% if current_lang == 'ru' and city.name_ru %}{{ city.name_ru }}{% elif current_lang == 'kz' and city.name_kz %}{{ city.name_kz }}{% else %}{{ city.name }}{% endif %}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small text-muted">{{ t('category_filter_label') }}</label>
+                    <select class="form-select" id="categoryFilter">
+                        <option value="">{{ t('all_categories') }}</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}">{% if current_lang == 'ru' and cat.name_ru %}{{ cat.name_ru }}{% elif current_lang == 'kz' and cat.name_kz %}{{ cat.name_kz }}{% else %}{{ cat.name }}{% endif %}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small text-muted">{{ t('pharmacy_filter_label') }}</label>
+                    <select class="form-select" id="pharmacyFilter">
+                        <option value="">{{ t('all_pharmacies') }}</option>
+                        {% for pharm in pharmacies %}
+                        <option value="{{ pharm.id }}">{% if current_lang == 'ru' and pharm.name_ru %}{{ pharm.name_ru }}{% elif current_lang == 'kz' and pharm.name_kz %}{{ pharm.name_kz }}{% else %}{{ pharm.name }}{% endif %}{% if pharm.city %} — {% if current_lang == 'ru' and pharm.city_ru %}{{ pharm.city_ru }}{% elif current_lang == 'kz' and pharm.city_kz %}{{ pharm.city_kz }}{% else %}{{ pharm.city }}{% endif %}{% endif %}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12 d-flex gap-2 mt-2">
+                    <button class="btn btn-primary" id="searchBtn"><i class="bi bi-search me-1"></i>{{ t('apply_filters') }}</button>
+                    <button class="btn btn-outline-secondary" id="resetBtn"><i class="bi bi-arrow-counterclockwise me-1"></i>{{ t('reset_filters') }}</button>
+                </div>
             </div>
         </div>
     </div>
@@ -164,8 +159,6 @@ const T = {
 
 let medicationModal;
 let currentPage = 1;
-let currentSearchType = 'all';
-let currentSearchQuery = '';
 
 function esc(str) {
     if (!str) return '';
@@ -174,25 +167,26 @@ function esc(str) {
     return d.innerHTML;
 }
 
-function performSearch() {
-    const query = document.getElementById('searchInput').value.trim();
-    if (query.length < 2) return;
+function getFilters() {
+    return {
+        q: document.getElementById('searchInput').value.trim(),
+        city: document.getElementById('cityFilter').value,
+        category_id: document.getElementById('categoryFilter').value,
+        pharmacy_id: document.getElementById('pharmacyFilter').value,
+    };
+}
+
+function applyFilters() {
     currentPage = 1;
-    currentSearchType = 'search';
-    currentSearchQuery = query;
-    document.querySelectorAll('.category-chip').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.alphabet-btn').forEach(b => b.classList.remove('active'));
     loadMedications();
 }
 
-function browseLetter(letter) {
+function resetFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('cityFilter').value = '';
+    document.getElementById('categoryFilter').value = '';
+    document.getElementById('pharmacyFilter').value = '';
     currentPage = 1;
-    currentSearchType = 'letter';
-    currentSearchQuery = letter;
-    document.querySelectorAll('.alphabet-btn').forEach(b => b.classList.remove('active'));
-    const activeBtn = document.querySelector(`.alphabet-btn[data-letter="${letter}"]`);
-    if (activeBtn) activeBtn.classList.add('active');
-    document.querySelectorAll('.category-chip').forEach(b => b.classList.remove('active'));
     loadMedications();
 }
 
@@ -201,13 +195,14 @@ async function loadMedications() {
     container.innerHTML = '<div class="col-12 text-center py-5"><div class="spinner-border text-muted" role="status"></div></div>';
 
     try {
-        let url;
-        if (currentSearchType === 'search') url = `/api/medications/search?q=${encodeURIComponent(currentSearchQuery)}&page=${currentPage}`;
-        else if (currentSearchType === 'letter') url = `/api/medications/alphabet?letter=${currentSearchQuery}&page=${currentPage}`;
-        else if (currentSearchType === 'category') url = `/api/medications/category/${currentSearchQuery}?page=${currentPage}`;
-        else url = `/api/medications?page=${currentPage}`;
+        const filters = getFilters();
+        const params = new URLSearchParams({ page: currentPage });
+        if (filters.q) params.set('q', filters.q);
+        if (filters.city) params.set('city', filters.city);
+        if (filters.category_id) params.set('category_id', filters.category_id);
+        if (filters.pharmacy_id) params.set('pharmacy_id', filters.pharmacy_id);
 
-        const response = await fetch(url);
+        const response = await fetch(`/api/medications?${params}`);
         const data = await response.json();
 
         if (!response.ok || !(data.medications || []).length) {
@@ -223,10 +218,8 @@ async function loadMedications() {
         const resultsTitle = document.getElementById('resultsTitle');
         const resultCount = document.getElementById('resultCount');
 
-        if (currentSearchType === 'search') {
-            resultsTitle.innerHTML = `${T.results_for} "<strong class="text-accent">${esc(currentSearchQuery)}</strong>"`;
-        } else if (currentSearchType === 'letter') {
-            resultsTitle.innerHTML = `${T.letter_heading} <strong class="text-accent">${esc(currentSearchQuery)}</strong>`;
+        if (filters.q) {
+            resultsTitle.innerHTML = `${T.results_for} "<strong class="text-accent">${esc(filters.q)}</strong>"`;
         } else {
             resultsTitle.textContent = T.all_meds_title;
         }
@@ -270,7 +263,6 @@ async function showMedicationDetail(medId) {
 
         const selectedCity = document.getElementById('cityFilter').value;
 
-        // Header: name, generic, badges
         let html = `<div class="mb-3">`;
         if (med.generic_name) html += `<p class="text-muted mb-1"><em>${esc(med.generic_name)}</em></p>`;
         html += `<div>`;
@@ -279,7 +271,6 @@ async function showMedicationDetail(medId) {
         if (med.category) html += `<span class="med-badge" style="background:var(--accent-bg);color:var(--text-secondary);border:1px solid var(--border-color);">${esc(med.category)}</span>`;
         html += `</div></div>`;
 
-        // Pharmacy availability — primary section
         let pharmacies = med.pharmacies || [];
         if (selectedCity) {
             pharmacies = pharmacies.filter(p => p.city === selectedCity);
@@ -313,7 +304,6 @@ async function showMedicationDetail(medId) {
             html += `<div class="alert alert-info">${T.no_pharmacy_data}</div>`;
         }
 
-        // Collapsible medication details
         html += `<div class="border-top pt-3">`;
         html += `<span class="med-details-toggle" onclick="this.nextElementSibling.classList.toggle('show'); this.querySelector('.toggle-text').textContent = this.nextElementSibling.classList.contains('show') ? T.hide_details : T.show_details;">`;
         html += `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>`;
@@ -376,21 +366,9 @@ function getPages(c, t) {
 
 document.addEventListener('DOMContentLoaded', function() {
     medicationModal = new bootstrap.Modal(document.getElementById('medicationModal'));
-    document.getElementById('searchBtn').addEventListener('click', performSearch);
-    document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') performSearch(); });
-    document.querySelectorAll('.alphabet-btn:not(:disabled)').forEach(btn => { btn.addEventListener('click', () => browseLetter(btn.dataset.letter)); });
-    document.querySelectorAll('.category-chip').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.category-chip').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.querySelectorAll('.alphabet-btn').forEach(b => b.classList.remove('active'));
-            const catId = btn.dataset.category;
-            currentSearchType = catId === 'all' ? 'all' : 'category';
-            currentSearchQuery = catId === 'all' ? '' : catId;
-            currentPage = 1;
-            loadMedications();
-        });
-    });
+    document.getElementById('searchBtn').addEventListener('click', applyFilters);
+    document.getElementById('resetBtn').addEventListener('click', resetFilters);
+    document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') applyFilters(); });
     document.getElementById('medicationsContainer').addEventListener('click', function(e) {
         const card = e.target.closest('.med-card');
         if (card) showMedicationDetail(card.dataset.medId);

@@ -314,6 +314,7 @@ class MedicationCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
     name_ru = db.Column(db.String(100))
+    name_kz = db.Column(db.String(100))
     icon = db.Column(db.String(50))
 
     medications = db.relationship('Medication', backref='category', lazy=True)
@@ -356,6 +357,8 @@ class Pharmacy(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
+    name_ru = db.Column(db.String(255))
+    name_kz = db.Column(db.String(255))
     address = db.Column(db.Text)
     phone = db.Column(db.String(20))
     email = db.Column(db.String(120))
@@ -365,6 +368,8 @@ class Pharmacy(db.Model):
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     city = db.Column(db.String(120))
+    city_ru = db.Column(db.String(120))
+    city_kz = db.Column(db.String(120))
     country = db.Column(db.String(120))
     
     # Operating hours
@@ -518,6 +523,41 @@ class MedicalDocument(db.Model):
 
     def __repr__(self):
         return f'<MedicalDocument {self.id} - {self.input_type}>'
+
+
+class ChatConversation(db.Model):
+    """A conversation/chat session between user and AI assistant"""
+    __tablename__ = 'chat_conversations'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    title = db.Column(db.String(255), default='New Chat')
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    user = db.relationship('User', backref='conversations', lazy=True)
+    messages = db.relationship('ChatMessage', backref='conversation', lazy=True,
+                               cascade='all, delete-orphan', order_by='ChatMessage.created_at')
+
+    def __repr__(self):
+        return f'<ChatConversation {self.id} "{self.title}">'
+
+
+class ChatMessage(db.Model):
+    """Persistent chat messages between user and AI assistant"""
+    __tablename__ = 'chat_messages'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    conversation_id = db.Column(db.Integer, db.ForeignKey('chat_conversations.id'), nullable=True)
+    role = db.Column(db.String(20), nullable=False)  # 'user' or 'assistant'
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', backref='chat_messages', lazy=True)
+
+    def __repr__(self):
+        return f'<ChatMessage {self.id} ({self.role})>'
 
 
 class LabResult(db.Model):

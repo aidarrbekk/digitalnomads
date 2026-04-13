@@ -2,10 +2,44 @@
 Digital Nomads Flask Application
 Medical information management with authentication, anatomy education, and AI assistant
 """
+import logging
 import os
 import sys
+import threading
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from flask import Flask, render_template, send_from_directory, redirect, url_for, flash, request
+from flask_login import LoginManager
+
+from main.config import config
+from main.models import db, User
+from main.i18n import init_i18n, t
+
+logger = logging.getLogger(__name__)
+
+_SYNC_INTERVAL = 12 * 60 * 60  # 12 hours in seconds
+
+
+def _start_iteka_scheduler(app):
+    """Run i-teka.kz sync in a background thread, repeating every 12 hours."""
+    from main.utils.iteka_scraper import sync_iteka_data
+
+    def _run():
+        try:
+            logger.info("Starting scheduled i-teka.kz data sync...")
+            sync_iteka_data(app)
+        except Exception as e:
+            logger.error(f"i-teka sync failed: {e}")
+        finally:
+            timer = threading.Timer(_SYNC_INTERVAL, _run)
+            timer.daemon = True
+            timer.start()
+
+    # Initial sync after 10 seconds (let the app start first)
+    timer = threading.Timer(10, _run)
+    timer.daemon = True
+    timer.start()
 
 from flask import Flask, render_template, send_from_directory, redirect, url_for, flash, request
 from flask_login import LoginManager
@@ -90,6 +124,10 @@ def create_app(config_name='development'):
     app.register_blueprint(user_bp)
     app.register_blueprint(medical_bp)
     app.register_blueprint(assistant_bp)
+
+    # Start background i-teka.kz sync scheduler (every 12 hours)
+    if not app.config.get('TESTING'):
+        _start_iteka_scheduler(app)
 
     return app
 

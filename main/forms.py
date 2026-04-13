@@ -200,6 +200,29 @@ class MedicalMetricsForm(FlaskForm):
     submit = SubmitField('Save Medical Information')
 
 
+class ChangePasswordForm(FlaskForm):
+    """Form for changing password while logged in"""
+    current_password = PasswordField(
+        'Current Password',
+        validators=[DataRequired()]
+    )
+    new_password = PasswordField(
+        'New Password',
+        validators=[
+            DataRequired(),
+            Length(min=8, max=128)
+        ]
+    )
+    confirm_password = PasswordField(
+        'Confirm New Password',
+        validators=[
+            DataRequired(),
+            EqualTo('new_password', message=lazy_t('val_pwd_match'))
+        ]
+    )
+    submit = SubmitField('Change Password')
+
+
 class MedicalDocumentUploadForm(FlaskForm):
     """Form for uploading medical documents"""
     document = FileField('Upload PDF', validators=[

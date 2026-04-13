@@ -51,6 +51,7 @@ MIN_LEN    = cfg["embed"]["min_chunk_len"]
 
 SECTION_BOOST = 0.08
 MIN_RELEVANCE_SCORE = 0.75   # below this, results are considered irrelevant
+MIN_RELEVANCE_SCORE_CROSSLANG = 0.30  # lower threshold for cross-lingual queries
 
 
 # ── Query intent detection ────────────────────────────────────────────────────
@@ -129,7 +130,7 @@ def _find_disease_in_query(query: str) -> str | None:
 
 
 # ── Core ──────────────────────────────────────────────────────────────────────
-def retrieve(query: str, top_k: int | None = None) -> list[dict]:
+def retrieve(query: str, top_k: int | None = None, lang: str = "ru") -> list[dict]:
 
     real_words = [w for w in query.strip().split() if len(w) >= 3]
     if len(real_words) < 1:
@@ -180,8 +181,12 @@ def retrieve(query: str, top_k: int | None = None) -> list[dict]:
     raw_docs.sort(key=lambda d: d["score"], reverse=True)
 
     if raw_docs and raw_docs[0]["score"] < MIN_RELEVANCE_SCORE:
-        logger.info(f"Best score {raw_docs[0]['score']:.3f} below threshold")
-        return []
+        # For cross-lingual queries, use a lower threshold
+        if lang != "ru" and raw_docs[0]["score"] >= MIN_RELEVANCE_SCORE_CROSSLANG:
+            logger.info(f"Cross-lingual ({lang}): score {raw_docs[0]['score']:.3f} accepted (threshold {MIN_RELEVANCE_SCORE_CROSSLANG})")
+        else:
+            logger.info(f"Best score {raw_docs[0]['score']:.3f} below threshold")
+            return []
 
     MAX_PER_DISEASE = 2
     MAX_FOR_MATCHED = 4 if disease_match else 2

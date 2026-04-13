@@ -166,11 +166,34 @@ def api_get_medication(med_id):
 
 @medical_bp.route('/api/medications', methods=['GET'])
 def api_get_all_medications():
-    """Get all medications with pagination."""
+    """Get all medications with optional filters: q, category_id, city, pharmacy_id."""
     page = request.args.get('page', 1, type=int)
     per_page = 20
+    q = request.args.get('q', '').strip()
+    category_id = request.args.get('category_id', type=int)
+    city = request.args.get('city', '').strip()
+    pharmacy_id = request.args.get('pharmacy_id', type=int)
 
-    medications = Medication.query.order_by(Medication.name).paginate(page=page, per_page=per_page)
+    query = Medication.query
+
+    if q:
+        query = query.filter(
+            (Medication.name.ilike(f'%{q}%')) |
+            (Medication.generic_name.ilike(f'%{q}%'))
+        )
+
+    if category_id:
+        query = query.filter_by(category_id=category_id)
+
+    if city or pharmacy_id:
+        query = query.join(PharmacyStock).join(Pharmacy)
+        if city:
+            query = query.filter(Pharmacy.city == city)
+        if pharmacy_id:
+            query = query.filter(Pharmacy.id == pharmacy_id)
+        query = query.distinct()
+
+    medications = query.order_by(Medication.name).paginate(page=page, per_page=per_page)
 
     return jsonify({
         "page": page,
@@ -221,14 +244,20 @@ def human_anatomy():
 
 @medical_bp.route('/pharmacy')
 def pharmacy():
-    letters = _get_letter_counts()
     total_medications = Medication.query.count()
     categories = MedicationCategory.query.all()
-    cities = [c[0] for c in db.session.query(Pharmacy.city).distinct().order_by(Pharmacy.city).all() if c[0]]
+    city_rows = db.session.query(
+        Pharmacy.city, Pharmacy.city_ru, Pharmacy.city_kz
+    ).distinct().order_by(Pharmacy.city).all()
+    cities = [
+        {"value": c.city, "name": c.city, "name_ru": c.city_ru, "name_kz": c.city_kz}
+        for c in city_rows if c.city
+    ]
+    pharmacies_list = Pharmacy.query.order_by(Pharmacy.name).all()
     return render_template(
         'pharmacy.html',
-        available_letters=letters,
         total_medications=total_medications,
         categories=categories,
         cities=cities,
+        pharmacies=pharmacies_list,
     )
