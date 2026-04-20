@@ -6,7 +6,7 @@
 <div class="py-4 fade-in">
     <!-- Hero -->
     <div class="mb-5">
-        <h1 class="hero-title">{{ t('about_title') }}</h1>
+        <h1 class="page-title">{{ t('about_title') }}</h1>
         <p class="hero-subtitle">{{ t('about_subtitle') }}</p>
     </div>
 
@@ -25,7 +25,7 @@
             <div class="card no-hover" style="background: var(--accent-bg); border: none;">
                 <div class="card-body p-4 text-center">
                     <div class="stat-number mb-2">ShipAI</div>
-                    <p style="color: var(--text-secondary);">Health Platform</p>
+                        <p class="text-muted small mt-2">{{ t('health_platform') }}</p>
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
 
     <!-- Values -->
     <div class="mb-5">
-        <h2 class="section-title text-center mb-4">{{ t('core_values') }}</h2>
+        <h2 class="section-title text-center mb-4 navbar-hide-trigger">{{ t('core_values') }}</h2>
         <div class="row g-4">
             <div class="col-md-3 col-6">
                 <div class="card h-100 feature-card">
@@ -94,7 +94,7 @@
                             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         </div>
                         <h5 class="fw-bold mb-3">{{ t('prod_medical_card') }}</h5>
-                        <p class="small text-muted">Store and manage your personal health information securely. Keep all your medical records, vitals, and health metrics in one organized place accessible anytime, anywhere.</p>
+                        <p class="small text-muted">{{ t('prod_medical_card_desc') }}</p>
                     </div>
                 </div>
             </div>
@@ -107,7 +107,7 @@
                             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                         </div>
                         <h5 class="fw-bold mb-3">{{ t('prod_pharmacy') }}</h5>
-                        <p class="small text-muted">Find medications with real-time pricing and availability across 50+ partner pharmacies. Search by medication name, compare prices, and discover the most convenient location.</p>
+                        <p class="small text-muted">{{ t('prod_pharmacy_desc') }}</p>
                     </div>
                 </div>
             </div>
@@ -120,7 +120,7 @@
                             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="2"/><path d="M12 10v8M7 14l-2 5M17 14l2 5M12 18h0"/></svg>
                         </div>
                         <h5 class="fw-bold mb-3">{{ t('prod_anatomy') }}</h5>
-                        <p class="small text-muted">Explore interactive 3D models of the human body. Learn about skeletal and muscular systems with detailed visualizations that help you understand anatomy and body systems.</p>
+                        <p class="small text-muted">{{ t('prod_anatomy_desc') }}</p>
                     </div>
                 </div>
             </div>
@@ -133,7 +133,7 @@
                             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
                         </div>
                         <h5 class="fw-bold mb-3">{{ t('prod_ai') }}</h5>
-                        <p class="small text-muted">Ask medical questions and get AI-powered answers instantly. Our intelligent assistant helps you understand symptoms, conditions, and health concerns with accurate, easy-to-understand information.</p>
+                        <p class="small text-muted">{{ t('prod_ai_desc') }}</p>
                     </div>
                 </div>
             </div>
@@ -190,7 +190,7 @@
                     </div>
                     <div>
                         <h6 class="fw-bold mb-2">{{ t('benefit_free') }}</h6>
-                        <p class="text-muted small">No hidden fees or premium tiers. All features are available to every user at no cost.</p>
+                        <p class="text-muted small">{{ t('benefit_free_desc') }}</p>
                     </div>
                 </div>
             </div>
@@ -201,7 +201,7 @@
                     </div>
                     <div>
                         <h6 class="fw-bold mb-2">{{ t('benefit_privacy') }}</h6>
-                        <p class="text-muted small">Your health data remains yours. We use industry-standard encryption to protect your information.</p>
+                        <p class="text-muted small">{{ t('benefit_privacy_desc') }}</p>
                     </div>
                 </div>
             </div>
@@ -212,7 +212,7 @@
                     </div>
                     <div>
                         <h6 class="fw-bold mb-2">{{ t('benefit_simple') }}</h6>
-                        <p class="text-muted small">Easy-to-use interface designed for everyone, regardless of technical background.</p>
+                        <p class="text-muted small">{{ t('benefit_simple_desc') }}</p>
                     </div>
                 </div>
             </div>
@@ -223,7 +223,7 @@
                     </div>
                     <div>
                         <h6 class="fw-bold mb-2">{{ t('benefit_multilang') }}</h6>
-                        <p class="text-muted small">Available in multiple languages to serve a global audience.</p>
+                        <p class="text-muted small">{{ t('benefit_multilang_desc') }}</p>
                     </div>
                 </div>
             </div>

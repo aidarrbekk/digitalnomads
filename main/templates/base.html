@@ -11,10 +11,18 @@
     <title>{% block title %}ShipAI{% endblock %}</title>
 </head>
 <body>
+    <!-- Animated gradient background (Spline-style) -->
+    <div class="gradient-bg" aria-hidden="true">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="blob blob-4"></div>
+    </div>
+
     <div class="wrapper">
         <!-- Navigation Bar -->
         <nav class="navbar navbar-expand-lg sticky-top">
-            <div class="container">
+            <div class="container navbar-container">
                 <a class="navbar-brand" href="/">
                     <img class="header_logo" src="{{ url_for('static', filename='images/logo.PNG') }}" alt="logo">
                     <span>ShipAI</span>
@@ -44,7 +52,7 @@
                         </li>
                     </ul>
 
-                    <div class="navbar-controls d-flex align-items-center gap-2">
+                    <div class="navbar-controls d-flex align-items-center gap-1">
                         <!-- Theme Toggle -->
                         <button class="theme-toggle" id="themeToggle" title="Toggle theme">
                             <span id="themeIcon">&#9790;</span>
@@ -215,7 +223,21 @@
         });
 
         const sidebarToggle = document.getElementById('sidebarToggle');
-        const containers = document.querySelectorAll('.container');
+        const containers = document.querySelectorAll('.container:not(.navbar-container)');
+
+        // Navbar scroll effect + hide at trigger
+        const navbar = document.querySelector('.navbar');
+        if (navbar) {
+            const trigger = document.querySelector('.navbar-hide-trigger');
+            window.addEventListener('scroll', function() {
+                navbar.classList.toggle('scrolled', window.scrollY > 20);
+                if (trigger) {
+                    const navH = navbar.offsetHeight;
+                    const triggerTop = trigger.getBoundingClientRect().top;
+                    navbar.classList.toggle('navbar-hidden', triggerTop <= navH);
+                }
+            }, { passive: true });
+        }
         let isExpanded = localStorage.getItem('containerExpanded') === 'true';
         function applyExpanded() {
             containers.forEach(c => { c.classList.toggle('container-expanded', isExpanded); });

@@ -7,7 +7,14 @@
 <section class="hero-section fade-in">
     <div class="row align-items-center">
         <div class="col-lg-6">
-            <h1 class="hero-title">{{ t('home_hero_title') }}</h1>
+            <div class="hero-badge" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 1rem; background: var(--accent-bg); border: 1px solid rgba(109,185,166,0.2); border-radius: 999px; font-size: 0.8rem; font-weight: 600; color: var(--accent); margin-bottom: 1.5rem; opacity: 0; transform: translateY(20px); animation: heroReveal 0.6s ease forwards 0.1s;">
+                <span style="width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s ease infinite;"></span>
+                {{ t('hero_badge') }}
+            </div>
+            <div class="hero-heading-wrap">
+                <span class="hero-title-shadow" aria-hidden="true">{{ t('home_hero_title') }}</span>
+                <h1 class="hero-title" id="heroTitle">{{ t('home_hero_title') }}</h1>
+            </div>
             <p class="hero-subtitle">{{ t('home_hero_desc') }}</p>
             <div class="d-flex gap-3 flex-wrap">
                 {% if not current_user.is_authenticated %}
@@ -18,58 +25,90 @@
                 {% endif %}
             </div>
         </div>
-        <div class="col-lg-6 d-none d-lg-block text-center">
-            <svg viewBox="0 0 500 400" style="max-width:460px; width:100%;">
-                <defs>
-                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#6DB9A6;stop-opacity:0.12"/>
-                        <stop offset="100%" style="stop-color:#5BA392;stop-opacity:0.06"/>
-                    </linearGradient>
-                    <linearGradient id="grad2" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style="stop-color:#6DB9A6;stop-opacity:0.3"/>
-                        <stop offset="100%" style="stop-color:#5BA392;stop-opacity:0.1"/>
-                    </linearGradient>
-                </defs>
-                <!-- Background -->
-                <rect width="500" height="400" rx="28" fill="url(#grad1)"/>
-                <!-- Decorative circles -->
-                <circle cx="400" cy="80" r="60" fill="var(--accent)" opacity="0.06"/>
-                <circle cx="100" cy="340" r="45" fill="var(--accent)" opacity="0.06"/>
-                <!-- Laptop/Dashboard -->
-                <rect x="120" y="100" width="260" height="170" rx="12" fill="var(--bg-card)" stroke="var(--accent)" stroke-width="1.5" opacity="0.9"/>
-                <rect x="130" y="110" width="240" height="140" rx="6" fill="url(#grad2)" opacity="0.3"/>
-                <!-- Screen content: heartbeat line -->
-                <polyline points="145,185 170,185 180,160 190,210 200,175 210,185 240,185 250,165 260,200 270,180 290,180 310,180 330,185 350,185" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
-                <!-- Heart icon on screen -->
-                <path d="M235,145 C235,138 242,133 250,140 C258,133 265,138 265,145 C265,155 250,163 250,163 C250,163 235,155 235,145Z" fill="var(--accent)" opacity="0.5"/>
-                <!-- Screen data blocks -->
-                <rect x="145" y="215" width="50" height="8" rx="4" fill="var(--accent)" opacity="0.25"/>
-                <rect x="205" y="215" width="35" height="8" rx="4" fill="var(--accent)" opacity="0.15"/>
-                <rect x="250" y="215" width="45" height="8" rx="4" fill="var(--accent)" opacity="0.2"/>
-                <rect x="145" y="230" width="70" height="6" rx="3" fill="var(--accent)" opacity="0.12"/>
-                <!-- Laptop base -->
-                <path d="M100,270 L120,270 L130,285 L370,285 L380,270 L400,270 L390,295 L110,295 Z" fill="var(--bg-card)" stroke="var(--accent)" stroke-width="1" opacity="0.8"/>
-                <!-- Floating medical icons -->
-                <!-- Pill -->
-                <g transform="translate(80, 140)" opacity="0.6">
-                    <rect x="0" y="0" width="30" height="14" rx="7" fill="var(--accent)" opacity="0.3" transform="rotate(-30, 15, 7)"/>
-                </g>
-                <!-- Stethoscope circle -->
-                <circle cx="420" cy="180" r="18" fill="none" stroke="var(--accent)" stroke-width="1.5" opacity="0.4"/>
-                <circle cx="420" cy="198" r="4" fill="var(--accent)" opacity="0.3"/>
-                <!-- DNA helix dots -->
-                <circle cx="440" cy="280" r="3" fill="var(--accent)" opacity="0.3"/>
-                <circle cx="450" cy="295" r="3" fill="var(--accent)" opacity="0.2"/>
-                <circle cx="440" cy="310" r="3" fill="var(--accent)" opacity="0.3"/>
-                <circle cx="430" cy="287" r="2.5" fill="var(--accent)" opacity="0.15"/>
-                <circle cx="430" cy="303" r="2.5" fill="var(--accent)" opacity="0.15"/>
-                <!-- Shield (security) -->
-                <path d="M70,240 L70,260 C70,275 85,282 85,282 C85,282 100,275 100,260 L100,240 L85,234 Z" fill="none" stroke="var(--accent)" stroke-width="1.2" opacity="0.3"/>
-                <polyline points="78,258 83,263 93,253" fill="none" stroke="var(--accent)" stroke-width="1.5" opacity="0.3"/>
-                <!-- Text -->
-                <text x="250" y="340" text-anchor="middle" font-family="'Inter', sans-serif" font-size="22" font-weight="700" fill="var(--accent)" opacity="0.8">ShipAI</text>
-                <text x="250" y="362" text-anchor="middle" font-family="'Inter', sans-serif" font-size="11" fill="var(--text-muted)" letter-spacing="2">HEALTH PLATFORM</text>
-            </svg>
+        <div class="col-lg-6 d-none d-lg-block">
+            <div class="macbook-wrapper">
+                <div class="macbook" id="macbook">
+                    <!-- Lid (screen) -->
+                    <div class="macbook-lid">
+                        <div class="macbook-screen">
+                            <div class="screen-ui">
+                                <!-- Fake titlebar -->
+                                <div class="screen-titlebar">
+                                    <span class="tb-dot" style="background:#ff5f57"></span>
+                                    <span class="tb-dot" style="background:#febc2e"></span>
+                                    <span class="tb-dot" style="background:#28c840"></span>
+                                    <span class="tb-label">ShipAI — Dashboard</span>
+                                </div>
+                                <!-- Dashboard content -->
+                                <div class="screen-body">
+                                    <!-- Logo + greeting -->
+                                    <div class="screen-header">
+                                        <img src="{{ url_for('static', filename='images/logo.PNG') }}" alt="ShipAI" class="screen-logo">
+                                        <div class="screen-greeting">
+                                            <div class="sg-title">Welcome back</div>
+                                            <div class="sg-sub">Your health overview</div>
+                                        </div>
+                                    </div>
+                                    <!-- Stat cards row -->
+                                    <div class="screen-stats">
+                                        <div class="sstat-card sstat-1">
+                                            <div class="sstat-icon">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z"/></svg>
+                                            </div>
+                                            <div class="sstat-info">
+                                                <div class="sstat-val">72 <small>bpm</small></div>
+                                                <div class="sstat-lbl">Heart Rate</div>
+                                            </div>
+                                        </div>
+                                        <div class="sstat-card sstat-2">
+                                            <div class="sstat-icon">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                                            </div>
+                                            <div class="sstat-info">
+                                                <div class="sstat-val">98 <small>%</small></div>
+                                                <div class="sstat-lbl">SpO₂</div>
+                                            </div>
+                                        </div>
+                                        <div class="sstat-card sstat-3">
+                                            <div class="sstat-icon">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg>
+                                            </div>
+                                            <div class="sstat-info">
+                                                <div class="sstat-val">6.2 <small>hrs</small></div>
+                                                <div class="sstat-lbl">Sleep</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Heartbeat line -->
+                                    <div class="screen-chart">
+                                        <svg viewBox="0 0 300 60" class="heartbeat-svg" preserveAspectRatio="none">
+                                            <polyline class="heartbeat-line" points="0,30 30,30 45,30 55,10 65,50 75,25 85,35 95,30 130,30 145,30 155,12 165,48 175,28 185,32 195,30 230,30 245,30 255,8 265,52 275,26 285,34 300,30" />
+                                        </svg>
+                                    </div>
+                                    <!-- Bottom pills -->
+                                    <div class="screen-pills">
+                                        <span class="spill active">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10"><path d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                            Medical Card
+                                        </span>
+                                        <span class="spill">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                                            Pharmacy
+                                        </span>
+                                        <span class="spill">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                                            AI Chat
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="macbook-notch"></div>
+                    </div>
+                    <!-- Base (keyboard) -->
+                    <div class="macbook-base"></div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -168,4 +207,31 @@
     </div>
 </section>
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Add glow to hero title after entrance animation
+    const heroTitle = document.getElementById('heroTitle');
+    if (heroTitle) {
+        heroTitle.addEventListener('animationend', function handler(e) {
+            if (e.animationName === 'heroTitleIn') {
+                heroTitle.classList.add('revealed');
+                heroTitle.removeEventListener('animationend', handler);
+            }
+        });
+    }
+
+    // MacBook open animation on scroll into view
+    const macbook = document.getElementById('macbook');
+    if (macbook) {
+        const obs = new IntersectionObserver(function (entries) {
+            if (entries[0].isIntersecting) {
+                macbook.classList.add('opened');
+                obs.disconnect();
+            }
+        }, { threshold: 0.2 });
+        obs.observe(macbook);
+    }
+</script>
 {% endblock %}
