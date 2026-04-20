@@ -12,6 +12,7 @@ itsdangerous==2.2.0
 Jinja2==3.1.6
 MarkupSafe==3.0.3
 python-dotenv
+psycopg2-binary
 faiss-cpu
 sentence-transformers
 pyyaml
@@ -21,3 +22,4 @@ groq
 pdfplumber
 pypdf
 python-docx
+curl

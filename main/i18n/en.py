@@ -29,6 +29,7 @@ translations = {
 
     # --- Home Page ---
     "home_hero_title": "Your Health, One Platform",
+    "hero_badge": "AI-Powered Health Platform",
     "home_hero_desc": "Manage your medical data, search medications, explore human anatomy, and get AI-powered health insights — all in one place.",
     "get_started_btn": "Get Started",
     "sign_in_btn": "Sign In",
