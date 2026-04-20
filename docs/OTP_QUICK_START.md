@@ -53,7 +53,6 @@ python run.py
 - ✅ `main/templates/verify_otp.html` - OTP verification UI
 - ✅ `test_otp_system.py` - Test suite
 - ✅ `OTP_VERIFICATION_GUIDE.md` - Detailed documentation
-- ✅ `SCRIPT_COMPARISON.md` - Original vs Fixed comparison
 
 ### Modified Files:
 - ✅ `main/forms.py` - Added VerifyOTPForm
@@ -171,8 +170,8 @@ print([r for r in routes if 'signup' in r or 'verify' in r or 'otp' in r])
 ### Email Not Received?
 - [ ] Check spam/junk folder
 - [ ] Verify MAIL_USERNAME is correct
-- [ ] Run: `python verify_mail_config.py`
 - [ ] Check error logs in Flask output
+- [ ] Ensure MAIL_PASSWORD is a Gmail App Password, not your account password
 
 ### OTP Code Doesn't Work?
 - [ ] Make sure all 6 digits entered

@@ -9,16 +9,12 @@ Guides, tutorials, and solutions for the Digital Nomads project.
 
 ## Email Configuration
 
-- **GMAIL_ERROR_TROUBLESHOOTING.md** - Gmail SMTP errors and solutions
-- **REAL_TIME_EMAIL_SOLUTION.md** - Real-time email sending implementation
 - **EMAIL_VERIFICATION_READY.md** - Email verification system documentation
 
-## Development Notes
+## API Documentation
 
-- **SOLUTION_SUMMARY.md** - Summary of implemented solutions
-- **SCRIPT_COMPARISON.md** - Comparison of different implementation approaches
-- **ANATOMY_PAGE_FIXES.md** - Anatomy module fixes and improvements
-- **TEST_TRANSLATION.html** - HTTP response translation testing
+- **PHARMACY_SEARCH_GUIDE.md** - Medication search and pharmacy API
+- **PHARMACY_QUICK_REFERENCE.md** - Quick reference for pharmacy endpoints
 
 ## API Endpoints
 
