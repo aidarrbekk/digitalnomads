@@ -10,7 +10,7 @@
     </p>
 
     <!-- Search Filters Panel -->
-    <div class="card no-hover mb-4">
+    <div class="card no-hover mb-4 navbar-hide-trigger">
         <div class="card-body">
             <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-2"></i>{{ t('search_filters') }}</h6>
             <div class="row g-3">
@@ -97,9 +97,26 @@
 .rx-badge { background: rgba(239,68,68,0.1); color: var(--danger-color); border: 1px solid rgba(239,68,68,0.3); }
 .med-price { color: var(--accent); font-weight: 700; font-size: 0.95rem; }
 .pharmacy-row td { font-size: 0.9rem; }
-.table { color: var(--text-primary); }
-.table th { color: var(--text-secondary); border-color: var(--border-color); }
-.table td { border-color: var(--border-color); }
+.table-responsive { background: var(--bg-card); border-radius: 6px; }
+.table {
+    color: var(--text-primary);
+    background: var(--bg-card);
+    margin-bottom: 0;
+}
+.table th {
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+    background: var(--bg-card-hover);
+    font-weight: 600;
+}
+.table td {
+    border-color: var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-primary);
+}
+.table tbody tr:hover td {
+    background: var(--bg-card-hover);
+}
 .page-link { background: var(--bg-card); color: var(--text-primary); border-color: var(--border-color); }
 .page-item.active .page-link { background: var(--accent); border-color: var(--accent); color: #fff; }
 .page-link:hover { background: var(--accent-bg); color: var(--accent); }
