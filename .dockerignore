@@ -1,0 +1,46 @@
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv
+venv/
+ENV/
+env/
+*.egg-info
+.eggs
+dist/
+build/
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+.env
+
+# Development
+.claude
+logs/
+instance/
+
+# Large data files (will be regenerated)
+data/
+*.npy
+*.pkl
+*.faiss
+
+# Tests (optional - can be included if needed for CI/CD)
+tests/
+
+# Temporary
+*.tmp
+*.temp

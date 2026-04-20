@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database service
+  db:
+    image: postgres:15-alpine
+    container_name: digitalnomads-db
+    environment:
+      POSTGRES_USER: medical_user
+      POSTGRES_PASSWORD: medical_password
+      POSTGRES_DB: medical_qa
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medical_user -d medical_qa"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - digitalnomads-net
+
+  # Flask web application service
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: digitalnomads-web
+    environment:
+      FLASK_ENV: production
+      DATABASE_URL: postgresql://medical_user:medical_password@db:5432/medical_qa
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      SECRET_KEY: ${SECRET_KEY:-super-secret-change-in-production}
+      GROQ_API_KEY: ${GROQ_API_KEY}
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+      - ./uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/about"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - digitalnomads-net
+    stdin_open: true
+    tty: true
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  digitalnomads-net:
+    driver: bridge
