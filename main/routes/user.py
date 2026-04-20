@@ -336,7 +336,7 @@ def lab_results(doc_id):
         db.session.commit()
 
         flash(t('flash_lab_confirmed'), 'success')
-        return redirect(url_for('user.medical_analysis'))
+        return redirect(url_for('user.medical_card'))
 
     return render_template('lab_results_review.html', doc=doc)
 
