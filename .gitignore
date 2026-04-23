@@ -20,3 +20,5 @@ main/uploads/
 
 # AI/ML data (large, regeneratable)
 data/
+
+.env
