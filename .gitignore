@@ -20,5 +20,3 @@ main/uploads/
 
 # AI/ML data (large, regeneratable)
 data/
-
-# .env -- included in repo since it's private

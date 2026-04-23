@@ -22,4 +22,3 @@ groq
 pdfplumber
 pypdf
 python-docx
-curl

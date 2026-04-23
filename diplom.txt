@@ -1,0 +1,489 @@
+SDU University
+Faculty of Engineering and Natural Science
+Diploma Project
+Development of an Intelligent Digital Healthcare
+Platform for Data-Driven Medical Decision Support
+Aidarbek Y ernur, Akkuzov Arman, Galymzhan Alikhan,
+Rakhmetov Berik, Sabit Ulan
+6B06102 - ”Information Systems”
+Kaskelen, 2026
+SDU University
+Faculty of Engineering and Natural Sciences
+Development of an Intelligent Digital Healthcare
+Platform for Data-Driven Medical DecisionSupport
+A thesis submitted for the degree of
+Bachelor in Computer Science
+(degree code: 6B06102)
+Author(s): Y ernur Aidarbek, Arman Akkuzov, Alikhan Galymzhan,
+Berik Rakhmetov, Ulan Sabit
+Supervisor: Y elnur Mutaliyev
+Dean of the faculty:
+Associate Professor NAME SURNAME
+Kaskelen, 2026
+Abstract
+The rapid advancement of digital technologies and Artificial Intelligence (AI) has remark-
+ably changed the healthcare realm. Our project’s main objective is to collaborate medical decision-
+making with AI. Moreover, it assists doctors in diagnosing diseases and analyzing patients’ data.
+The proposed platform combines medical databases, Large Language Models (LLM), and
+chat-bots for evaluating information of laboratory and clinical indicators. By operating these
+technologies, the system helps to anticipate potential illnesses and recommend applicable treat-
+ment plans. The architecture of the project is constructed with emphasis on data integrity, scal-
+ability, and integration with the Kazakhstani healthcare system. Moreover, the platform is sug-
+gested with a high user-friendly interface for better interaction. The implementation of that
+website facilitates to diminish human error, increase the accuracy of medical diagnostic, and
+embellish overall clinicians’ outcomes. Additionally, it will contain better personalized medi-
+cal care of sick people tailored on its own patient data.
+To conclude, that AI based intelligent healthcare platform shows its impact on modern
+medicine and highlights its features for data-driven decisions.
+Index terms: Artificial Intelligence(AI) in healthcare, Large Language Model (LLM model),
+data analytics, intelligent digital healthcare platform , decision-making.
+1
+Аңдатпа
+Сандық технологиялар мен жасанды интеллекттің (ЖИ) қарқынды дамуы денсаулық
+сақтау саласын айтарлықтай өзгертті. Біздің жобаның негізгі мақсаты - медициналық
+шешім қабылдауда ЖИ-мен бірлесіп жұмыс істеу . Сонымен қатар, ол дәрігерлерге ауруларды
+анықтауға және науқастардың деректерін талдауға көмектеседі.
+Ұсынылған платформа медициналық деректер қорын, үлкен тілдік модельдерді (LLM),
+зертханалық және клиникалық көрсеткіштер туралы ақпаратты бағалауға арналған чат-
+боттарды біріктіреді. Осы технологияларды пайдалану арқылы жүйе ықтимал ауруларды
+болжауға және қолданылатын емдеу жоспарларын ұсынуға көмектеседі. Жобаның архитектурасы
+деректердің тұтастығына, ауқымдылығына және қазақстандық денсаулық сақтау жүйесінің
+интеграциясына баса назар аудара отырып жасалған. Сонымен қатар, платформа пайдаланушыларға
+өзара әрекеттесу үшін ыңғайлы интерфейспен ұсынылады. Бұл веб-сайтты енгізу адам
+қатесін азайтуға, медициналық диагностиканың дәлдігін арттыруға және жалпы клиникалық
+нәтижелерді безендіруге көмектеседі. Оған қоса, ол пациенттердің жеке деректеріне сәйкес
+науқастарға жекелендірілген медициналық көмекті қамтиды.
+Қорытындылай келе, AI негізіндегі зияткерлік денсаулық сақтау платформасы заманауи
+медицинаға әсерін көрсетеді және деректерге негізделген шешімдер үшін оның мүмкіндіктерін
+көрсетеді.
+2
+Аннотация
+Быстрое развитие цифровых технологий и искусственного интеллекта (ИИ) значительно
+изменило сферу здравоохранения. Главная цель нашего проекта — объединить принятие
+медицинских решений с ИИ. Более того, это помогает врачам в диагностике заболеваний
+и анализе данных пациентов. Предложенная платформа объединяет медицинские базы
+данных, большие языковые модели (LLM) и чат-боты для оценки информации о лабораторных
+и клинических показателях. Используя эти технологии, система помогает прогнозировать
+потенциальные заболевания и рекомендовать соответствующие планы лечения. Архитектура
+проекта построена с акцентом на целостность данных, масштабируемость и интеграцию
+с системой здравоохранения Казахстана. Кроме того, платформа предлагается с высоко
+удобным пользовательским интерфейсом для лучшего взаимодействия.
+Внедрение этого веб-сайта способствует уменьшению человеческих ошибок, повышению
+точности медицинской диагностики и улучшению общих результатов работы врачей. Кроме
+того, он будет обеспечивать более персонализированную медицинскую помощь больным,
+адаптированную к собственным данным пациентов. В заключение, эта интеллектуальная
+платформа здравоохранения на основе ИИ демонстрирует свое влияние на современную
+медицину и подчеркивает свои возможности для принятия решений на основе данных.
+3
+Contents
+1 Introduction 5
+1.1 Problem Background . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+1.2 Aim of the study and objectives . . . . . . . . . . . . . . . . . . . . . . . . . 5
+1.3 Significance of the Study . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+1.4 Scope and Limitations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+2 Literature Review 8
+2.1 Digital Healthcare Systems . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+2.2 Clinical Decision Support Systems (CDSS) . . . . . . . . . . . . . . . . . . . 8
+2.3 Artificial Intelligence in Healthcare . . . . . . . . . . . . . . . . . . . . . . . 8
+2.4 Chatbots in Healthcare . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+3 Methodology 10
+3.1 System Overview . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+3.2 System Architecture . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+3.3 Data Sources and Processing . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+3.4 LLM Integration . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+3.5 Chatbot Design . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+3.6 Recommendation System . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+3.7 Database Architecture . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+3.8 Technology Stack . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+4 Implementation 13
+5 Conclusion and Future Work 15
+5.1 Conclusion . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+5.2 Future Work . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+6 Appendix A 16
+7 References 17
+4
+1 Introduction
+1.1 Problem Background
+Healthcare systems are producing a large amount of information from different types of elec-
+tronic devices and wearable devices. Despite the availability, many health services lack re-
+sources for precise decision-making. One of the problems is the complexity and volume of
+medical data. Skilled people in healthcare must process enormous amounts of information un-
+der pressure. Without Artificial Intelligence(AI) tools, this boosts the likelihood of errors and
+cognitive overload. The shortage of AI and developed analytics in routine activities results in
+improper patient outcomes. Currently, majority systems cannot provide tailored recommenda-
+tions based on individual data. As a result, there is a demand for a digital healthcare platform
+that can merge miscellaneous medical information and applies different techniques.
+[3]
+1.2 Aim of the study and objectives
+The aim of the project is create AI based platform that will assist doctors for decision-making
+by data analytics. It will include couple of objectives for achieving aim. There are:
+1. Inspect existing digital healthcare systems and detect their limitations.
+2. Design the architecture of the website and guarantee its interconnectivity and competent
+data management.
+3. Implement data analytics, AI, and Large Language Model (LLM) model for supporting
+decision-making.
+4. Develop user-friendly interface for better interaction among users.
+5. Based on the results of analysis, give suggestions for improving it.
+5
+1.3 Significance of the Study
+The significance of this study lies in its contribution to improving the quality and efficiency of
+healthcare services through the application of intelligent digital technologies. By developing a
+data-driven medical decision support platform, this project addresses the growing need for more
+accurate, timely, and evidence-based clinical decisions. First, the proposed system can enhance
+clinical decision-making by providing healthcare professionals with real-time insights and ana-
+lytical support based on patient data. This reduces the likelihood of human error and improves
+diagnostic accuracy, especially in complex medical cases. Second, the study contributes to the
+integration and effective use of medical data. By combining data from multiple sources into
+a unified platform, it helps overcome the problem of data fragmentation and enables a more
+comprehensive view of patient health.
+Finally, this study has practical and academic value. Practically, it offers a foundation for
+future implementation of intelligent healthcare systems in medical institutions. Academically, it
+contributes to the fields of digital healthcare, data analytics, and medical informatics, providing
+a basis for further research and development.
+1.4 Scope and Limitations
+This project focuses on the development of an intelligent digital healthcare platform designed
+to support medical decision-making through data-driven approaches. The system includes the
+following functionalities:
+1. Integration of a large language model (LLM) to provide intelligent responses and assist
+users in understanding medical information.
+2. Implementation of a chatbot system that interacts with users, answers health-related ques-
+tions, and provides basic medical guidance.
+3. A pharmacy directory feature, allowing users to access information about available phar-
+macies.
+4. Support for multiple language options, improving accessibility for diverse users.
+5. Basic healthcare platform functionalities, including navigation, user interaction, and data
+presentation.
+6. A recommendation system that provides suggestions based on user input and analysis
+results.
+Additionally, the platform includes an informational module related to human anatomy, provid-
+ing users with visual and educational content. Despite its functionality, the system has several
+limitations that require further improvement:
+1. The human anatomy module is currently limited in scope. At present, it only displays the
+skeletal structure and muscular system of male and female bodies. More detailed anatom-
+ical systems and interactive features are needed for a comprehensive learning experience.
+2. The AI assistant, although functional, requires further training and optimization. Its per-
+formance can be significantly improved by incorporating a larger and more specialized
+dataset, particularly focused on healthcare information relevant to the Republic of Kaza-
+khstan.
+6
+3. The platform currently provides basic-level medical support and should not be considered
+a replacement for professional medical consultation.
+Overall, while the system demonstrates the potential of intelligent healthcare platforms, fur-
+ther development and enhancement are necessary to expand its capabilities, improve accuracy,
+and ensure broader applicability in real-world healthcare environments.
+7
+2 Literature Review
+That part includes theoretical part of our diplomic project.
+2.1 Digital Healthcare Systems
+Digital healthcare systems refer to the integration of information and communication technolo-
+gies (ICT) into healthcare services to improve accessibility, efficiency, and quality of medical
+care. These systems include electronic health records (EHR), telemedicine, mobile health ap-
+plications, and hospital information systems.
+Globally, digital healthcare has become a key trend due to the increasing volume of medical
+data and the need for efficient data management. In the Republic of Kazakhstan, digital trans-
+formation of healthcare has been actively developing over the past decades. Initial steps began
+in the 1990s with the introduction of basic information systems for statistical data collection,
+followed by the creation of disease registries in the early 2000s .
+Currently, Kazakhstan is implementing a national e-health system, including electronic med-
+ical records, online appointment systems, and mobile healthcare applications. More than 2 mil-
+lion users (approximately 17% of the adult population) actively use digital medical applications,
+which allow access to personal health data and medical services . Furthermore, over 87% of pub-
+lic healthcare services have been digitalized, demonstrating a high level of system automation.
+2.2 Clinical Decision Support Systems (CDSS)
+Clinical Decision Support Systems (CDSS) are computer-based tools designed to assist health-
+care professionals in making clinical decisions. These systems analyze medical data and provide
+recommendations, alerts, or diagnostic support.
+CDSS can be categorized into several types:
+1. Knowledge-based systems (rule-based)
+2. Machine learning-based systems
+3. Predictive analytics systems
+The main purpose of CDSS is to reduce medical errors, improve diagnostic accuracy, and
+enhance treatment outcomes. In digital healthcare environments, CDSS are often integrated
+with electronic health records, enabling real-time data analysis.
+In Kazakhstan, the development of CDSS is closely linked with the national digital health-
+care strategy, which emphasizes improving the quality and efficiency of medical services through
+data-driven approaches . The transition to paperless healthcare and unified data systems creates
+a foundation for implementing intelligent decision support tools.
+However, many existing systems still lack advanced analytics and real-time decision support,
+highlighting the need for more intelligent platforms.
+2.3 Artificial Intelligence in Healthcare
+Artificial Intelligence (AI) has become a transformative technology in healthcare, enabling au-
+tomated data analysis, predictive modeling, and personalized medicine. AI techniques such as
+machine learning, deep learning, and natural language processing are widely used in diagnostics,
+medical imaging, and clinical decision support.
+8
+One of the most recent advancements in AI is the development of Large Language Models
+(LLMs), which can process and generate human-like text. In healthcare, LLMs can be used for:
+1. Patient communication
+2. Medical information retrieval
+3. Clinical documentation
+4. Decision support
+In Kazakhstan, the integration of AI into healthcare is still developing but is supported by
+national digitalization strategies. The government emphasizes the importance of data process-
+ing, storage, and protection, as well as the development of digital infrastructure for healthcare
+systems. For instance, edensaulyq is the digital platform.
+Despite the potential benefits, challenges remain, including data availability, model accu-
+racy, and the need for localization of AI systems using region-specific medical data.
+2.4 Chatbots in Healthcare
+Healthcare chatbots are AI-powered systems that interact with users through text or voice inter-
+faces. They are increasingly used to provide medical information, symptom checking, appoint-
+ment scheduling, and patient support.
+The advantages of healthcare chatbots include:
+1. 24/7 availability
+2. Reduced workload for healthcare professionals
+3. Immediate responses to patient queries
+4. Improved accessibility to medical information
+In the context of Kazakhstan, chatbot technologies can significantly enhance access to health-
+care services, especially in rural and remote areas where medical resources are limited. The gov-
+ernment’s focus on telemedicine and digital services supports the adoption of such technologies.
+However, chatbots also have limitations, such as limited medical accuracy and the inability to
+replace professional medical consultation.
+9
+3 Methodology
+That part includes core technical part of our diplomic project.
+3.1 System Overview
+This study focuses on the development of an intelligent digital healthcare platform designed
+to support medical decision-making through data-driven approaches. The system integrates
+artificial intelligence technologies, including a large language model (LLM), with user-centered
+functionalities such as a chatbot, recommendation system, and healthcare information modules.
+The platform is designed to assist users in accessing medical information, receiving basic health
+guidance, and navigating healthcare services such as pharmacies. It provides an interactive
+environment where users can input queries and receive real-time responses, recommendations,
+and relevant healthcare data.
+In the context of the Republic of Kazakhstan, where digital healthcare adoption is increas-
+ing, such platforms contribute to improving accessibility and efficiency of medical services,
+especially in regions with limited healthcare infrastructure.
+3.2 System Architecture
+The architecture of the proposed system follows a modular and scalable design, consisting of
+several interconnected components:
+1. User Interface Layer — responsible for interaction between the user and the system, in-
+cluding web pages, chatbot interface, and visualization elements.
+2. Application Layer — handles business logic, user requests, and system operations.
+3. AI Layer — includes the large language model and recommendation engine, which pro-
+cess user inputs and generate responses.
+4. Data Layer — manages storage and retrieval of healthcare data, including pharmacy in-
+formation and system datasets.
+The architecture ensures separation of concerns, enabling efficient system development and
+future scalability. Data flows from the user interface to the backend, where it is processed and
+analyzed before generating a response. This modular design aligns with modern healthcare
+system architectures and supports integration with external data sources in future developments.
+3.3 Data Sources and Processing
+The system utilizes multiple types of data to support its functionality:
+1. User input data — queries entered by users through the chatbot interface.
+2. Healthcare-related datasets — including information about pharmacies and basic medical
+knowledge.
+3. Pre-trained language model data — used by the LLM for generating responses.
+Data processing involves:
+10
+1. Input preprocessing (text cleaning and formatting)
+2. Query interpretation
+3. Response generation using AI models
+4. Output formatting for user display
+In Kazakhstan, healthcare data is increasingly digitized through national e-health systems.
+However, access to structured and publicly available datasets remains limited. Therefore, the
+system primarily relies on general medical knowledge and locally available data sources. Future
+improvements may include integration with national healthcare databases to enhance accuracy
+and localization.
+3.4 LLM Integration
+A key component of the system is the integration of a large language model (LLM), which
+enables natural language interaction and intelligent response generation.
+The LLM processes user queries and generates context-aware responses based on:
+1. Pre-trained knowledge
+2. Prompt design and system instructions
+3. Contextual understanding of user input
+Although the LLM performs effectively, its accuracy depends on the quality and relevance of
+training data. In the context of Kazakhstan, further improvement requires incorporating region-
+specific healthcare information, including local medical guidelines and language adaptation.
+3.5 Chatbot Design
+The chatbot serves as the primary interaction mechanism between users and the system. It is
+designed to simulate human-like conversation and provide intuitive access to healthcare infor-
+mation. The chatbot workflow consists of that principles:
+1. User submits a query
+2. System processes the input
+3. LLM generates a response
+4. System returns the response to the user
+The chatbot supports several functions. For instance, general health inquiries, navigation as-
+sistance within the platform, and basic recommendations. The design emphasizes usability,
+responsiveness, and clarity of communication. It allows users with different levels of digital
+literacy to interact with the system effectively.
+11
+3.6 Recommendation System
+The recommendation system provides users with suggestions based on their input and system
+analysis. It enhances the functionality of the platform by offering personalized or context-based
+guidance. Recommendations may include: general health advice, suggested actions based on
+symptoms, and relevant healthcare information.
+The system uses rule-based logic combined with AI-generated insights. While the current
+implementation provides basic recommendations, future enhancements may include advanced
+machine learning models for predictive analytics.
+3.7 Database Architecture
+
+High-level System Architecture
+
+    [Browser / Client]
+	    |
+	    v
+    [Web UI (Jinja2 + static JS/CSS)]
+	    |
+	    v
+    [Flask application]  <-- Blueprints: auth, assistant, api
+	- main/app.py (app factory)
+	- main/routes/ (blueprints)
+	- main/utils/ (helpers)
+	    |
+    +-----+-----------------------------+
+    |                                   |
+    v                                   v
+ [Relational DB]                   [AI & RAG Engine]
+ (Postgres / SQLite)                - ai_engine/ (embed, indexer,
+ - main/models.py (SQLAlchemy)        retriever, model)
+ - main/config.py (DATABASE_URL)      - Embeddings stored in data/embeddings
+ - Production: Postgres (docker-compose)
+ - Dev: SQLite in instance/
+						  - FAISS indexes in data/faiss_index/
+
+Entity Relationship (core tables)
+
+    +-------------+        +-----------+        +-------------+
+    |   users     |1------<|   visits  |>------1|   doctors   |
+    | id, email.. |        | id, user  |        | id, name... |
+    +-------------+        +-----------+        +-------------+
+	     |                    |  |                     |
+	     |                    |  v                     |
+	     |                    |  +---------------+     |
+	     |                    |  | diagnoses     |     |
+	     |                    |  +---------------+     |
+	     |                    |  | prescriptions |     |
+	     |                    |  +---------------+     |
+	     |                    |  | lab_tests     |     |
+	     |                    |  +---------------+     |
+	     v                    v  | imaging       |     v
+    +-------------+        +-----------+  +---------------+
+    |  hospitals  |1------<|  doctors  |  | ai_analyses   |
+    +-------------+        +-----------+  | ai_recommend. |
+						     +---------------+
+
+Notes:
+- Visit links User and Doctor and aggregates Diagnosis, Prescription,
+  LabTest, ImagingRecord, and AIAnalysis.
+- Doctor has optional hospital_id → Hospital.
+- LabTestType defines types referenced by LabTest.
+- Organ and Disease tables store anatomy and condition metadata used by the AI index.
+
+Security & data considerations:
+- Passwords hashed with Werkzeug (generate_password_hash / check_password_hash).
+- Configurable DB URI via `DATABASE_URL` (see main/config.py).
+- Docker compose includes a `db` Postgres service and `web` service (see docker-compose.yml).
+
+3.8 Technology Stack
+
+Languages & Runtime
+- Python 3.11
+
+Web & Backend
+- Flask (web framework)
+- Jinja2 (templating)
+- Flask-SQLAlchemy (ORM)
+- Flask-Login (authentication)
+- Flask-WTF / WTForms (forms & CSRF)
+
+Database & Storage
+- PostgreSQL (production, docker-compose)
+- SQLite (development, instance/digitalnomads.db)
+- File storage for uploads: uploads/
+- Embeddings & indexes: data/embeddings/, data/faiss_index/
+
+AI, NLP & Vector Search
+- Groq client (LLM API integration)
+- sentence-transformers (embeddings)
+- faiss-cpu (vector index / ANN search)
+- CrossEncoder (re-ranking)
+- numpy (embeddings storage)
+
+Document parsing & scraping
+- pypdf / pdfplumber (PDF parsing)
+- python-docx (DOCX)
+- beautifulsoup4 / requests (web scraping)
+
+DevOps & Packaging
+- Docker, docker-compose
+- requirements.txt pins Python dependencies
+- Dockerfile builds the runtime image
+
+Key Python dependencies (from requirements.txt)
+- Flask, Flask-SQLAlchemy, Flask-Login, Flask-WTF, WTForms
+- python-dotenv, psycopg2-binary
+- faiss-cpu, sentence-transformers, pyyaml, groq
+- pdfplumber, pypdf, python-docx, beautifulsoup4, requests
+
+Local scripts & automation
+- scripts/init-db.sh, scripts/wait-for-db.sh handle DB initialization and readiness.
+
+12
+4 Implementation
+4 Implementation
+The system architecture is designed as a modular multi-layer structure consisting of user
+interface, application logic, artificial intelligence components, and data management layers.
+The user interacts with the system through a web-based interface, which sends requests to
+the backend server implemented using a Python-based framework. The backend processes user
+input and distributes tasks among different system components.
+The artificial intelligence layer includes a large language model (LLM), which generates nat-
+ural language responses, and a recommendation module, which provides context-based sugges-
+tions. The data layer stores structured information such as pharmacy data and supports efficient
+data retrieval.
+13
+The system components communicate through well-defined interfaces, ensuring scalability,
+flexibility, and ease of integration with future healthcare data sources.
+14
+5 Conclusion and Future Work
+5.1 Conclusion
+This study focused on the development of an intelligent digital healthcare platform designed
+to support medical decision-making through data-driven approaches. The primary objective
+was to integrate modern technologies, including artificial intelligence and data analytics, into a
+user-friendly system that improves access to healthcare information and assists users in making
+informed decisions.
+The developed platform successfully combines several key components, including a large
+language model (LLM), a chatbot interface, a recommendation system, and a pharmacy infor-
+mation module. These features enable users to interact with the system in natural language,
+receive relevant medical information, and access healthcare-related services efficiently.
+The implementation of the chatbot demonstrates the effectiveness of conversational inter-
+faces in healthcare applications. Users can ask questions and receive real-time responses, which
+enhances accessibility and reduces the need for direct interaction with healthcare professionals
+for basic inquiries. Additionally, the recommendation system provides context-based sugges-
+tions, contributing to a more personalized user experience.
+The platform also includes support for multiple languages, which increases its usability in
+diverse populations. The integration of pharmacy data further enhances the practical value of
+the system by helping users locate relevant healthcare services.
+5.2 Future Work
+Despite the successful implementation of the core functionalities, several areas for future im-
+provement and development have been identified.
+First, the accuracy and reliability of the AI assistant can be enhanced by further training the
+large language model using more specialized and localized datasets. In particular, incorporating
+healthcare data relevant to the Republic of Kazakhstan, including national medical guidelines
+and terminology, would significantly improve the quality and relevance of responses.
+Second, the human anatomy module requires further development. Currently, it provides
+limited visualization of the skeletal and muscular systems for male and female bodies. Future
+work should expand this module to include additional anatomical systems, such as the nervous,
+cardiovascular, and digestive systems, as well as interactive and educational features.
+Third, the recommendation system can be improved by implementing more advanced ma-
+chine learning techniques. This would allow for more accurate predictions, personalized rec-
+ommendations, and risk assessment based on user input and historical data.
+Additionally, future versions of the platform may include integration with real healthcare
+systems, such as hospitals, electronic health records, and national healthcare databases. This
+would enable real-time data access and significantly enhance the practical applicability of the
+system. Another important direction is improving data security and compliance with healthcare
+regulations. As the system evolves to handle more sensitive data, it will be essential to ensure
+full compliance with legal and ethical standards.
+Finally, the user interface can be further refined to improve usability and accessibility, par-
+ticularly for users with limited technical skills.
+15
+6 Appendix A
+Screenshot of Trello
+16
+7 References
+1. Data-Driven Approaches in Healthcare: Challenges and Emerging Trends
+2. A Data-Driven Decision Support System for Scoliosis Prognosis
+3. A Survey on Multimodal Data-Driven Smart Healthcare Systems: Approaches and Ap-
+plications
+4. System Design for a Data-Driven and Explainable Customer Sentiment Monitor Using
+IoT and Enterprise Data
+17
