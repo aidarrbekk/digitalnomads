@@ -1,52 +1,41 @@
-# HTTP — used for Certbot ACME challenge and redirect to HTTPS
 server {
     listen 80;
     server_name ship-ai.app www.ship-ai.app;
 
-    # Certbot ACME challenge
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
     }
 
-    # Redirect all HTTP to HTTPS
     location / {
         return 301 https://$host$request_uri;
     }
 }
 
-# HTTPS — main proxy to Flask app
 server {
     listen 443 ssl;
     server_name ship-ai.app www.ship-ai.app;
 
-    # SSL certificates (issued by Certbot)
     ssl_certificate     /etc/letsencrypt/live/ship-ai.app/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/ship-ai.app/privkey.pem;
-    include             /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam         /etc/letsencrypt/ssl-dhparams.pem;
 
-    # Security headers
+    ssl_protocols             TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers               HIGH:!aNULL:!MD5;
+    ssl_session_cache         shared:SSL:10m;
+    ssl_session_timeout       10m;
+
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
     add_header X-Frame-Options           "SAMEORIGIN"                          always;
     add_header X-Content-Type-Options    "nosniff"                             always;
-    add_header X-XSS-Protection          "1; mode=block"                       always;
 
-    # Proxy settings
     client_max_body_size 20M;
 
     location / {
         proxy_pass         http://web:5000;
         proxy_http_version 1.1;
-
         proxy_set_header Host              $host;
         proxy_set_header X-Real-IP         $remote_addr;
         proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header Upgrade           $http_upgrade;
-        proxy_set_header Connection        "upgrade";
-
-        proxy_connect_timeout 60s;
-        proxy_send_timeout    60s;
-        proxy_read_timeout    60s;
     }
 }
