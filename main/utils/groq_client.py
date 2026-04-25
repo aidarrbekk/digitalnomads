@@ -110,9 +110,37 @@ def extract_lab_values(text):
             temperature=0.1,
             max_tokens=4000,
             response_format={"type": "json_object"},
+            timeout=1.0,
         )
 
         content = response.choices[0].message.content
+    except Exception as e:
+        logger.warning(f"Groq extraction failed or timed out ({e}). Switching to OpenRouter fallback.")
+        try:
+            from openai import OpenAI
+            openrouter_client = OpenAI(
+                base_url="https://openrouter.ai/api/v1",
+                api_key=os.environ.get("OPENROUTER_API_KEY", "paste_your_api_key_here")
+            )
+            fallback_response = openrouter_client.chat.completions.create(
+                model="meta-llama/llama-3.1-8b-instruct:free",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.1,
+                max_tokens=4000,
+                response_format={"type": "json_object"},
+            )
+            content = fallback_response.choices[0].message.content
+        except Exception as fallback_e:
+            logger.error(f"OpenRouter extraction fallback failed: {fallback_e}")
+            return {
+                "error": f"Extraction failed: {str(fallback_e)}",
+                "error_ru": f"Ошибка извлечения: {str(fallback_e)}",
+                "lab_results": [],
+                "summary": "",
+                "summary_ru": "",
+            }
+    
+    try:
         result = json.loads(content)
 
         if "lab_results" not in result:
@@ -146,10 +174,13 @@ def extract_lab_values(text):
         result["lab_results"] = cleaned
         return result
 
+        result["lab_results"] = cleaned
+        return result
+
     except Exception as e:
-        logger.error(f"Groq extraction failed: {e}")
+        logger.error(f"Failed to parse extraction result: {e}")
         return {
-            "error": f"Extraction failed: {str(e)}",
+            "error": f"Extraction parsing failed: {str(e)}",
             "error_ru": f"Ошибка извлечения: {str(e)}",
             "lab_results": [],
             "summary": "",
@@ -207,9 +238,31 @@ def generate_health_tips(lab_results, metrics=None):
             temperature=0.3,
             max_tokens=3000,
             response_format={"type": "json_object"},
+            timeout=1.0,
         )
 
         content = response.choices[0].message.content
+    except Exception as e:
+        logger.warning(f"Groq health tips generation failed or timed out ({e}). Switching to OpenRouter fallback.")
+        try:
+            from openai import OpenAI
+            openrouter_client = OpenAI(
+                base_url="https://openrouter.ai/api/v1",
+                api_key=os.environ.get("OPENROUTER_API_KEY", "paste_your_api_key_here")
+            )
+            fallback_response = openrouter_client.chat.completions.create(
+                model="meta-llama/llama-3.1-8b-instruct:free",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.3,
+                max_tokens=3000,
+                response_format={"type": "json_object"},
+            )
+            content = fallback_response.choices[0].message.content
+        except Exception as fallback_e:
+            logger.error(f"OpenRouter health tips fallback failed: {fallback_e}")
+            return {"tips": [], "error": str(fallback_e)}
+            
+    try:
         result = json.loads(content)
 
         if "tips" not in result:
@@ -217,7 +270,7 @@ def generate_health_tips(lab_results, metrics=None):
         return result
 
     except Exception as e:
-        logger.error(f"Groq health tips generation failed: {e}")
+        logger.error(f"Failed to parse health tips result: {e}")
         return {"tips": [], "error": str(e)}
 
 

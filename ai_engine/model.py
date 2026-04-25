@@ -1,4 +1,4 @@
-﻿# ai_engine/model.py
+# ai_engine/model.py
 """
 Groq LLM client for RAG pipeline.
 Exposes generate_answer(prompt) and set_model(name).
@@ -9,6 +9,7 @@ import logging
 import yaml
 from dotenv import load_dotenv
 from groq import Groq
+from openai import OpenAI
 
 
 # -- Config --------------------------------------------------------------------
@@ -48,6 +49,11 @@ ALLOWED_MODELS = [
 CURRENT_MODEL: str = DEFAULT_MODEL
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+# Initialize OpenAI client for OpenRouter fallback
+openrouter_client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.getenv("OPENROUTER_API_KEY", "paste_your_api_key_here")
+)
 
 
 # -- Public API ----------------------------------------------------------------
@@ -62,16 +68,28 @@ def set_model(name: str) -> None:
 
 
 def generate_answer(prompt: str) -> str:
-    """Send prompt to Groq API and return the response."""
+    """Send prompt to Groq API and return the response. Fallbacks to OpenRouter if Groq fails or times out."""
     try:
         response = client.chat.completions.create(
             model=CURRENT_MODEL,
             messages=[{"role": "user", "content": prompt}],
             max_tokens=MAX_TOKENS,
             temperature=TEMPERATURE,
+            timeout=1.0,
         )
         answer = response.choices[0].message.content
         return answer.strip() if answer else ""
     except Exception as e:
-        logger.error(f"Groq request failed: {e}")
-        raise
+        logger.warning(f"Groq request failed or timed out ({e}). Switching to OpenRouter fallback.")
+        try:
+            fallback_response = openrouter_client.chat.completions.create(
+                model="meta-llama/llama-3.1-8b-instruct:free",
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=MAX_TOKENS,
+                temperature=TEMPERATURE,
+            )
+            answer = fallback_response.choices[0].message.content
+            return answer.strip() if answer else ""
+        except Exception as fallback_e:
+            logger.error(f"OpenRouter fallback also failed: {fallback_e}")
+            raise
