@@ -123,7 +123,7 @@ def extract_lab_values(text):
                 api_key=os.environ.get("GEMINI_API_KEY", "paste_your_gemini_api_key_here")
             )
             fallback_response = gemini_fallback_client.chat.completions.create(
-                model="gemini-1.5-flash",
+                model="gemini-2.0-flash",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.1,
                 max_tokens=4000,
@@ -251,7 +251,7 @@ def generate_health_tips(lab_results, metrics=None):
                 api_key=os.environ.get("GEMINI_API_KEY", "paste_your_gemini_api_key_here")
             )
             fallback_response = gemini_fallback_client.chat.completions.create(
-                model="gemini-1.5-flash",
+                model="gemini-2.0-flash",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
                 max_tokens=3000,

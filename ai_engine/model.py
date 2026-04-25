@@ -83,7 +83,7 @@ def generate_answer(prompt: str) -> str:
         logger.warning(f"Groq request failed or timed out ({e}). Switching to Gemini fallback.")
         try:
             fallback_response = gemini_fallback_client.chat.completions.create(
-                model="gemini-1.5-flash",
+                model="gemini-2.0-flash",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=MAX_TOKENS,
                 temperature=TEMPERATURE,
