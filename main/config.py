@@ -25,14 +25,9 @@ class Config:
         'email-confirm-salt'
     )
 
-    # Mail Configuration (use environment variables)
-    MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
-    MAIL_PORT = int(os.environ.get('MAIL_PORT', 587))
-    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'True') == 'True'
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME', '')
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD', '')
-    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER', 'ShipAI <ssshipaiii@gmail.com>')
+    # Resend API (replaces SMTP)
     RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
+    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER', 'ShipAI <onboarding@ship-ai.app>')
 
     # File upload config
     UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads', 'documents')

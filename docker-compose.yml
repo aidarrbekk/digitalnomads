@@ -28,13 +28,8 @@ services:
     environment:
       FLASK_ENV: production
       DATABASE_URL: postgresql://medical_user:medical_password@db:5432/medical_qa
-      MAIL_SERVER: ${MAIL_SERVER}
-      MAIL_PORT: ${MAIL_PORT}
-      MAIL_USE_TLS: ${MAIL_USE_TLS}
-      MAIL_USERNAME: ${MAIL_USERNAME}
-      MAIL_PASSWORD: ${MAIL_PASSWORD}
-      MAIL_DEFAULT_SENDER: ${MAIL_DEFAULT_SENDER}
       RESEND_API_KEY: ${RESEND_API_KEY}
+      MAIL_DEFAULT_SENDER: ${MAIL_DEFAULT_SENDER}
       SECRET_KEY: ${SECRET_KEY:-super-secret-change-in-production}
       GROQ_API_KEY: ${GROQ_API_KEY}
     expose:
