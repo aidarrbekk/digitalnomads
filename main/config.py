@@ -32,6 +32,7 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME', '')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD', '')
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER', 'ShipAI <ssshipaiii@gmail.com>')
+    RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
 
     # File upload config
     UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads', 'documents')
