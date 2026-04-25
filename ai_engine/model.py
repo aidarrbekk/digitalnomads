@@ -49,10 +49,10 @@ ALLOWED_MODELS = [
 CURRENT_MODEL: str = DEFAULT_MODEL
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-# Initialize OpenAI client for OpenRouter fallback
-openrouter_client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("OPENROUTER_API_KEY", "paste_your_api_key_here")
+# Initialize OpenAI client for Google Gemini fallback
+gemini_fallback_client = OpenAI(
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+    api_key=os.getenv("GEMINI_API_KEY", "paste_your_gemini_api_key_here")
 )
 
 
@@ -80,10 +80,10 @@ def generate_answer(prompt: str) -> str:
         answer = response.choices[0].message.content
         return answer.strip() if answer else ""
     except Exception as e:
-        logger.warning(f"Groq request failed or timed out ({e}). Switching to OpenRouter fallback.")
+        logger.warning(f"Groq request failed or timed out ({e}). Switching to Gemini fallback.")
         try:
-            fallback_response = openrouter_client.chat.completions.create(
-                model="meta-llama/llama-3.1-8b-instruct:free",
+            fallback_response = gemini_fallback_client.chat.completions.create(
+                model="gemini-1.5-flash",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=MAX_TOKENS,
                 temperature=TEMPERATURE,
@@ -91,5 +91,5 @@ def generate_answer(prompt: str) -> str:
             answer = fallback_response.choices[0].message.content
             return answer.strip() if answer else ""
         except Exception as fallback_e:
-            logger.error(f"OpenRouter fallback also failed: {fallback_e}")
+            logger.error(f"Gemini fallback also failed: {fallback_e}")
             raise

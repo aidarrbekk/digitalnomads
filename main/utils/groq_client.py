@@ -115,15 +115,15 @@ def extract_lab_values(text):
 
         content = response.choices[0].message.content
     except Exception as e:
-        logger.warning(f"Groq extraction failed or timed out ({e}). Switching to OpenRouter fallback.")
+        logger.warning(f"Groq extraction failed or timed out ({e}). Switching to Gemini fallback.")
         try:
             from openai import OpenAI
-            openrouter_client = OpenAI(
-                base_url="https://openrouter.ai/api/v1",
-                api_key=os.environ.get("OPENROUTER_API_KEY", "paste_your_api_key_here")
+            gemini_fallback_client = OpenAI(
+                base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+                api_key=os.environ.get("GEMINI_API_KEY", "paste_your_gemini_api_key_here")
             )
-            fallback_response = openrouter_client.chat.completions.create(
-                model="meta-llama/llama-3.1-8b-instruct:free",
+            fallback_response = gemini_fallback_client.chat.completions.create(
+                model="gemini-1.5-flash",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.1,
                 max_tokens=4000,
@@ -131,7 +131,7 @@ def extract_lab_values(text):
             )
             content = fallback_response.choices[0].message.content
         except Exception as fallback_e:
-            logger.error(f"OpenRouter extraction fallback failed: {fallback_e}")
+            logger.error(f"Gemini extraction fallback failed: {fallback_e}")
             return {
                 "error": f"Extraction failed: {str(fallback_e)}",
                 "error_ru": f"Ошибка извлечения: {str(fallback_e)}",
@@ -243,15 +243,15 @@ def generate_health_tips(lab_results, metrics=None):
 
         content = response.choices[0].message.content
     except Exception as e:
-        logger.warning(f"Groq health tips generation failed or timed out ({e}). Switching to OpenRouter fallback.")
+        logger.warning(f"Groq health tips generation failed or timed out ({e}). Switching to Gemini fallback.")
         try:
             from openai import OpenAI
-            openrouter_client = OpenAI(
-                base_url="https://openrouter.ai/api/v1",
-                api_key=os.environ.get("OPENROUTER_API_KEY", "paste_your_api_key_here")
+            gemini_fallback_client = OpenAI(
+                base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+                api_key=os.environ.get("GEMINI_API_KEY", "paste_your_gemini_api_key_here")
             )
-            fallback_response = openrouter_client.chat.completions.create(
-                model="meta-llama/llama-3.1-8b-instruct:free",
+            fallback_response = gemini_fallback_client.chat.completions.create(
+                model="gemini-1.5-flash",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
                 max_tokens=3000,
@@ -259,7 +259,7 @@ def generate_health_tips(lab_results, metrics=None):
             )
             content = fallback_response.choices[0].message.content
         except Exception as fallback_e:
-            logger.error(f"OpenRouter health tips fallback failed: {fallback_e}")
+            logger.error(f"Gemini health tips fallback failed: {fallback_e}")
             return {"tips": [], "error": str(fallback_e)}
             
     try:
