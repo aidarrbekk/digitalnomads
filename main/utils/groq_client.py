@@ -115,15 +115,15 @@ def extract_lab_values(text):
 
         content = response.choices[0].message.content
     except Exception as e:
-        logger.warning(f"Groq extraction failed or timed out ({e}). Switching to Gemini fallback.")
+        logger.warning(f"Groq extraction failed or timed out ({e}). Switching to GitHub fallback.")
         try:
             from openai import OpenAI
-            gemini_fallback_client = OpenAI(
-                base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-                api_key=os.environ.get("GEMINI_API_KEY", "paste_your_gemini_api_key_here")
+            github_fallback_client = OpenAI(
+                base_url="https://models.inference.ai.azure.com",
+                api_key=os.environ.get("GITHUB_TOKEN", "paste_your_github_token_here")
             )
-            fallback_response = gemini_fallback_client.chat.completions.create(
-                model="gemini-2.0-flash",
+            fallback_response = github_fallback_client.chat.completions.create(
+                model="gpt-4o-mini",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.1,
                 max_tokens=4000,
@@ -131,7 +131,7 @@ def extract_lab_values(text):
             )
             content = fallback_response.choices[0].message.content
         except Exception as fallback_e:
-            logger.error(f"Gemini extraction fallback failed: {fallback_e}")
+            logger.error(f"GitHub extraction fallback failed: {fallback_e}")
             return {
                 "error": f"Extraction failed: {str(fallback_e)}",
                 "error_ru": f"Ошибка извлечения: {str(fallback_e)}",
@@ -243,15 +243,15 @@ def generate_health_tips(lab_results, metrics=None):
 
         content = response.choices[0].message.content
     except Exception as e:
-        logger.warning(f"Groq health tips generation failed or timed out ({e}). Switching to Gemini fallback.")
+        logger.warning(f"Groq health tips generation failed or timed out ({e}). Switching to GitHub fallback.")
         try:
             from openai import OpenAI
-            gemini_fallback_client = OpenAI(
-                base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-                api_key=os.environ.get("GEMINI_API_KEY", "paste_your_gemini_api_key_here")
+            github_fallback_client = OpenAI(
+                base_url="https://models.inference.ai.azure.com",
+                api_key=os.environ.get("GITHUB_TOKEN", "paste_your_github_token_here")
             )
-            fallback_response = gemini_fallback_client.chat.completions.create(
-                model="gemini-2.0-flash",
+            fallback_response = github_fallback_client.chat.completions.create(
+                model="gpt-4o-mini",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
                 max_tokens=3000,
@@ -259,7 +259,7 @@ def generate_health_tips(lab_results, metrics=None):
             )
             content = fallback_response.choices[0].message.content
         except Exception as fallback_e:
-            logger.error(f"Gemini health tips fallback failed: {fallback_e}")
+            logger.error(f"GitHub health tips fallback failed: {fallback_e}")
             return {"tips": [], "error": str(fallback_e)}
             
     try:

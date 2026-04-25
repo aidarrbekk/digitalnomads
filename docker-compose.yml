@@ -32,7 +32,7 @@ services:
       MAIL_DEFAULT_SENDER: ${MAIL_DEFAULT_SENDER}
       SECRET_KEY: ${SECRET_KEY:-super-secret-change-in-production}
       GROQ_API_KEY: ${GROQ_API_KEY}
-      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
     expose:
       - "5000"
     depends_on:
